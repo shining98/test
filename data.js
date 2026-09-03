@@ -192,7 +192,7 @@ var cardData = [
   { id:94, rarity:"闪耀", style:"甜美", designer:"暖暖", name:"虹色诗", skill:"部件得分⑧", collection:"命运交响", shadow:[0.61,0.71,0.8,0.9,0.98], passive:["裙","头","鞋"], styles:{典雅:200,清新:200,甜美:620,性感:248,帅气:248}, heartSkill:[0,0,0,0,0], shadowFlashMoment:[0,0,0,0,0], extraFlash:0 },
   { id:95, rarity:"闪耀", style:"典雅", designer:"江西桐", name:"提灯问春归", skill:"20s加分", collection:"裂帛惊梦", shadow:[0.18,0.21,0.24,0.27,0.3], passive:["裙","鞋","饰"], styles:{典雅:500,清新:198,甜美:255,性感:255,帅气:198}, heartSkill:[0.185,0.216,0.246,0.277,0.308], shadowFlashMoment:[0,0,0,0,0], extraFlash:0 },
   
-];
+
 ];
 
 // ============ 重构服装数据 ============
