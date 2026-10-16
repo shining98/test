@@ -786,7 +786,7 @@ function buildExportWorkbook(batchData,galleryLevelOf,rebuildSet){
     sls.forEach(function(sl){
       head1.push('影'+(CN[sl]||(sl+1)));
       for(var j=1;j<pls.length;j++)head1.push('');
-      pls.forEach(function(pl){head2.push('被动'+(CN[pl]||(pl+1)));});
+      pls.forEach(function(pl){var n=(pl+1)+'';head2.push('被动'+n+n+n);});
     });
     var aoa=[head1,head2];
     cardOrder.forEach(function(cid){

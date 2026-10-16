@@ -274,6 +274,19 @@ function tBi(it,t1,t2){var s=0;if(t1&&(it.t1===t1||it.t2===t1))s|=1;if(t2&&(it.t
 function tB(n,a){if(n<=0)return 0;return a[Math.min(n,a.length)-1];}
 function cF(raw,mode,t1c,t2c){if(mode==='heart')return raw+Math.floor(raw*tB(t1c,H1B))+Math.floor(raw*tB(t2c,H2B));if(mode==='arena')return raw+Math.floor(raw*tB(t1c,AB));return raw;}
 function gSK(i){var s={"手持物":1,"面饰":1,"背饰":1,"挂饰":1,"其他":1};return s[i.cat]?i.cat+'\u00b7'+(i.sc||''):i.cat;}
+// 手持物手位约束：双手需两手全空；左手/右手需同手与双手均不冲突；非手持物不占手
+function accHandOK(c,exceptIdx,items){
+  if(c.cat!=='手持物')return true;
+  var used=[];
+  for(var i=0;i<items.length;i++){
+    if(i===exceptIdx)continue;
+    if(items[i].cat==='手持物')used.push(items[i]);
+  }
+  if(c.sc==='双手')return used.length===0;
+  if(c.sc==='左手')for(var j=0;j<used.length;j++)if(used[j].sc==='双手'||used[j].sc==='左手')return false;
+  if(c.sc==='右手')for(var j=0;j<used.length;j++)if(used[j].sc==='双手'||used[j].sc==='右手')return false;
+  return true;
+}
 function tagMatchThis(itTag,t1,t2){return(t1&&itTag===t1)||(t2&&itTag===t2);}
 /* ===== ACCESSORY DP ===== */
 function buildAccGrps(aP,mode,nt,tagFn){var pw=function(i){return fS(i,mode);};function bb(arr){var s=arr.slice().sort(function(a,b){return pw(b)-pw(a);});var m={};for(var i=0;i<s.length;i++){var b=tagFn(s[i]);if(!(b in m))m[b]=s[i];}return m;}function addO(items,w,o){var bm=bb(items);for(var b in bm){if(!bm.hasOwnProperty(b))continue;var tc=[];for(var t=0;t<nt;t++)tc.push((+b&(1<<t))?1:0);o.push({items:[bm[b]],slots:w,power:pw(bm[b]),tc:tc});}}function addC(subArrs,o){var its=[];for(var i=0;i<subArrs.length;i++){var s=subArrs[i].slice().sort(function(a,b){return pw(b)-pw(a);});if(s.length>0)its.push(s[0]);}if(its.length<subArrs.length)return;var tp=0;for(var i=0;i<its.length;i++)tp+=pw(its[i]);var tc=[];for(var t=0;t<nt;t++){var c=0;for(var i=0;i<its.length;i++)if(tagFn(its[i])&(1<<t))c++;tc.push(c);}o.push({items:its,slots:its.length,power:tp,tc:tc});}var grps=[];REG.forEach(function(c){var arr=aP.filter(function(i){return i.cat===c;});if(arr.length){var opts=[];addO(arr,1,opts);if(opts.length)grps.push(opts);}});var hd=aP.filter(function(i){return i.cat==="手持物";}),hL=hd.filter(function(i){return i.sc==="左手";}),hR=hd.filter(function(i){return i.sc==="右手";}),hB=hd.filter(function(i){return i.sc==="双手";});var ho=[];addO(hL,1,ho);addO(hR,1,ho);addO(hB,1,ho);if(hL.length&&hR.length){var iL=hL.slice().sort(function(a,b){return pw(b)-pw(a);})[0],iR=hR.slice().sort(function(a,b){return pw(b)-pw(a);})[0];var tc=[];for(var t=0;t<nt;t++){var c2=0;if(tagFn(iL)&(1<<t))c2++;if(tagFn(iR)&(1<<t))c2++;tc.push(c2);}ho.push({items:[iL,iR],slots:2,power:pw(iL)+pw(iR),tc:tc});}if(ho.length)grps.push(ho);var fc=aP.filter(function(i){return i.cat==="面饰";}),fF=fc.filter(function(i){return i.sc==="面部";}),fE=fc.filter(function(i){return i.sc==="眼部";});var fo=[];addO(fF,1,fo);addO(fE,1,fo);if(fF.length&&fE.length){var iF=fF.slice().sort(function(a,b){return pw(b)-pw(a);})[0],iE=fE.slice().sort(function(a,b){return pw(b)-pw(a);})[0];var tc=[];for(var t=0;t<nt;t++){var c2=0;if(tagFn(iF)&(1<<t))c2++;if(tagFn(iE)&(1<<t))c2++;tc.push(c2);}fo.push({items:[iF,iE],slots:2,power:pw(iF)+pw(iE),tc:tc});}if(fo.length)grps.push(fo);var bk=aP.filter(function(i){return i.cat==="背饰";}),b1=bk.filter(function(i){return i.sc==="区域一";}),b2=bk.filter(function(i){return i.sc==="区域二";}),b3=bk.filter(function(i){return i.sc==="区域三";});var bo=[];addO(b1,1,bo);addO(b2,1,bo);addO(b3,1,bo);if(b1.length&&b2.length)addC([b1,b2],bo);if(b1.length&&b3.length)addC([b1,b3],bo);if(b2.length&&b3.length)addC([b2,b3],bo);if(b1.length&&b2.length&&b3.length)addC([b1,b2,b3],bo);if(bo.length)grps.push(bo);return grps;}
@@ -323,7 +336,7 @@ function arenaPostOpt(result,base,pool,mode,t1,t2){
       for(var ci=0;ci<pool.length;ci++){
         var c=pool[ci];if(usedId[c.id]||inOutfit(c.id))continue;
         if(ALLACC.indexOf(c.cat)<0)continue;if(!hasTag(c))continue;
-        if(slotN(c)!==osn)continue;
+        if(!accHandOK(c,idx,items))continue;
         var g1=(1)-(ob?1:0);if(g1<=0)continue;
         var cp=fS(c,mode),gain=cp-op;if(gain<=0)continue;
         if(gain>bestGain){bestIdx=idx;bestCand=c;bestGain=gain;}
@@ -343,7 +356,7 @@ function arenaPostOpt(result,base,pool,mode,t1,t2){
       for(var ci=0;ci<pool.length;ci++){
         var c=pool[ci];if(usedId[c.id]||inOutfit(c.id))continue;
         if(ALLACC.indexOf(c.cat)<0)continue;if(hasTag(c))continue;
-        if(slotN(c)!==osn)continue;
+        if(!accHandOK(c,idx,items))continue;
         var cp=fS(c,mode),gain=cp-op;if(gain<=0)continue;
         if(gain>bestGain){bestIdx=idx;bestCand=c;bestGain=gain;}
       }
@@ -360,7 +373,7 @@ function arenaPostOpt(result,base,pool,mode,t1,t2){
       for(var ci=0;ci<pool.length;ci++){
         var c=pool[ci];if(usedId[c.id]||inOutfit(c.id))continue;
         if(ALLACC.indexOf(c.cat)<0)continue;if(hasTag(c))continue;
-        if(slotN(c)!==osn)continue;
+        if(!accHandOK(c,idx,items))continue;
         var cp=fS(c,mode),gain=cp-op;if(gain<=0)continue;
         if(tc1-(ob?1:0)<4)continue;
         if(gain>bestGain){bestIdx=idx;bestCand=c;bestGain=gain;}
@@ -387,99 +400,60 @@ function recommendArenaDiff(pool, t1) {
   var usedId = {}, baseId = {};
   baseItems.forEach(function(i) { usedId[i.id] = 1; baseId[i.id] = 1; });
   function hasTag(it) { return it.t1 === t1 || it.t2 === t1; }
-  /* Step 1: per-category main replacement */
-  ['发型','连衣裙','上衣','下装','外套','袜子','鞋子'].forEach(function(cat) {
-    var slotIdx = -1;
-    for (var i = 0; i < resItems.length; i++) { if (resItems[i].cat === cat) { slotIdx = i; break; } }
-    if (slotIdx < 0) return;
-    var baseScore = fS(resItems[slotIdx], 'arena');
-    var best = null, bestDiff = 1e15, bestPower = -1;
-    for (var j = 0; j < pool.length; j++) {
-      var c = pool[j];
-      if (usedId[c.id] || baseId[c.id]) continue;
-      if (c.cat !== cat || !hasTag(c)) continue;
-      var cs = fS(c, 'arena'), diff = Math.abs(cs - baseScore);
-      if (diff < bestDiff || (diff === bestDiff && cs > bestPower)) { best = c; bestDiff = diff; bestPower = cs; }
-    }
-    if (best) { usedId[resItems[slotIdx].id] = 0; resItems[slotIdx] = best; usedId[best.id] = 1; }
-  });
-  /* Step 2: within-group acc replacement */
-  var accGroups = [
-    { name: '手持物', cats: ['手持物'] },
-    { name: '面饰',   cats: ['面饰'] },
-    { name: '背饰',   cats: ['背饰'] },
-    { name: 'regular', cats: ['发饰','帽子','耳饰','项链','项圈','手饰','手套','胸饰','挂饰','戒指','其他'] }
-  ];
-  accGroups.forEach(function(grp) {
-    var gBase = [];
-    resItems.forEach(function(it, idx) { if (grp.cats.indexOf(it.cat) >= 0) gBase.push({ item: it, idx: idx }); });
-    if (!gBase.length) return;
-    var candidates = [];
-    for (var ci = 0; ci < pool.length; ci++) {
-      var c = pool[ci];
-      if (usedId[c.id] || baseId[c.id]) continue;
-      if (grp.cats.indexOf(c.cat) < 0 || !hasTag(c)) continue;
-      var cs = fS(c, 'arena'), minDiff = 1e15, closestIdx = -1;
-      for (var bi = 0; bi < gBase.length; bi++) {
-        var diff = Math.abs(cs - fS(gBase[bi].item, 'arena'));
-        if (diff < minDiff) { minDiff = diff; closestIdx = bi; }
-      }
-      candidates.push({ item: c, minDiff: minDiff, closestIdx: closestIdx, score: cs });
-    }
-    candidates.sort(function(a, b) { if (a.minDiff !== b.minDiff) return a.minDiff - b.minDiff; return b.score - a.score; });
-    var assigned = {};
-    for (var ci = 0; ci < candidates.length; ci++) {
-      var cand = candidates[ci], target = gBase[cand.closestIdx];
-      if (assigned[target.idx]) continue;
-      assigned[target.idx] = true;
-      usedId[target.item.id] = 0;
-      resItems[target.idx] = cand.item;
-      usedId[cand.item.id] = 1;
-    }
-  });
-  /* Step 3: cross-category — swap tagged main for untagged main + tagged acc */
+  /* 统一换装规则（分差贪心，分差 = 换下件战力 - 换入件战力）：
+     主件(发型/连衣裙/上衣/下装/外套/袜子/鞋子)：同部位选分差小的；
+     饰品：饰品之间相互比较，与当前搭配中分数最低的饰品相比，选分差小的；
+     主件与饰品再互比，全局取分差最小的换装，直到标签件数达到4。 */
   (function(){
-    for (var iter = 0; iter < 20; iter++) {
-      var bestNetGain = 0, bestMainIdx = -1, bestAccIdx = -1, bestAccItem = null, bestOrigMain = null;
-      for (var mi = 0; mi < resItems.length; mi++) {
-        var mainItem = resItems[mi];
-        if (ALLACC.indexOf(mainItem.cat) >= 0 || !hasTag(mainItem)) continue;
-        var origMain = null;
-        for (var bi = 0; bi < baseItems.length; bi++) {
-          if (baseItems[bi].cat === mainItem.cat && !hasTag(baseItems[bi])) { origMain = baseItems[bi]; break; }
+    function isAcc(it){return ALLACC.indexOf(it.cat)>=0;}
+    function subConflict(c,exceptIdx){
+      for(var ii=0;ii<resItems.length;ii++){
+        if(ii===exceptIdx)continue;
+        var o=resItems[ii];
+        if(o.cat!==c.cat)continue;
+        if(REG.indexOf(c.cat)>=0)return true;              // 常规配饰每类最多1件
+        if(o.sc&&c.sc&&o.sc===c.sc)return true;            // 手持物/面饰/背饰 子槽位不可重复
+      }
+      return false;
+    }
+    function tagCount(){var c=0;for(var i=0;i<resItems.length;i++)if(hasTag(resItems[i]))c++;return c;}
+    for(var iter=0;iter<10;iter++){
+      if(tagCount()>=4)break;
+      var cands=[];
+      /* 主件：同部位比较，选分差小的 */
+      for(var mi=0;mi<resItems.length;mi++){
+        var cur=resItems[mi];
+        if(isAcc(cur)||hasTag(cur))continue;
+        var curPw=fS(cur,'arena'),best=null,bestDiff=1e18,bestPw=-1;
+        for(var ci=0;ci<pool.length;ci++){
+          var c=pool[ci];
+          if(usedId[c.id]||c.cat!==cur.cat||!hasTag(c))continue;
+          if(subConflict(c,mi))continue;
+          var cp=fS(c,'arena'),diff=curPw-cp;
+          if(diff<bestDiff||(diff===bestDiff&&cp>bestPw)){best=c;bestDiff=diff;bestPw=cp;}
         }
-        if (!origMain) continue;
-        var mainGain = fS(origMain, 'arena') - fS(mainItem, 'arena');
-        for (var ci = 0; ci < pool.length; ci++) {
-          var c = pool[ci];
-          if (usedId[c.id]) continue;
-          if (ALLACC.indexOf(c.cat) < 0 || !hasTag(c)) continue;
-          /* Sub-slot conflict check */
-          var conflict = false;
-          for (var ii = 0; ii < resItems.length; ii++) {
-            if (resItems[ii].cat === c.cat && resItems[ii].sc && c.sc && resItems[ii].sc === c.sc) { conflict = true; break; }
-          }
-          if (conflict) continue;
-          /* Already in outfit check */
-          var alreadyIn = false;
-          for (var ii = 0; ii < resItems.length; ii++) { if (resItems[ii].id === c.id) { alreadyIn = true; break; } }
-          if (alreadyIn) continue;
-          for (var ai = 0; ai < resItems.length; ai++) {
-            var accItem = resItems[ai];
-            if (ALLACC.indexOf(accItem.cat) < 0 || hasTag(accItem)) continue;
-            var accGain = fS(c, 'arena') - fS(accItem, 'arena');
-            var netGain = mainGain + accGain;
-            if (netGain > bestNetGain) { bestNetGain = netGain; bestMainIdx = mi; bestAccIdx = ai; bestAccItem = c; bestOrigMain = origMain; }
-          }
+        if(best)cands.push({idx:mi,cand:best,diff:bestDiff});
+      }
+      /* 饰品：饰品之间相互比较，与搭配中分数最低的饰品相比，选分差小的（最低者分差最小自然优先，冲突时退到次低） */
+      for(var ei=0;ei<resItems.length;ei++){
+        var old=resItems[ei];
+        if(!isAcc(old)||hasTag(old))continue;
+        var op=fS(old,'arena');
+        for(var ci=0;ci<pool.length;ci++){
+          var c=pool[ci];
+          if(usedId[c.id]||!isAcc(c)||!hasTag(c))continue;
+          if(!accHandOK(c,ei,resItems))continue;
+          if(subConflict(c,ei))continue;
+          cands.push({idx:ei,cand:c,diff:op-fS(c,'arena')});
         }
       }
-      if (bestMainIdx < 0) break;
-      usedId[resItems[bestMainIdx].id] = 0;
-      resItems[bestMainIdx] = bestOrigMain;
-      usedId[bestOrigMain.id] = 1;
-      usedId[resItems[bestAccIdx].id] = 0;
-      resItems[bestAccIdx] = bestAccItem;
-      usedId[bestAccItem.id] = 1;
+      if(!cands.length)break;
+      /* 主件与饰品之间再比，取分差最小（同分差取换入战力高者） */
+      cands.sort(function(a,b){if(a.diff!==b.diff)return a.diff-b.diff;return fS(b.cand,'arena')-fS(a.cand,'arena');});
+      var pick=cands[0];
+      usedId[resItems[pick.idx].id]=0;
+      resItems[pick.idx]=pick.cand;
+      usedId[pick.cand.id]=1;
     }
   })();
   var raw = 0, tc1 = 0;
@@ -502,11 +476,63 @@ function heartOptOutfit(pool,mode,t1,t2,fixed){
   var fixedSK={};ALLFIXCATS.forEach(function(cat){if(fixed[cat])fixedSK[gSK(fixed[cat])]=1;});
   function getTC(){var c1=0,c2=0;items.forEach(function(i){if(tg1&&(i.t1===tg1||i.t2===tg1))c1++;if(tg2&&(i.t1===tg2||i.t2===tg2))c2++;});return[c1,c2];}
   function met(){var tc=getTC();return(!tg1||tc[0]>=4)&&(!tg2||tc[1]>=2);}
-  for(var iter=0;iter<80;iter++){if(met())break;var tc=getTC(),bestIdx=-1,bestCand=null,bestDiff=1e15,bestPower=-1;
-    for(var idx=0;idx<items.length;idx++){var old=items[idx],sk=gSK(old);if(fixedSK[sk])continue;var ob=tBi(old,tg1,tg2),bp=basePw[sk]||fS(old,mode);
-      for(var ci=0;ci<pool.length;ci++){var c=pool[ci];if(usedId[c.id])continue;if(gSK(c)!==sk)continue;var nb=tBi(c,tg1,tg2),g1=((nb&1)?1:0)-((ob&1)?1:0),g2=((nb&2)?1:0)-((ob&2)?1:0);if(!((tg1&&tc[0]<4&&g1>0)||(tg2&&tc[1]<2&&g2>0)))continue;var cp=fS(c,mode),diff=Math.abs(cp-bp),better=false;if(bestIdx<0)better=true;else if(diff<bestDiff)better=true;else if(diff===bestDiff&&cp>bestPower)better=true;if(better){bestIdx=idx;bestCand=c;bestDiff=diff;bestPower=cp;}}
-      if(ALLACC.indexOf(old.cat)>=0){for(var ci=0;ci<pool.length;ci++){var c=pool[ci];if(usedId[c.id])continue;if(ALLACC.indexOf(c.cat)<0)continue;var cSk=gSK(c);if(cSk===sk)continue;var cf=false;for(var j=0;j<items.length;j++){if(j!==idx&&gSK(items[j])===cSk){cf=true;break;}}if(cf)continue;var nb=tBi(c,tg1,tg2),g1=((nb&1)?1:0)-((ob&1)?1:0),g2=((nb&2)?1:0)-((ob&2)?1:0);if(!((tg1&&tc[0]<4&&g1>0)||(tg2&&tc[1]<2&&g2>0)))continue;var cp=fS(c,mode),diff=Math.abs(cp-bp),better=false;if(bestIdx<0)better=true;else if(diff<bestDiff)better=true;else if(diff===bestDiff&&cp>bestPower)better=true;if(better){bestIdx=idx;bestCand=c;bestDiff=diff;bestPower=cp;}}}}
-    if(bestIdx<0)break;var old=items[bestIdx],ob=tBi(old,tg1,tg2);usedId[old.id]=0;items[bestIdx]=bestCand;usedId[bestCand.id]=1;}
+  /* 统一换装规则（与竞技场一致，分差贪心，分差 = 换下件战力 - 换入件战力）：
+     主件：同部位选分差小的；
+     饰品：饰品之间相互比较，与搭配中分数最低的饰品相比，选分差小的；
+     主件与饰品再互比，全局取分差最小的换装，每次换装必须更接近 标签1≥4 且 标签2≥2。 */
+  (function(){
+    function conflictWith(c,exceptIdx){
+      for(var j=0;j<items.length;j++){if(j!==exceptIdx&&gSK(items[j])===gSK(c))return true;}
+      return false;
+    }
+    function deficit(tc){var d=0;if(tg1&&tc[0]<4)d+=4-tc[0];if(tg2&&tc[1]<2)d+=2-tc[1];return d;}
+    function swapGainOK(ob,nb,tc){
+      var nT1=tc[0]-((ob&1)?1:0)+((nb&1)?1:0);
+      var nT2=tc[1]-((ob&2)?1:0)+((nb&2)?1:0);
+      return deficit([nT1,nT2])<deficit(tc);
+    }
+    for(var iter=0;iter<20;iter++){
+      if(met())break;
+      var tc=getTC(),cands=[];
+      /* 主件：同部位比较，选分差小的 */
+      for(var idx=0;idx<items.length;idx++){
+        var old=items[idx];
+        if(ALLACC.indexOf(old.cat)>=0||fixedSK[gSK(old)])continue;
+        var ob=tBi(old,tg1,tg2),op=fS(old,mode),best=null,bestDiff=1e18,bestPw=-1;
+        for(var ci=0;ci<pool.length;ci++){
+          var c=pool[ci];
+          if(usedId[c.id]||gSK(c)!==gSK(old))continue;
+          var nb=tBi(c,tg1,tg2);
+          if(nb===ob||!swapGainOK(ob,nb,tc))continue;
+          var cp=fS(c,mode),diff=op-cp;
+          if(diff<bestDiff||(diff===bestDiff&&cp>bestPw)){best=c;bestDiff=diff;bestPw=cp;}
+        }
+        if(best)cands.push({idx:idx,cand:best,diff:bestDiff});
+      }
+      /* 饰品：饰品之间相互比较，与搭配中分数最低的饰品相比，选分差小的 */
+      for(var idx=0;idx<items.length;idx++){
+        var old=items[idx];
+        if(ALLACC.indexOf(old.cat)<0||fixedSK[gSK(old)])continue;
+        var ob=tBi(old,tg1,tg2),op=fS(old,mode);
+        for(var ci=0;ci<pool.length;ci++){
+          var c=pool[ci];
+          if(usedId[c.id]||ALLACC.indexOf(c.cat)<0)continue;
+          if(!accHandOK(c,idx,items))continue;
+          if(conflictWith(c,idx))continue;
+          var nb=tBi(c,tg1,tg2);
+          if(nb===ob||!swapGainOK(ob,nb,tc))continue;
+          cands.push({idx:idx,cand:c,diff:op-fS(c,mode)});
+        }
+      }
+      if(!cands.length)break;
+      /* 主件与饰品之间再比，取分差最小（同分差取换入战力高者） */
+      cands.sort(function(a,b){if(a.diff!==b.diff)return a.diff-b.diff;return fS(b.cand,mode)-fS(a.cand,mode);});
+      var pick=cands[0];
+      usedId[items[pick.idx].id]=0;
+      items[pick.idx]=pick.cand;
+      usedId[pick.cand.id]=1;
+    }
+  })();
   if(met()){var ch=true;while(ch){ch=false;var tc2=getTC();for(var idx=0;idx<items.length;idx++){var old=items[idx],ob=tBi(old,tg1,tg2);if(!ob)continue;if(fixedSK[gSK(old)])continue;var nT1=tc2[0]-((ob&1)?1:0),nT2=tc2[1]-((ob&2)?1:0);if((tg1&&nT1<4)||(tg2&&nT2<2))continue;var sk=gSK(old),op=fS(old,mode);for(var ci=0;ci<pool.length;ci++){var c=pool[ci];if(usedId[c.id])continue;if(gSK(c)!==sk)continue;if(tBi(c,tg1,tg2)!==0)continue;if(fS(c,mode)!==op)continue;usedId[old.id]=0;items[idx]=c;usedId[c.id]=1;tc2[0]=nT1;tc2[1]=nT2;ch=true;break;}}}}
   var raw=0;items.forEach(function(i){raw+=fS(i,mode);});var ftc=getTC();
   // --- bloom moment post-optimization ---

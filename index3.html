@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>甜美服装顶配统计</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Serif SC','Noto Serif CJK SC',serif;background:var(--attr-bg,#fff5f8);color:var(--attr-color,#F1638B);padding:20px}
+h1{text-align:center;font-size:36px;color:var(--attr-color,#DE4A97);margin:20px 0 5px}
+.controls{text-align:center;margin:20px 0}
+.controls button{padding:10px 24px;margin:5px;font-size:16px;border:2px solid var(--attr-color,#DE4A97);background:#fff;color:var(--attr-color,#DE4A97);border-radius:8px;cursor:pointer;font-family:inherit}
+.controls button:hover{background:var(--attr-color,#DE4A97);color:#fff}
+.controls select{padding:8px 16px;font-size:16px;border:2px solid var(--attr-color,#DE4A97);border-radius:8px;font-family:inherit;color:var(--attr-color,#DE4A97);background:#fff}
+.chart{width:2930px;margin:30px auto;background:var(--attr-bg,#fff5f8);padding:0}
+.chart-title{text-align:center;font-size:96px;font-weight:700;color:var(--attr-color,#DE4A97);padding-top:80px;font-family:'Noto Serif SC','Noto Serif CJK SC',serif}
+.section-label{font-size:64px;font-weight:700;color:var(--attr-color,#DE4A97);padding:0 0 80px 0;text-align:center;font-family:KaiTi,'Noto Serif SC',serif}
+.section-label:first-of-type{padding-top:50px}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--attr-color,#DE4A97);color:#fff;font-size:40px;font-weight:700;padding:18px 0;text-align:center}
+tbody td{font-size:40px;font-weight:700;text-align:center;padding:18px 0;border-bottom:1px solid var(--attr-border,#f8bbd0)}
+tbody tr:nth-child(odd){background:var(--attr-bg,#fff0f5)}
+tbody tr:nth-child(even){background:var(--attr-bg2,#ffe4ec)}
+.r-闪耀,.r-闪·漫,.r-闪熠,.r-华梦,.r-闪·涟,.r-闪瑰,.r-闪·寰,.r-闪·斓{color:#FFC000}
+.r-非凡{color:#8e6b8a}
+.r-新启{color:#F1638B}
+.chart-bottom{text-align:center;font-size:96px;font-weight:700;color:var(--attr-color,#DE4A97);padding:30px 0 30px;font-family:'Noto Serif SC','Noto Serif CJK SC',serif}
+#progress{text-align:center;font-size:18px;color:var(--attr-color,#DE4A97);margin:10px 0;min-height:24px}
+.export-info{text-align:center;font-size:14px;color:#999;margin:10px 0}
+</style>
+</head>
+<body>
+<h1 id="pageTitle">甜美服装顶配统计</h1>
+<div class="controls">
+<select id="attrSelect"><option value="">全部属性</option><option value="甜美" selected>甜美</option><option value="性感">性感</option><option value="清新">清新</option><option value="帅气">帅气</option><option value="典雅">典雅</option></select>
+<div id="rareCheckGroup" style="display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle;margin:0 8px">
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪耀" checked> 闪耀</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪熠" checked> 闪熠</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="华梦" checked> 华梦</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="非凡" checked> 非凡</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="新启" checked> 新启</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪·漫" checked> 闪·漫</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪·涟" checked> 闪·涟</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪瑰" checked> 闪瑰</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪·寰" checked> 闪·寰</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪·斓" checked> 闪·斓</label>
+  <button onclick="toggleRare(true)" style="padding:2px 8px;font-size:12px;border:1px solid var(--attr-color,#DE4A97);background:#fff;color:var(--attr-color,#DE4A97);border-radius:4px;cursor:pointer">全选</button>
+  <button onclick="toggleRare(false)" style="padding:2px 8px;font-size:12px;border:1px solid var(--attr-color,#DE4A97);background:#fff;color:var(--attr-color,#DE4A97);border-radius:4px;cursor:pointer">全不选</button>
+</div>
+<select id="catSelect"><option value="">选择部位</option></select>
+<button onclick="doExport()">导出选中图片</button>
+<button onclick="doExportAll()">导出全部图片</button>
+</div>
+<p class="export-info">2930px · 600dpi · PNG</p>
+<div id="progress"></div>
+<div id="charts"></div>
+<script src="data1.js"></script>
+<script>
+var ITEMS=D.map(function(d){return{name:d.name,cat:d.cat,type:d.type,attr:d.attr,rare:d.rare,designer:d.designer,t1:d.t1,t2:d.t2,bs:d.bs};});
+var ATTR_STYLE={
+  '甜美':{color:'#E8879C',bg:'#fce8ee',bg2:'#f8d4de',border:'#f0b8c8',title:'甜美服装顶配统计'},
+  '性感':{color:'#9A80C0',bg:'#ece4f4',bg2:'#ddd0ec',border:'#c4b0dc',title:'性感服装顶配统计'},
+  '清新':{color:'#78C0A8',bg:'#ddf4ec',bg2:'#c4e8d8',border:'#a0d4bc',title:'清新服装顶配统计'},
+  '帅气':{color:'#84A8E5',bg:'#e0ecf8',bg2:'#c8daf0',border:'#a0bce0',title:'帅气服装顶配统计'},
+  '典雅':{color:'#C99759',bg:'#f5ead8',bg2:'#ecdcc0',border:'#d4bc94',title:'典雅服装顶配统计'}
+};
+var BOLD_ITEMS=["游夜漫舞", "繁花饮梦", "斑斓夜", "虹色诗", "千虹绘夜", "流云绮春", "绊留星海", "蔓花生漪", "烂漫盈蕊", "纷彩摇琅", "霓夜生辉", "曦云长明", "寻梦呢喃", "逐光熠彩", "环羽斓梦", "盈光彩珀", "一霎万华", "刹那千春", "轻挽霓光", "半拢霄色", "心彩无束", "空濛幻雾", "云霭虹间"];
+var CATS={};
+var GROUPS=[
+  {id:'g1',name:'发型·连衣裙·上衣·下装',cats:['发型','连衣裙','上衣','下装']},
+  {id:'g2',name:'外套·袜子·鞋子·发饰',cats:['外套','袜子','鞋子','发饰']},
+  {id:'g3',name:'帽子·耳饰·项链·项圈',cats:['帽子','耳饰','项链','项圈']},
+  {id:'g4',name:'手饰·手套·手持物',cats:['手饰','手套','手持物']},
+  {id:'g5',name:'面饰·胸饰·挂饰·背饰·戒指·其他',cats:['面饰','胸饰','挂饰','背饰','戒指','其他']}
+];
+function buildCATS(){
+  CATS={};
+  var attr=document.getElementById('attrSelect').value;
+  var rareChks=document.querySelectorAll('.rareChk:checked');
+  var rareSet=rareChks.length?[].map.call(rareChks,function(c){return c.value;}):null;
+  var filtered=ITEMS;
+  if(attr)filtered=filtered.filter(function(it){return it.attr===attr;});
+  if(rareSet)filtered=filtered.filter(function(it){return rareSet.indexOf(it.rare)>=0;});
+  filtered.forEach(function(it){if(!CATS[it.cat])CATS[it.cat]=[];CATS[it.cat].push(it);});
+  Object.keys(CATS).forEach(function(c){CATS[c].sort(function(a,b){return b.bs-a.bs});});
+}
+
+var sel=document.getElementById('catSelect');
+var chartsDiv=document.getElementById('charts');
+
+function getStyle(){
+  var attr=document.getElementById('attrSelect').value;
+  return ATTR_STYLE[attr]||ATTR_STYLE['甜美'];
+}
+
+function buildCharts(){
+  buildCATS();
+  sel.innerHTML='<option value="">选择部位</option>';
+  chartsDiv.innerHTML='';
+  var st=getStyle();
+  document.documentElement.style.setProperty('--attr-color',st.color);
+  document.documentElement.style.setProperty('--attr-bg',st.bg);
+  document.documentElement.style.setProperty('--attr-bg2',st.bg2);
+  document.documentElement.style.setProperty('--attr-border',st.border);
+  document.getElementById('pageTitle').textContent=st.title;
+  document.title=st.title;
+  GROUPS.forEach(function(g){
+    var opt=document.createElement('option');
+    opt.value=g.id;opt.textContent=g.name;
+    sel.appendChild(opt);
+    var div=document.createElement('div');
+    div.className='chart';div.id='chart-'+g.id;
+    var h='<div class="chart-title" style="color:'+st.color+'">'+st.title+'</div>';
+  g.cats.forEach(function(cat){
+    if(!CATS[cat])return;
+    h+='<div class="section-label">'+cat+'</div>';
+    h+='<table><thead><tr><th>名称</th><th>设计师</th><th>稀有度</th><th>类型</th><th>基础分</th><th>标签1</th><th>标签2</th></tr></thead><tbody>';
+    CATS[cat].forEach(function(it){
+      var isB=BOLD_ITEMS.indexOf(it.name)>=0;
+      var nm=isB?'<b>'+it.name+'</b>':it.name;
+      var rr=it.rare.indexOf('闪')===0?'<b>'+it.rare+'</b>':it.rare;
+      h+='<tr><td>'+nm+'</td><td>'+it.designer+'</td><td class="r-'+it.rare+'">'+rr+'</td><td>'+it.type+'</td><td>'+it.bs+'</td><td>'+it.t1+'</td><td>'+it.t2+'</td></tr>';
+    });
+    h+='</tbody></table>';
+  });
+  h+='<div class="chart-bottom" style="color:'+st.color+'">萝莉甜的闪暖日记</div>';
+    div.innerHTML=h;
+    chartsDiv.appendChild(div);
+  });
+}
+buildCharts();
+function toggleRare(state){
+  document.querySelectorAll('.rareChk').forEach(function(c){c.checked=state;});
+  buildCharts();
+}
+document.querySelectorAll('.rareChk').forEach(function(c){c.addEventListener('change',buildCharts);});
+document.getElementById('attrSelect').addEventListener('change',buildCharts);
+
+var CW=2930;
+var COL_W=[500,430,290,500,290,345,345];
+var TW=COL_W.reduce(function(a,b){return a+b},0)+30;
+var PAD=Math.floor((CW-TW)/2);
+var RH=80;
+var HEADERS=['名称','设计师','稀有度','类型','基础分','标签1','标签2'];
+var RARE_C={'闪耀':'#FFC000','闪·漫':'#FFC000','闪熠':'#FFC000','华梦':'#FFC000','闪·涟':'#FFC000','闪瑰':'#FFC000','闪·寰':'#FFC000','闪·斓':'#FFC000','非凡':'#8e6b8a','新启':'#F1638B'};
+function isShiny(r){return r.indexOf('闪')===0;}
+
+// Centered text function using textAlign
+function cText(ctx,t,x,w,y,c){
+  ctx.fillStyle=c;
+  ctx.textAlign='center';
+  ctx.textBaseline='top';
+  ctx.fillText(t,x+w/2,y);
+}
+
+function drawTbl(ctx,items,sy){
+  var y=sy,x=PAD;
+  var st=getStyle();
+  ctx.fillStyle=st.color;ctx.fillRect(x,y,TW-10,RH);
+  ctx.font='700 40px "Noto Serif SC","Noto Serif CJK SC",serif';
+  for(var i=0;i<HEADERS.length;i++){cText(ctx,HEADERS[i],x,COL_W[i],y+18,'#fff');x+=COL_W[i];}
+  for(var idx=0;idx<items.length;idx++){
+    y=sy+RH*(idx+1);x=PAD;
+    ctx.fillStyle=idx%2===0?st.bg:st.bg2;ctx.fillRect(x,y,TW-10,RH);
+    ctx.fillStyle=st.border;ctx.fillRect(x,y+RH-1,TW-10,1);
+    var it=items[idx],isB=BOLD_ITEMS.indexOf(it.name)>=0;
+    var vs=[it.name,it.designer,it.rare,it.type,String(it.bs),it.t1,it.t2];
+    for(var i=0;i<vs.length;i++){
+      var c=(i===2)?(RARE_C[vs[i]]||st.color):(isB?st.color:st.color);
+      var f=isB?'700 44px "Noto Serif SC","Noto Serif CJK SC",serif':(isShiny(vs[i])?'700 42px "Noto Serif SC","Noto Serif CJK SC",serif':'700 40px "Noto Serif SC","Noto Serif CJK SC",serif');
+      ctx.font=f;cText(ctx,vs[i],x,COL_W[i],y+18,c);x+=COL_W[i];
+    }
+  }
+  return sy+RH*(items.length+1);
+}
+
+function renderGroup(g){
+  var st=getStyle();
+  var cats=g.cats.filter(function(c){return CATS[c];});
+  var totalRows=0;cats.forEach(function(c){totalRows+=CATS[c].length+1;});
+  var gaps=(cats.length-1)*150;
+  var imgH=80+96+50+cats.length*56+cats.length*80+gaps+RH*totalRows+160+150;
+  var sc=2;
+  var cv=document.createElement('canvas');
+  cv.width=Math.round(CW*sc);cv.height=Math.round(imgH*sc);
+  var ctx=cv.getContext('2d');ctx.scale(sc,sc);
+  ctx.fillStyle=st.bg;ctx.fillRect(0,0,CW,imgH);
+  // Title
+  ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.font='700 96px KaiTi,"Noto Serif SC",serif';
+  ctx.fillStyle=st.color;
+  ctx.fillText(st.title,CW/2,80);
+  // Sections
+  var cy=80+96+50;
+  cats.forEach(function(cat,idx){
+    if(idx>0)cy+=150;
+    ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.font='700 64px KaiTi,"Noto Serif SC",serif';
+    ctx.fillStyle=st.color;
+    ctx.fillText(cat,CW/2,cy);
+    cy+=56+100;
+    cy=drawTbl(ctx,CATS[cat],cy);
+  });
+  // Bottom
+  ctx.textAlign='center';ctx.textBaseline='top';
+  ctx.font='700 96px KaiTi,"Noto Serif SC",serif';
+  ctx.fillStyle=st.color;
+  ctx.fillText('萝莉甜的闪暖日记',CW/2,imgH-160);
+  return cv;
+}
+
+function doExport(){
+  var v=sel.value;
+  if(!v){alert('请先选择一个部位');return;}
+  var g=GROUPS.filter(function(x){return x.id===v;})[0];
+  if(!g)return;
+  var p=document.getElementById('progress');
+  p.textContent='正在生成 '+g.name+'...';
+  setTimeout(function(){
+    try{
+      var cv=renderGroup(g);
+      cv.toBlob(function(blob){
+        if(!blob){p.textContent='导出失败';return;}
+        var u=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=u;a.download=getStyle().title.replace('顶配统计','')+'_'+g.name+'.png';
+        document.body.appendChild(a);a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(u);},2000);
+        p.textContent=g.name+' 导出完成 ('+Math.round(blob.size/1024)+'KB)';
+      },'image/png');
+    }catch(e){p.textContent='错误: '+e.message;}
+  },200);
+}
+
+function doExportAll(){
+  var i=0;var p=document.getElementById('progress');
+  function next(){
+    if(i>=GROUPS.length){p.textContent='全部导出完成';return;}
+    var g=GROUPS[i];
+    p.textContent='正在生成 '+(i+1)+'/'+GROUPS.length+' '+g.name+'...';
+    try{
+      var cv=renderGroup(g);
+      cv.toBlob(function(blob){
+        if(!blob){p.textContent='导出失败: '+g.name;i++;setTimeout(next,1000);return;}
+        var u=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=u;a.download=getStyle().title.replace('顶配统计','')+'_'+g.name+'.png';
+        document.body.appendChild(a);a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(u);},2000);
+        i++;setTimeout(next,2000);
+      },'image/png');
+    }catch(e){p.textContent='错误: '+e.message;i++;setTimeout(next,1000);}
+  }
+  next();
+}
+</script>
+</body>
+</html>
