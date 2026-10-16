@@ -86,7 +86,13 @@ tr:hover{background:rgba(43,108,176,.04)}
       <div class="field"><label>属性</label><select id="selAttr" onchange="onAttrChange()"></select></div>
       <div class="field"><label>卡牌</label><select id="selCard" onchange="onCardChange()"></select></div>
       <div class="field"><label>复苏</label><select id="selRecovery" onchange="onParamChange()"><option value="1">已复苏</option><option value="0">未复苏</option></select></div>
-      <div class="field"><label>馆藏等级</label><select id="selGallery" onchange="onParamChange()" style="display:none"></select><div id="galleryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:4px;font-size:11px"></div></div>
+      <div class="field"><label>重构配卡（当前卡）</label><label style="display:flex;align-items:center;gap:6px;min-height:32px;font-size:12px;cursor:pointer"><input type="checkbox" id="chkRebuild" onchange="onRebuildChange()" style="accent-color:#BF360C;width:16px;height:16px">设计师之影 +4800</label></div>
+    </div>
+    <!-- 馆藏等级：单独一行，分栏显示 -->
+    <div style="margin-top:10px">
+      <label style="font-size:11px;color:var(--muted);letter-spacing:.06em">馆藏等级 <span class="note">（等级 × 2% 加成，同一馆藏全卡共享）</span></label>
+      <select id="selGallery" onchange="onParamChange()" style="display:none"></select>
+      <div id="galleryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:6px 14px;font-size:11px;margin-top:4px;padding:8px 10px;background:var(--sel-bg);border:1px solid var(--sel-border);border-radius:6px"></div>
     </div>
     <div class="note">馆藏加成 = 等级 × 2%（计算时自动处理）</div>
   </div>
@@ -100,7 +106,7 @@ tr:hover{background:rgba(43,108,176,.04)}
 
   <!-- 参数输入 -->
   <div class="card">
-    <div class="card-title">参数输入</div>
+    <div class="card-title">参数输入 <span class="note">（按属性分别保存）</span></div>
     <div class="row">
       <div class="field"><label>模式</label><select id="selMode" onchange="onParamChange()"><option value="arena">竞技场</option><option value="heart">心阶</option><option value="league">联盟</option></select></div>
       <div class="field"><label>核心印象类型</label><select id="selImpType" onchange="onParamChange()"><option value="heart">心印象</option><option value="shadow">影印象</option></select></div>
@@ -111,7 +117,7 @@ tr:hover{background:rgba(43,108,176,.04)}
       <div class="field"><label>印象技能1(心技能加成)</label><input type="number" id="inpImpS1" value="0.375" step="0.001" onchange="onParamChange()"></div>
       <div class="field"><label>印象技能2</label><input type="number" id="inpImpS2" value="0.5" step="0.001" onchange="onParamChange()"></div>
       <div class="field"><label>爆发率</label><input type="number" id="inpBurstRate" value="0.25" step="0.01" onchange="onParamChange()"></div>
-      <div class="field"><label>重构闪瞬(rcFlash)</label><input type="number" id="inpRcFlash" value="0" step="0.001" onchange="onParamChange()"></div>
+      <div class="field"><label>重构闪瞬(rcFlash)</label><input type="number" id="inpRcFlash" value="0.24" step="0.001" onchange="onParamChange()"></div>
       <div class="field"><label>忆海收集1</label><select id="selYh1" onchange="onParamChange()"><option value="0">0%</option><option value="1">1%</option><option value="2">2.5%</option><option value="3">4%</option><option value="4">5.5%</option><option value="5">7%</option><option value="6">8.5%</option><option value="7">10%</option><option value="8">11.5%</option></select></div>
       <div class="field"><label>忆海收集2</label><select id="selYh2" onchange="onParamChange()"><option value="0">0%</option><option value="1">1%</option><option value="2">2.5%</option><option value="3">4%</option><option value="4">5.5%</option><option value="5">7%</option><option value="6">8.5%</option><option value="7">10%</option><option value="8">11.5%</option></select></div>
     </div>
@@ -170,6 +176,7 @@ tr:hover{background:rgba(43,108,176,.04)}
         <div class="field"><label>被动等级</label><select id="batchPass"><option value="all">全部(1-5)</option><option value="4">仅Lv.5</option></select></div>
         <div style="display:flex;align-items:flex-end;gap:8px"><button class="btn btn-primary" onclick="runBatch()">生成表格</button><button class="btn btn-outline" onclick="downloadExcel()" id="btnExcel" disabled>下载 Excel</button></div>
       </div>
+      <div style="margin-top:8px"><label style="font-size:11px;color:var(--muted)">选择卡牌 <button class="btn btn-outline btn-sm" onclick="toggleBatchCards()" style="margin-left:6px">全选/全不选</button> <span class="note">卡牌名称可点击勾选；「馆藏等级」行内可改（同一馆藏自动联动）；「重构配卡」勾选后该卡设计师之影 +4800</span></label><div class="batch-table" style="max-height:300px;margin-top:4px"><table><thead><tr><th class="h-info" style="text-align:left">卡牌名称（点击勾选）</th><th class="h-info">馆藏等级</th><th class="h-param">重构配卡</th></tr></thead><tbody id="batchCardList"></tbody></table></div></div>
     </div>
     <div id="batchCharts" style="display:none">
       <div class="card">
@@ -200,12 +207,55 @@ var passiveTable = {
 };
 var Yhjc = [0,0.01,0.025,0.04,0.055,0.07,0.085,0.1,0.115];
 
+// === 重构配卡（每张卡独立开关，勾选后设计师之影 +4800） ===
+var REBUILD_BONUS = 4800;
+var rebuildCards = {};
+function loadRebuild(){
+  try{rebuildCards=JSON.parse(localStorage.getItem('sn4_rebuild')||'{}')||{};}catch(e){rebuildCards={};}
+}
+function saveRebuild(){
+  try{localStorage.setItem('sn4_rebuild',JSON.stringify(rebuildCards));}catch(e){}
+}
+function isRebuild(cardId){return !!rebuildCards[cardId];}
+
 // === 初始化 ===
 function init(){
+  loadRebuild();
   var sa=document.getElementById('selAttr');
   ATTRS.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;o.className='tag-'+a;sa.appendChild(o);});
   buildGalleryGrid();
+  loadParams();
   onAttrChange();
+}
+
+// === 参数 localStorage 持久化（分属性存储，每个属性一套参数） ===
+var PARAM_IDS=['selRecovery','selMode','selImpType','selShadowLv','selPassLv','inpImpS1','inpImpS2','inpBurstRate','inpRcFlash','selYh1','selYh2','inpDpScore','inpMjscore','inpImpPower','inpMakeup','inpBond'];
+var PARAMS_STORE_KEY='sn4_params_by_attr';
+function saveParams(){
+  var attr=document.getElementById('selAttr').value;
+  if(!attr)return;
+  var v={};
+  PARAM_IDS.forEach(function(id){var el=document.getElementById(id);if(el)v[id]=el.value;});
+  try{
+    var all=JSON.parse(localStorage.getItem(PARAMS_STORE_KEY)||'{}');
+    all[attr]=v;
+    localStorage.setItem(PARAMS_STORE_KEY,JSON.stringify(all));
+  }catch(e){}
+}
+function loadParams(attr){
+  attr=attr||document.getElementById('selAttr').value;
+  if(!attr)return;
+  var v=null;
+  try{
+    var all=JSON.parse(localStorage.getItem(PARAMS_STORE_KEY)||'{}');
+    if(all[attr])v=all[attr];
+  }catch(e){}
+  // 兼容旧版全局存储：该属性尚无独立记录时回退到旧数据
+  if(!v){
+    try{v=JSON.parse(localStorage.getItem('sn4_params')||'{}');}catch(e){v={};}
+    if(!v)v={};
+  }
+  PARAM_IDS.forEach(function(id){if(v[id]!==undefined){var el=document.getElementById(id);if(el)el.value=v[id];}});
 }
 
 function buildGalleryGrid(){
@@ -222,12 +272,7 @@ function buildGalleryGrid(){
     var lbl=document.createElement('span');lbl.textContent=coll;lbl.style.cssText='flex:1;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
     var inp=document.createElement('input');inp.type='number';inp.min=0;inp.max=14;inp.value=saved[coll]||0;inp.id='gal_'+coll;
     inp.style.cssText='width:36px;padding:2px 3px;font-size:10px;border:1px solid var(--sel-border);border-radius:3px;text-align:center';
-    inp.addEventListener('change',function(){
-      var v={};try{v=JSON.parse(localStorage.getItem('sn4_gallery')||'{}');}catch(e){}
-      v[coll]=parseInt(inp.value)||0;
-      try{localStorage.setItem('sn4_gallery',JSON.stringify(v));}catch(e){}
-      onParamChange();
-    });
+    inp.addEventListener('change',function(){setGalleryLevel(coll,inp.value,inp);});
     div.appendChild(lbl);div.appendChild(inp);grid.appendChild(div);
   });
 }
@@ -237,7 +282,23 @@ function getGalleryLevel(collection){
   return inp?parseInt(inp.value)||0:0;
 }
 
+// 统一设置馆藏等级：写入存储，并同步馆藏面板与卡牌列表中的所有输入框
+function setGalleryLevel(coll,lv,skipEl){
+  lv=Math.max(0,Math.min(14,parseInt(lv)||0));
+  var v={};try{v=JSON.parse(localStorage.getItem('sn4_gallery')||'{}');}catch(e){}
+  v[coll]=lv;
+  try{localStorage.setItem('sn4_gallery',JSON.stringify(v));}catch(e){}
+  var src=document.getElementById('gal_'+coll);
+  if(src&&src!==skipEl)src.value=lv;
+  var inputs=document.querySelectorAll('.galInput');
+  for(var i=0;i<inputs.length;i++){
+    if(inputs[i]!==skipEl&&inputs[i].getAttribute('data-coll')===coll)inputs[i].value=lv;
+  }
+  onParamChange();
+}
+
 function onAttrChange(){
+  loadParams(); // 切换属性时载入该属性的参数
   var attr=document.getElementById('selAttr').value;
   var sc=document.getElementById('selCard');sc.innerHTML='';
   var cards=cardData.filter(function(c){return c.style===attr;});
@@ -246,6 +307,7 @@ function onAttrChange(){
     o.textContent=c.designer+' - '+c.name+' ('+c.rarity+')';
     sc.appendChild(o);
   });
+  buildBatchCardList();
   onCardChange();
 }
 
@@ -256,12 +318,27 @@ function onCardChange(){
   if(!card)return;
   // 自动设置印象参数
   document.getElementById('inpBurstRate').value=card.burstRate||0.25;
+  // 同步重构配卡勾选框
+  document.getElementById('chkRebuild').checked=isRebuild(id);
   // 实时更新数据：自动重算总搭配之力和Score
   calcTotalPower();
   calcCurrentCard();
 }
 
-function onParamChange(){calcTotalPower();calcCurrentCard();}
+// === 重构配卡开关 ===
+function onRebuildChange(){
+  var id=parseInt(document.getElementById('selCard').value);
+  if(!id)return;
+  rebuildCards[id]=document.getElementById('chkRebuild').checked;
+  saveRebuild();
+  // 同步批量列表中的勾选框
+  var cb=document.querySelector('.rebuildCb[value="'+id+'"]');
+  if(cb)cb.checked=rebuildCards[id];
+  calcTotalPower();
+  calcCurrentCard();
+}
+
+function onParamChange(){saveParams();calcTotalPower();calcCurrentCard();}
 
 // === 核心计算 ===
 function calcXinForCard(card, params){
@@ -278,7 +355,8 @@ function calcXinForCard(card, params){
   var cardDp=calcCarddp(card,recovery===1,galLevel);
   var attrIdx=ATTRS.indexOf(card.style);
   var cardPower=cardDp[attrIdx]||0;
-  var shadowPower=cardPower+impPower; // 设计师之影 = 卡牌力 + 印象搭配之力
+  var rebuildBonus=isRebuild(card.id)?REBUILD_BONUS:0; // 重构配卡：设计师之影 +4800
+  var shadowPower=cardPower+impPower+rebuildBonus; // 设计师之影 = 卡牌力 + 印象搭配之力 + 重构配卡
 
   // 总搭配之力 = 美甲 + 服装搭配 + 设计师之影(含印象) + 妆容研习 + 羁绊
   var totalDp=mjScore+dpScore+shadowPower+makeup+bond;
@@ -382,6 +460,7 @@ function calcXinForCard(card, params){
 
   return{
     card:card,cardPower:cardPower,totalDp:totalDp,shadowPower:shadowPower,makeup:makeup,bond:bond,
+    rebuildBonus:rebuildBonus,
     passVal:passVal,heartEffect:heartEffect,burstBonus:burstBonus,
     impS1:impS1,shadowCoeff:shadowCoeff,sfmVal:sfmVal,heartVal:heartVal,
     baseXin:baseXin,xin:xin,yzzh:yzzh,sysj:sysj,baofa:baofa,
@@ -423,13 +502,13 @@ function calcTotalPower(){
   var cardDp=calcCarddp(card,params.recovery===1,galLevel);
   var attrIdx=ATTRS.indexOf(card.style);
   var cardPower=cardDp[attrIdx]||0;
-  var nail=params.mjScore, outfit=params.dpScore, shadow=cardPower+params.impPower, makeup=params.makeup, bond=params.bond;
+  var nail=params.mjScore, outfit=params.dpScore, shadow=cardPower+params.impPower+(isRebuild(card.id)?REBUILD_BONUS:0), makeup=params.makeup, bond=params.bond;
   var total=nail+outfit+shadow+makeup+bond;
 
   var dpEl=document.getElementById('totalPowerDisplay');
   if(dpEl)dpEl.textContent=total.toLocaleString();
   var bdEl=document.getElementById('totalPowerBreakdown');
-  if(bdEl)bdEl.innerHTML='美甲 <b>'+nail.toLocaleString()+'</b> + 服装 <b>'+outfit.toLocaleString()+'</b> + 设计师之影(含印象) <b>'+shadow.toLocaleString()+'</b> + 妆容 <b>'+makeup.toLocaleString()+'</b> + 羁绊 <b>'+bond.toLocaleString()+'</b> = <b>'+total.toLocaleString()+'</b> | 馆藏:'+card.collection+' Lv.'+galLevel;
+  if(bdEl)bdEl.innerHTML='美甲 <b>'+nail.toLocaleString()+'</b> + 服装 <b>'+outfit.toLocaleString()+'</b> + 设计师之影(含印象'+(isRebuild(card.id)?'、重构+'+REBUILD_BONUS:'')+') <b>'+shadow.toLocaleString()+'</b> + 妆容 <b>'+makeup.toLocaleString()+'</b> + 羁绊 <b>'+bond.toLocaleString()+'</b> = <b>'+total.toLocaleString()+'</b> | 馆藏:'+card.collection+' Lv.'+galLevel;
 }
 
 // === 单卡计算显示 ===
@@ -446,7 +525,7 @@ function calcCurrentCard(){
   // 卡牌信息
   var info='<b>'+card.designer+' - '+card.name+'</b> <span class="tag tag-'+card.style+'">'+card.style+'</span> '+card.rarity+' · '+card.skill+' · '+card.collection+' Lv.'+r.galLevel;
   info+=' | 总搭配之力:<b>'+r.totalDp.toLocaleString()+'</b>';
-  info+=' | 美甲:'+r.mjScore+' 服装:'+r.dpScore+' 影召:'+r.shadowPower+' 妆容:'+r.makeup+' 羁绊:'+r.bond;
+  info+=' | 美甲:'+r.mjScore+' 服装:'+r.dpScore+' 影召:'+r.shadowPower+(r.rebuildBonus?'(含重构+'+r.rebuildBonus+')':'')+' 妆容:'+r.makeup+' 羁绊:'+r.bond;
   info+=' | yhjc:<b>'+(r.yhjc*100).toFixed(2)+'%</b> | 模式:<b>'+r.mode+'</b>';
   document.getElementById('cardInfo').innerHTML=info;
 
@@ -492,6 +571,81 @@ function calcCurrentCard(){
 
 // === 批量生成 ===
 var batchData=null;
+// === 批量生成卡牌选择 ===
+function buildBatchCardList(){
+  var attr=document.getElementById('selAttr').value;
+  var container=document.getElementById('batchCardList');
+  container.innerHTML='';
+  var cards=cardData.filter(function(c){return c.style===attr;});
+  cards.forEach(function(card){
+    var tr=document.createElement('tr');
+
+    // 第一栏：卡牌名称 + 对应勾选框（点击名称即可勾选）
+    var tdName=document.createElement('td');
+    tdName.style.cssText='text-align:left;font-size:11px;white-space:nowrap';
+    var lbl=document.createElement('label');
+    lbl.style.cssText='display:flex;align-items:center;gap:5px;cursor:pointer';
+    var cb=document.createElement('input');
+    cb.type='checkbox';cb.checked=true;cb.value=card.id;cb.className='batchCardCb';
+    cb.style.accentColor='var(--accent)';
+    var nameSpan=document.createElement('span');
+    nameSpan.textContent=card.designer+' · '+card.name;
+    lbl.appendChild(cb);
+    lbl.appendChild(nameSpan);
+    tdName.appendChild(lbl);
+
+    // 第二栏：馆藏等级（行内可编辑，同一馆藏联动）
+    var tdGal=document.createElement('td');
+    var galWrap=document.createElement('div');
+    galWrap.style.cssText='display:flex;align-items:center;justify-content:center;gap:4px';
+    var galInput=document.createElement('input');
+    galInput.type='number';galInput.min=0;galInput.max=14;
+    galInput.className='galInput';
+    galInput.setAttribute('data-coll',card.collection);
+    galInput.value=getGalleryLevel(card.collection);
+    galInput.style.cssText='width:44px;padding:2px 4px;font-size:11px;text-align:center;border:1px solid var(--sel-border);border-radius:4px';
+    galInput.title=card.collection;
+    galInput.addEventListener('change',function(){setGalleryLevel(card.collection,galInput.value,galInput);});
+    var galNote=document.createElement('span');
+    galNote.textContent=card.collection;
+    galNote.style.cssText='font-size:9px;color:var(--dim)';
+    galWrap.appendChild(galInput);
+    galWrap.appendChild(galNote);
+    tdGal.appendChild(galWrap);
+
+    // 第三栏：重构配卡（每张卡独立勾选，勾选后设计师之影 +4800）
+    var tdRb=document.createElement('td');
+    var rb=document.createElement('input');
+    rb.type='checkbox';rb.value=card.id;rb.className='rebuildCb';
+    rb.checked=isRebuild(card.id);
+    rb.style.accentColor='#BF360C';
+    rb.addEventListener('change',function(){
+      rebuildCards[card.id]=rb.checked;
+      saveRebuild();
+      // 同步单卡页勾选框
+      var cur=parseInt(document.getElementById('selCard').value);
+      if(cur===card.id)document.getElementById('chkRebuild').checked=rb.checked;
+      calcTotalPower();
+      calcCurrentCard();
+    });
+    tdRb.appendChild(rb);
+
+    tr.appendChild(tdName);tr.appendChild(tdGal);tr.appendChild(tdRb);
+    container.appendChild(tr);
+  });
+}
+function toggleBatchCards(){
+  var cbs=document.querySelectorAll('.batchCardCb');
+  var allChecked=true;
+  cbs.forEach(function(cb){if(!cb.checked)allChecked=false;});
+  cbs.forEach(function(cb){cb.checked=!allChecked;});
+}
+function getSelectedCardIds(){
+  var ids=[];
+  document.querySelectorAll('.batchCardCb').forEach(function(cb){if(cb.checked)ids.push(parseInt(cb.value));});
+  return ids;
+}
+
 function runBatch(){
   var attr=document.getElementById('selAttr').value;
   var params=getParams();
@@ -500,7 +654,9 @@ function runBatch(){
   var slStart=shadowOpt==='all'?0:4, slEnd=shadowOpt==='all'?5:5;
   var plStart=passOpt==='all'?0:4, plEnd=passOpt==='all'?5:5;
 
-  var cards=cardData.filter(function(c){return c.style===attr;});
+  var selectedIds=getSelectedCardIds();
+  if(!selectedIds.length){document.getElementById('batchResult').innerHTML='<div class="card"><div class="note">请至少选择一张卡牌</div></div>';return;}
+  var cards=cardData.filter(function(c){return c.style===attr&&selectedIds.indexOf(c.id)>=0;});
   if(!cards.length){document.getElementById('batchResult').innerHTML='<div class="card"><div class="note">该属性无卡牌</div></div>';return;}
 
   var rows=[];
@@ -518,7 +674,7 @@ function runBatch(){
 
   var html='<div class="card"><div class="card-title">'+attr+' 批量计算结果 <span class="note">('+rows.length+'条)</span></div>';
   html+='<div class="batch-table"><table>';
-  html+='<tr><th class="h-info">卡牌</th><th class="h-info">稀有度</th><th class="h-info">技能</th><th class="h-info">馆藏</th><th class="h-info">馆藏等级</th>';
+  html+='<tr><th class="h-info">卡牌</th><th class="h-info">稀有度</th><th class="h-info">技能</th><th class="h-info">馆藏</th><th class="h-info">馆藏等级</th><th class="h-param">重构</th>';
   html+='<th class="h-score">影召</th><th class="h-score">被动</th>';
   html+='<th class="h-score">卡牌力</th><th class="h-score">总DP</th>';
   html+='<th class="h-misc">yzzh</th><th class="h-misc">sysj</th><th class="h-misc">baofa</th>';
@@ -537,6 +693,7 @@ function runBatch(){
     html+='<td style="font-size:9px">'+card.skill+'</td>';
     html+='<td style="font-size:9px">'+card.collection+'</td>';
     html+='<td class="num">'+galLv+'</td>';
+    html+='<td style="font-size:11px">'+(isRebuild(card.id)?'✓ +4800':'—')+'</td>';
     html+='<td class="num">影'+(row.sl+1)+'</td><td class="num">Lv.'+(row.pl+1)+'</td>';
     html+='<td class="num">'+r.cardPower.toLocaleString()+'</td>';
     html+='<td class="num">'+r.totalDp.toLocaleString()+'</td>';
@@ -573,39 +730,99 @@ function generateCharts(rows){
   });
   var labels=[],s14Data=[],ssData=[],colors=[];
   var ATTR_COLORS={'典雅':'#C99759','清新':'#78C0A8','甜美':'#E8879C','性感':'#9A80C0','帅气':'#84A8E5'};
-  Object.keys(cardBest).forEach(function(k){
+  // Sort by S14 descending for S14 chart
+  var sortedByS14=Object.keys(cardBest).sort(function(a,b){return cardBest[b].s14-cardBest[a].s14;});
+  var s14Labels=[],s14Colors=[];
+  sortedByS14.forEach(function(k){
     var b=cardBest[k];
-    labels.push(b.card.name);
+    s14Labels.push(b.card.name);
     s14Data.push(b.s14);
+    s14Colors.push(ATTR_COLORS[b.card.style]||'#999');
+  });
+  // Sort by Scoresum descending for SS chart
+  var sortedBySS=Object.keys(cardBest).sort(function(a,b){return cardBest[b].ss-cardBest[a].ss;});
+  var ssLabels=[],ssColors=[];
+  sortedBySS.forEach(function(k){
+    var b=cardBest[k];
+    ssLabels.push(b.card.name);
     ssData.push(b.ss);
-    colors.push(ATTR_COLORS[b.card.style]||'#999');
+    ssColors.push(ATTR_COLORS[b.card.style]||'#999');
   });
   // S14 图
   if(chartS14Inst)chartS14Inst.destroy();
   chartS14Inst=new Chart(document.getElementById('chartS14'),{
     type:'bar',
-    data:{labels:labels,datasets:[{label:'S14 竞技场战力',data:s14Data,backgroundColor:colors,borderColor:colors.map(function(c){return c;}),borderWidth:1}]},
+    data:{labels:s14Labels,datasets:[{label:'S14 竞技场战力',data:s14Data,backgroundColor:s14Colors,borderColor:s14Colors.map(function(c){return c;}),borderWidth:1}]},
     options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.parsed.y.toLocaleString();}}}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString();}}},x:{ticks:{maxRotation:45,minRotation:45,font:{size:9}}}}}
   });
   // Scoresum 图
   if(chartSSInst)chartSSInst.destroy();
   chartSSInst=new Chart(document.getElementById('chartSS'),{
     type:'bar',
-    data:{labels:labels,datasets:[{label:'Scoresum',data:ssData,backgroundColor:colors,borderColor:colors,borderWidth:1}]},
+    data:{labels:ssLabels,datasets:[{label:'Scoresum',data:ssData,backgroundColor:ssColors,borderColor:ssColors,borderWidth:1}]},
     options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.parsed.y.toLocaleString();}}}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString();}}},x:{ticks:{maxRotation:45,minRotation:45,font:{size:9}}}}}
   });
 }
 
-// === 下载 Excel ===
-function downloadExcel(){
-  if(!batchData||!window.XLSX){alert('请先生成表格或等待加载');return;}
+// === 下载 Excel（导出格式：行=卡牌，两级表头 影召×被动，单元格=战力） ===
+/*__EXPORT_BUILD_START__*/
+function buildExportWorkbook(batchData,galleryLevelOf,rebuildSet){
+  rebuildSet=rebuildSet||{};
   var rows=batchData.rows, attr=batchData.attr;
+  var CN=['一','二','三','四','五'];
+  // 聚合：每张卡 × 影召等级 × 被动等级
+  var cardOrder=[],byKey={},slSet={},plSet={};
+  rows.forEach(function(row){
+    if(!byKey[row.card.id]){byKey[row.card.id]={card:row.card,vals:{}};cardOrder.push(row.card.id);}
+    byKey[row.card.id].vals[row.sl+'_'+row.pl]=row;
+    slSet[row.sl]=1;plSet[row.pl]=1;
+  });
+  var sls=Object.keys(slSet).map(Number).sort(function(a,b){return a-b;});
+  var pls=Object.keys(plSet).map(Number).sort(function(a,b){return a-b;});
+
+  // 生成一个透视表工作表：行=卡牌，列=影召分组(合并)×被动子列
+  function pivotSheet(getVal){
+    var head1=['角色'],head2=[''];
+    sls.forEach(function(sl){
+      head1.push('影'+(CN[sl]||(sl+1)));
+      for(var j=1;j<pls.length;j++)head1.push('');
+      pls.forEach(function(pl){head2.push('被动'+(CN[pl]||(pl+1)));});
+    });
+    var aoa=[head1,head2];
+    cardOrder.forEach(function(cid){
+      var rec=byKey[cid],line=[rec.card.name];
+      sls.forEach(function(sl){pls.forEach(function(pl){
+        var row=rec.vals[sl+'_'+pl];
+        line.push(row?getVal(row):'');
+      });});
+      aoa.push(line);
+    });
+    var ws=XLSX.utils.aoa_to_sheet(aoa);
+    // 合并单元格：A1:A2（角色）+ 每个影召分组的表头横合并
+    var merges=[{s:{r:0,c:0},e:{r:1,c:0}}];
+    sls.forEach(function(sl,k){
+      if(pls.length>1)merges.push({s:{r:0,c:1+k*pls.length},e:{r:0,c:k*pls.length+pls.length}});
+    });
+    ws['!merges']=merges;
+    var cols=[{wch:18}];
+    sls.forEach(function(){pls.forEach(function(){cols.push({wch:11});});});
+    ws['!cols']=cols;
+    return ws;
+  }
+
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,pivotSheet(function(row){return row.r.Score[14];}),attr+'·竞技场战力');
+  XLSX.utils.book_append_sheet(wb,pivotSheet(function(row){return row.r.Scoresum;}),attr+'·Scoresum');
+  XLSX.utils.book_append_sheet(wb,pivotSheet(function(row){return row.r.totalDp;}),attr+'·总DP');
+
+  // 明细表（完整逐条数据）
   var excelRows=[];
   rows.forEach(function(row){
     var card=row.card,r=row.r;
     var rec={
       '卡牌名称':card.name,'设计师':card.designer,'稀有度':card.rarity,'技能':card.skill,
-      '馆藏':card.collection,'馆藏等级':getGalleryLevel(card.collection),
+      '馆藏':card.collection,'馆藏等级':galleryLevelOf(card.collection),
+      '重构配卡':rebuildSet[card.id]?'✓ (+4800)':'',
       '影召等级':'影'+(row.sl+1),'被动等级':'Lv.'+(row.pl+1),
       '卡牌力':r.cardPower,'总DP':r.totalDp,
       'yzzh':r.yzzh,'sysj':r.sysj,'baofa':r.baofa
@@ -614,10 +831,14 @@ function downloadExcel(){
     rec['Scoresum']=r.Scoresum;
     excelRows.push(rec);
   });
-  var ws=XLSX.utils.json_to_sheet(excelRows);
-  var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,attr+'批量计算');
-  XLSX.writeFile(wb,attr+'_Score批量计算.xlsx');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(excelRows),'明细');
+  return wb;
+}
+/*__EXPORT_BUILD_END__*/
+function downloadExcel(){
+  if(!batchData||!window.XLSX){alert('请先生成表格或等待加载');return;}
+  var wb=buildExportWorkbook(batchData,getGalleryLevel,rebuildCards);
+  XLSX.writeFile(wb,batchData.attr+'_Score批量计算.xlsx');
 }
 
 // === Tab切换 ===
