@@ -165,6 +165,10 @@ tr:hover{background:rgba(43,108,176,.04)}
       <div class="card-title">中间变量</div>
       <div id="midVars"></div>
     </div>
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span id="singleShadowTitle">卡牌影召竞技场战力</span><button class="btn btn-outline btn-sm" onclick="downloadChartPng('chartSingleShadow','影召竞技场战力')">下载PNG</button></div>
+      <canvas id="chartSingleShadow"></canvas>
+    </div>
   </div>
 
   <!-- 批量生成 -->
@@ -180,12 +184,8 @@ tr:hover{background:rgba(43,108,176,.04)}
     </div>
     <div id="batchCharts" style="display:none">
       <div class="card">
-        <div class="card-title">Score[14] 竞技场战力分布</div>
-        <canvas id="chartS14" height="300"></canvas>
-      </div>
-      <div class="card">
-        <div class="card-title">Scoresum 汇总分布</div>
-        <canvas id="chartSS" height="300"></canvas>
+        <div class="card-title">各影召等级统计图 <span class="note">（影一~影五 · S14 竞技场战力 · 被动111~555）</span></div>
+        <div id="shadowCharts"></div>
       </div>
     </div>
     <div id="batchResult"></div>
@@ -193,7 +193,9 @@ tr:hover{background:rgba(43,108,176,.04)}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="data.js"></script>
 <script src="data1.js"></script>
 <script src="data2.js"></script>
@@ -512,6 +514,63 @@ function calcTotalPower(){
 }
 
 // === 单卡计算显示 ===
+// === 单卡：影一~影五 竞技场战力图（样式同各影召统计图） ===
+function buildSingleShadowData(card,params){
+  var PLABELS=['被动111','被动222','被动333','被动444','被动555'];
+  var CN=['一','二','三','四','五'];
+  var isEpic=card.rarity==='非凡';
+  var vals=[];
+  for(var sl=0;sl<5;sl++){
+    var row=[];
+    for(var pl=0;pl<5;pl++){
+      var v=null;
+      try{
+        var p=JSON.parse(JSON.stringify(params));
+        p.shadowLv=sl;p.passLv=pl;
+        var r=calcXinForCard(card,p);
+        if(r)v=r.Score[14];
+      }catch(e){}
+      row.push(v);
+    }
+    vals.push(row);
+  }
+  if(isEpic&&vals[4][4]!==null&&vals[4][4]!==undefined){ // 非凡卡统一影五·被动555
+    for(var i=0;i<5;i++)for(var j=0;j<5;j++)vals[i][j]=vals[4][4];
+  }
+  var datasets=[];
+  for(var sl=0;sl<5;sl++){
+    var color='hsl('+(sl*47%360)+',55%,52%)';
+    datasets.push({label:'影'+CN[sl],data:vals[sl],backgroundColor:color,borderColor:color,borderWidth:1});
+  }
+  var all=[];vals.forEach(function(row){row.forEach(function(v){if(v!==null&&v!==undefined)all.push(v);});});
+  return {
+    labels:PLABELS.slice(),datasets:datasets,isEpic:isEpic,
+    minV:all.length?Math.min.apply(null,all):0,
+    maxV:all.length?Math.max.apply(null,all):0
+  };
+}
+function renderSingleShadowChart(card,params){
+  var cv=document.getElementById('chartSingleShadow');
+  if(!cv||!window.Chart)return;
+  var d=buildSingleShadowData(card,params);
+  var attrName=(card&&card.style)||'';
+  var ts=ATTR_UI[attrName]||{c:'#DE4A97',bg:'#fff0f5'};
+  var _FF='"Noto Serif SC","Noto Serif CJK SC",serif';
+  if(chartSingleShadowInst){try{chartSingleShadowInst.destroy();}catch(e){}}
+  cv.height=Math.max(240,d.labels.length*70);
+  var cfg={
+    type:'bar',
+    data:{labels:d.labels,datasets:d.datasets},
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:true,position:'top',labels:{font:{size:10,family:_FF}}},datalabels:{display:true,anchor:'end',align:'right',clamp:true,font:{size:8,family:_FF},color:'#444',formatter:function(v,ctx){var n=(ctx&&ctx.dataset&&ctx.dataset.label)?ctx.dataset.label:((ctx&&ctx.chart&&ctx.chart.data&&ctx.chart.data.labels&&ctx.chart.data.labels[ctx.dataIndex]!==undefined)?ctx.chart.data.labels[ctx.dataIndex]:'');return n+' '+(v===null||v===undefined?'':Number(v).toLocaleString());}},tooltip:{enabled:false}},scales:{x:{beginAtZero:false,suggestedMin:Math.max(0,d.minV-(d.maxV-d.minV)*0.25),suggestedMax:d.maxV*1.12,ticks:{color:ts.c,font:{family:_FF},callback:function(v){return v.toLocaleString();}},border:{color:ts.c}},y:{ticks:{color:ts.c,font:{size:9,family:_FF}},border:{color:ts.c}}}}
+  };
+  var snap={type:cfg.type,data:plainCopy(cfg.data),options:plainCopy(cfg.options)};
+  snap.exportTitle='复苏'+attrName+'卡牌'+(d.isEpic?'满破':'')+card.name+'竞技场战力';
+  snap.exportTitleColor=ts.c;
+  chartExportCfg['chartSingleShadow']=snap;
+  chartSingleShadowInst=new Chart(cv,cfg);
+  var tEl=document.getElementById('singleShadowTitle');
+  if(tEl){tEl.textContent=snap.exportTitle;tEl.style.color=ts.c;}
+}
 function calcCurrentCard(){
   var id=parseInt(document.getElementById('selCard').value);
   if(!id)return;
@@ -567,6 +626,9 @@ function calcCurrentCard(){
   mv+='<tr><td>heartEffect</td><td>'+JSON.stringify(r.heartEffect.map(function(v){return v.toFixed(2);}))+'</td><td></td></tr>';
   mv+='</table>';
   document.getElementById('midVars').innerHTML=mv;
+
+  // 影召等级竞技场战力图
+  renderSingleShadowChart(card,params);
 }
 
 // === 批量生成 ===
@@ -717,50 +779,122 @@ function runBatch(){
 }
 
 // === 生成条形图 ===
-var chartS14Inst=null, chartSSInst=null;
+var chartShadowInsts=[], chartExportCfg={}, chartSingleShadowInst=null;
+// 五属性样式（与 index 首页一致）
+var ATTR_UI={'典雅':{c:'#C99759',bg:'#f5ead8'},'清新':{c:'#78C0A8',bg:'#ddf4ec'},'甜美':{c:'#E8879C',bg:'#fce8ee'},'性感':{c:'#9A80C0',bg:'#ece4f4'},'帅气':{c:'#84A8E5',bg:'#e0ecf8'}};
+// 深拷贝纯配置（函数按引用保留）——导出用，避开 Chart.js 选项解析器代理
+function plainCopy(x){
+  if(Array.isArray(x)){var a=[];for(var i=0;i<x.length;i++)a.push(plainCopy(x[i]));return a;}
+  if(x&&typeof x==='object'){
+    var o={};
+    for(var k in x){if(!Object.prototype.hasOwnProperty.call(x,k))continue;o[k]=(typeof x[k]==='function')?x[k]:plainCopy(x[k]);}
+    return o;
+  }
+  return x;
+}
+// 数据标签插件注册（CDN UMD 不自动注册，需手动挂载，否则标签不渲染）
+if(window.Chart&&window.ChartDataLabels){Chart.register(window.ChartDataLabels);}
+// 坐标轴末端箭头（横轴右端→，纵轴上端↑，颜色随五属性）
+if(window.Chart){Chart.register({
+  id:'axArrows',
+  afterDraw:function(chart){
+    var ca=chart.chartArea;
+    if(!ca)return;
+    var ctx=chart.ctx;
+    var xs=chart.scales.x;
+    var col=(xs&&xs.options&&xs.options.border&&xs.options.border.color)||'#999';
+    var fs=(xs&&xs.options&&xs.options.ticks&&xs.options.ticks.font&&xs.options.ticks.font.size)||12;
+    var S=Math.max(8,Math.round(fs*0.6));
+    ctx.save();
+    ctx.fillStyle=col;
+    ctx.beginPath();
+    ctx.moveTo(ca.right+S,ca.bottom);
+    ctx.lineTo(ca.right-S,ca.bottom-S*0.62);
+    ctx.lineTo(ca.right-S,ca.bottom+S*0.62);
+    ctx.closePath();ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(ca.left,ca.top-S);
+    ctx.lineTo(ca.left-S*0.62,ca.top+S);
+    ctx.lineTo(ca.left+S*0.62,ca.top+S);
+    ctx.closePath();ctx.fill();
+    ctx.restore();
+  }
+});}
+// 各影召等级统计图数据：{影召等级:{labels,datasets(被动111~555)}}
+function buildShadowChartData(rows){
+  var PLABELS=['被动111','被动222','被动333','被动444','被动555'];
+  var cardOrder=[],cardSeen={},sls={},maxVals={};
+  rows.forEach(function(row){
+    if(!cardSeen[row.card.id]){cardSeen[row.card.id]=1;cardOrder.push(row.card);}
+    sls[row.sl]=1;
+    if(row.sl===4&&row.pl===4)maxVals[row.card.id]=row.r.Score[14]; // 影五·被动555
+  });
+  var out={};
+  Object.keys(sls).map(Number).sort(function(a,b){return a-b;}).forEach(function(sl){
+    var plSet={},vals={};
+    rows.forEach(function(row){
+      if(row.sl!==sl)return;
+      plSet[row.pl]=1;
+      vals[row.card.id+'_'+row.pl]=row.r.Score[14];
+    });
+    var pls=Object.keys(plSet).map(Number).sort(function(a,b){return a-b;});
+    // 纵轴=被动，变量（系列）=卡牌
+    var datasets=cardOrder.map(function(c,i){
+      var color='hsl('+(i*47%360)+',55%,52%)';
+      var isEpic=c.rarity==='非凡';
+      return {
+        label:(isEpic?'满破':'')+c.name,isEpic:isEpic,
+        data:pls.map(function(pl){
+          if(isEpic&&maxVals[c.id]!==undefined)return maxVals[c.id]; // 非凡卡统一影五·被动555
+          var v=vals[c.id+'_'+pl];return v===undefined?null:v;
+        }),
+        backgroundColor:color,borderColor:color,borderWidth:1
+      };
+    });
+    out[sl]={labels:pls.map(function(pl){return PLABELS[pl]||('被动'+(pl+1));}),datasets:datasets};
+  });
+  return out;
+}
 function generateCharts(rows){
   document.getElementById('batchCharts').style.display='block';
-  // 取每张卡的最高S14/最高Scoresum
-  var cardBest={};
-  rows.forEach(function(row){
-    var key=row.card.name;
-    if(!cardBest[key]||row.r.Score[14]>cardBest[key].s14){
-      cardBest[key]={s14:row.r.Score[14],ss:row.r.Scoresum,card:row.card};
-    }
-  });
-  var labels=[],s14Data=[],ssData=[],colors=[];
-  var ATTR_COLORS={'典雅':'#C99759','清新':'#78C0A8','甜美':'#E8879C','性感':'#9A80C0','帅气':'#84A8E5'};
-  // Sort by S14 descending for S14 chart
-  var sortedByS14=Object.keys(cardBest).sort(function(a,b){return cardBest[b].s14-cardBest[a].s14;});
-  var s14Labels=[],s14Colors=[];
-  sortedByS14.forEach(function(k){
-    var b=cardBest[k];
-    s14Labels.push(b.card.name);
-    s14Data.push(b.s14);
-    s14Colors.push(ATTR_COLORS[b.card.style]||'#999');
-  });
-  // Sort by Scoresum descending for SS chart
-  var sortedBySS=Object.keys(cardBest).sort(function(a,b){return cardBest[b].ss-cardBest[a].ss;});
-  var ssLabels=[],ssColors=[];
-  sortedBySS.forEach(function(k){
-    var b=cardBest[k];
-    ssLabels.push(b.card.name);
-    ssData.push(b.ss);
-    ssColors.push(ATTR_COLORS[b.card.style]||'#999');
-  });
-  // S14 图
-  if(chartS14Inst)chartS14Inst.destroy();
-  chartS14Inst=new Chart(document.getElementById('chartS14'),{
-    type:'bar',
-    data:{labels:s14Labels,datasets:[{label:'S14 竞技场战力',data:s14Data,backgroundColor:s14Colors,borderColor:s14Colors.map(function(c){return c;}),borderWidth:1}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.parsed.y.toLocaleString();}}}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString();}}},x:{ticks:{maxRotation:45,minRotation:45,font:{size:9}}}}}
-  });
-  // Scoresum 图
-  if(chartSSInst)chartSSInst.destroy();
-  chartSSInst=new Chart(document.getElementById('chartSS'),{
-    type:'bar',
-    data:{labels:ssLabels,datasets:[{label:'Scoresum',data:ssData,backgroundColor:ssColors,borderColor:ssColors,borderWidth:1}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.parsed.y.toLocaleString();}}}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return v.toLocaleString();}}},x:{ticks:{maxRotation:45,minRotation:45,font:{size:9}}}}}
+  // 各影召等级统计图（影一~影五，按被动111~555）
+  var scBox=document.getElementById('shadowCharts');
+  scBox.innerHTML='';
+  chartShadowInsts.forEach(function(c){if(c)c.destroy();});
+  chartShadowInsts=[];
+  var CN_S=['一','二','三','四','五'];
+  var scd=buildShadowChartData(rows);
+  Object.keys(scd).map(Number).sort(function(a,b){return a-b;}).forEach(function(sl){
+    var d=scd[sl];
+    var wrap=document.createElement('div');
+    wrap.style.cssText='margin-bottom:14px';
+    var title=document.createElement('div');
+    title.style.cssText='display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px';
+    var tSpan=document.createElement('span');
+    var _attr=(batchData&&batchData.attr)||'';
+    var _ts=ATTR_UI[_attr]||{c:'#DE4A97',bg:'#fff0f5'};
+    var _FF='"Noto Serif SC","Noto Serif CJK SC",serif';
+    tSpan.textContent='复苏'+_attr+'卡牌影'+(CN_S[sl]||(sl+1))+'竞技场战力';
+    tSpan.style.cssText='color:'+_ts.c;
+    var dBtn=document.createElement('button');
+    dBtn.className='btn btn-outline btn-sm';
+    dBtn.textContent='下载PNG';
+    dBtn.onclick=(function(cid,fname){return function(){downloadChartPng(cid,fname);};})('chartShadow'+sl,((batchData&&batchData.attr)||'图表')+'_影'+(CN_S[sl]||(sl+1))+'_竞技场战力');
+    title.appendChild(tSpan);title.appendChild(dBtn);
+    var maxV=0,minV=Infinity;
+    d.datasets.forEach(function(ds){ds.data.forEach(function(v){if(v!==null&&v>maxV)maxV=v;if(v!==null&&v<minV)minV=v;});});
+    if(minV===Infinity)minV=0;
+    var cv=document.createElement('canvas');
+    cv.id='chartShadow'+sl;
+    cv.height=Math.max(240,d.labels.length*70);
+    wrap.appendChild(title);wrap.appendChild(cv);scBox.appendChild(wrap);
+    var cfgSc={
+      type:'bar',
+      data:{labels:d.labels,datasets:d.datasets},
+      options:{indexAxis:'y',responsive:true,plugins:{legend:{display:true,position:'top',labels:{font:{size:10,family:_FF}}},datalabels:{display:true,anchor:'end',align:'right',clamp:true,font:{size:8,family:_FF},color:'#444',formatter:function(v,ctx){var n=(ctx&&ctx.dataset&&ctx.dataset.label)?ctx.dataset.label:((ctx&&ctx.chart&&ctx.chart.data&&ctx.chart.data.labels&&ctx.chart.data.labels[ctx.dataIndex]!==undefined)?ctx.chart.data.labels[ctx.dataIndex]:'');return n+' '+(v===null||v===undefined?'':Number(v).toLocaleString());}},tooltip:{enabled:false}},scales:{x:{beginAtZero:false,suggestedMin:Math.max(0,minV-(maxV-minV)*0.25),suggestedMax:maxV*1.12,ticks:{color:_ts.c,font:{family:_FF},callback:function(v){return v.toLocaleString();}},border:{color:_ts.c}},y:{ticks:{color:_ts.c,font:{size:9,family:_FF}},border:{color:_ts.c}}}}
+    };
+    chartExportCfg['chartShadow'+sl]={type:cfgSc.type,data:plainCopy(cfgSc.data),options:plainCopy(cfgSc.options),exportTitle:'复苏'+_attr+'卡牌影'+(CN_S[sl]||(sl+1))+'竞技场战力',exportTitleColor:_ts.c};
+    chartShadowInsts.push(new Chart(cv,cfgSc));
   });
 }
 
@@ -834,11 +968,202 @@ function buildExportWorkbook(batchData,galleryLevelOf,rebuildSet){
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(excelRows),'明细');
   return wb;
 }
+// === Excel 原生统计图注入（SheetJS 不支持图表，用 JSZip 注入 chart XML） ===
+function xlsColLetter(n){var s='';while(n>0){var m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26);}return s;}
+function buildChartXml(title,sheetName,colStart,perGroupCols,cardNames){
+  var catCol1=xlsColLetter(colStart),catCol2=xlsColLetter(colStart+perGroupCols-1);
+  var catRef="'"+sheetName+"'!$"+catCol1+"$2:$"+catCol2+"$2";
+  var ser='';
+  for(var i=0;i<cardNames.length;i++){
+    var row=3+i;
+    ser+='<ser><idx val="'+i+'"/><order val="'+i+'"/>'+
+      '<tx><strRef><f>' + "'" + sheetName + "'!$A$" + row + '</f><strCache><ptCount val="1"/><pt idx="0"><v>'+cardNames[i]+'</v></pt></strCache></strRef></tx>'+
+      '<spPr><a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:prstDash val="solid"/></a:ln></spPr>'+
+      '<cat><numRef><f>'+catRef+'</f></numRef></cat>'+
+      '<val><numRef><f>' + "'" + sheetName + "'!$" + catCol1 + '$' + row + ':$' + catCol2 + '$' + row + '</f></numRef></val></ser>';
+  }
+  return '<chartSpace xmlns="http://schemas.openxmlformats.org/drawingml/2006/chart"><chart><title><tx><rich><a:bodyPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"/><a:p xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:pPr><a:defRPr/></a:pPr><a:r><a:t>'+title+'</a:t></a:r></a:p></rich></tx></title><plotArea><barChart><barDir val="bar"/><grouping val="clustered"/>'+ser+'<dLbls><showSerName val="1"/><showVal val="1"/></dLbls><gapWidth val="150"/><axId val="10"/><axId val="100"/></barChart><catAx><axId val="10"/><scaling><orientation val="minMax"/></scaling><axPos val="l"/><majorTickMark val="none"/><minorTickMark val="none"/><crossAx val="100"/><lblOffset val="100"/></catAx><valAx><axId val="100"/><scaling><orientation val="minMax"/></scaling><axPos val="l"/><majorGridlines/><majorTickMark val="none"/><minorTickMark val="none"/><crossAx val="10"/></valAx></plotArea><legend><legendPos val="b"/></legend><plotVisOnly val="1"/><dispBlanksAs val="gap"/></chart></chartSpace>';
+}
+function buildDrawingXml(n){
+  var s='<wsDr xmlns="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing">';
+  for(var i=0;i<n;i++){
+    s+='<oneCellAnchor><from><col>0</col><colOff>0</colOff><row>'+(i*14+1)+'</row><rowOff>0</rowOff></from><ext cx="5400000" cy="2700000"/><graphicFrame><nvGraphicFramePr><cNvPr id="'+(i+1)+'" name="Chart '+(i+1)+'"/><cNvGraphicFramePr/></nvGraphicFramePr><xfrm/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId'+(i+1)+'"/></a:graphicData></a:graphic></graphicFrame><clientData/></oneCellAnchor>';
+  }
+  return s+'</wsDr>';
+}
+function buildDrawingRels(n){
+  var s='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
+  for(var i=0;i<n;i++)s+='<Relationship Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="/xl/charts/chart'+(i+1)+'.xml" Id="rId'+(i+1)+'"/>';
+  return s+'</Relationships>';
+}
+function injectExcelCharts(buf,spec){
+  if(typeof JSZip==='undefined')return Promise.resolve(buf);
+  return JSZip.loadAsync(buf).then(function(zip){
+    var n=spec.chartTitles.length;
+    if(!n)return zip.generateAsync({type:'blob'});
+    return zip.file('xl/workbook.xml').async('string').then(function(wbXml){
+      return zip.file('xl/_rels/workbook.xml.rels').async('string').then(function(relsXml){
+        // 定位“统计图”工作表对应的 sheetN.xml
+        var m=wbXml.match(/<sheet[^>]*name="统计图"[^>]*r:id="(rId\d+)"/);
+        if(!m)return zip.generateAsync({type:'blob'});
+        var rid=m[1];
+        var rm=relsXml.match(new RegExp('Id="'+rid+'"[^>]*Target="([^"]+)"'))||relsXml.match(new RegExp('Target="([^"]+)"[^>]*Id="'+rid+'"'));
+        if(!rm)return zip.generateAsync({type:'blob'});
+        var target=rm[1].replace(/^\//,'');
+        if(target.indexOf('xl/')!==0)target='xl/'+target;
+        var base=target.split('/').pop();
+        return zip.file(target).async('string').then(function(sheetXml){
+          // worksheet 末尾挂 drawing
+          sheetXml=sheetXml.replace('</worksheet>','<drawing xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/></worksheet>');
+          zip.file(target,sheetXml);
+          // sheet rels → drawing1
+          zip.file('xl/worksheets/_rels/'+base+'.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="/xl/drawings/drawing1.xml" Id="rId1"/></Relationships>');
+          // drawing + rels + charts
+          zip.file('xl/drawings/drawing1.xml',buildDrawingXml(n));
+          zip.file('xl/drawings/_rels/drawing1.xml.rels',buildDrawingRels(n));
+          for(var i=0;i<n;i++){
+            var colStart=2+i*spec.perGroupCols;
+            zip.file('xl/charts/chart'+(i+1)+'.xml',buildChartXml(spec.chartTitles[i],spec.sheetName,colStart,spec.perGroupCols,spec.cardNames));
+          }
+          // Content_Types 注册 drawing/chart
+          return zip.file('[Content_Types].xml').async('string').then(function(ct){
+            var add='';
+            for(var i=0;i<n;i++)add+='<Override PartName="/xl/charts/chart'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+            add+='<Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>';
+            ct=ct.replace('</Types>',add+'</Types>');
+            zip.file('[Content_Types].xml',ct);
+            return zip.generateAsync({type:'blob'});
+          });
+        });
+      });
+    });
+  });
+}
 /*__EXPORT_BUILD_END__*/
+function saveBlob(blob,filename){
+  var a=document.createElement('a');
+  a.download=filename;
+  a.href=URL.createObjectURL(blob);
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);if(a.parentNode)a.parentNode.removeChild(a);},2000);
+}
+// === 图表导出 PNG（2930px 宽 · 600dpi · 白底） ===
+function pngCrc32(buf){
+  var table=[];
+  for(var n=0;n<256;n++){var c=n;for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);table[n]=c;}
+  var crc=0xFFFFFFFF;
+  for(var i=0;i<buf.length;i++)crc=table[(crc^buf[i])&0xFF]^(crc>>>8);
+  return (crc^0xFFFFFFFF)>>>0;
+}
+// 给 PNG 写入 pHYs DPI 元数据（纯字节操作，可单测）
+function pngWithDpi(u8,dpi){
+  var ppm=Math.round(dpi/0.0254);
+  var phys=new Uint8Array(21);
+  var dv=new DataView(phys.buffer);
+  dv.setUint32(0,9);                      // chunk 长度
+  phys[4]=0x70;phys[5]=0x48;phys[6]=0x59;phys[7]=0x73; // 'pHYs'
+  dv.setUint32(8,ppm);dv.setUint32(12,ppm);
+  phys[16]=1;                             // 单位=米
+  dv.setUint32(17,pngCrc32(phys.subarray(4,17)));
+  // 插在 IHDR（8字节签名+25字节IHDR块）之后
+  var out=new Uint8Array(u8.length+21);
+  out.set(u8.subarray(0,33),0);
+  out.set(phys,33);
+  out.set(u8.subarray(33),54);
+  return out;
+}
+function setPngDpiBlob(blob,dpi){
+  return blob.arrayBuffer().then(function(buf){return new Blob([pngWithDpi(new Uint8Array(buf),dpi)],{type:'image/png'});});
+}
+// 高分辨率重绘图表→白底合成→下载（用创建时保存的纯配置，避免触发解析器调用 formatter）
+function downloadChartPng(canvasId,baseName){
+  var src=document.getElementById(canvasId);
+  if(!src){alert('图表未就绪');return;}
+  // A3 适配：画布宽 2000px（较 2930 缩小），导出文字放大（刻度/图例 20px、数据标签 22px）
+  var W=2000;
+  var cfg=(typeof chartExportCfg!=='undefined')?chartExportCfg[canvasId]:null;
+  var H;
+  if(cfg&&cfg.data){
+    // 高度按内容自适应：每个条形约 26px + 边距
+    var groups=(cfg.data.labels||[]).length||1;
+    var perGroup=(cfg.data.datasets||[]).length||1;
+    H=Math.min(7014,Math.max(400,groups*perGroup*26+160));
+  }else{
+    H=Math.max(1,Math.round(src.height/src.width*W));
+    if(H>7014)H=7014;   // A3 横向 @600dpi 高度上限
+  }
+  var off=document.createElement('canvas');off.width=W;off.height=H;
+  var octx0=off.getContext('2d');
+  var tmp=null;
+  if(cfg&&window.Chart){
+    try{
+      var fp=cfg.options.plugins||{};
+      var opts=Object.assign({},cfg.options,{
+        responsive:false,animation:false,devicePixelRatio:1,resizeDelay:0,maintainAspectRatio:false,
+        plugins:Object.assign({},fp,{
+          legend:Object.assign({},fp.legend||{},{labels:Object.assign({},(fp.legend&&fp.legend.labels)||{},{font:{size:24,family:'"Noto Serif SC","Noto Serif CJK SC",serif'}})}),
+          datalabels:Object.assign({},fp.datalabels||{},{font:{size:20,family:'"Noto Serif SC","Noto Serif CJK SC",serif'}})
+        }),
+        scales:(function(){
+          var s={},os=cfg.options.scales||{};
+          for(var k in os){if(!Object.prototype.hasOwnProperty.call(os,k))continue;s[k]=Object.assign({},os[k],{ticks:Object.assign({},(os[k]&&os[k].ticks)||{},{font:{size:24,family:'"Noto Serif SC","Noto Serif CJK SC",serif'}})});}
+          return s;
+        })()
+      });
+      tmp=new Chart(octx0,{type:cfg.type,data:cfg.data,options:opts});
+      tmp.update();
+    }catch(e){tmp=null;octx0.clearRect(0,0,W,H);octx0.drawImage(src,0,0,W,H);}
+  }else{
+    octx0.drawImage(src,0,0,W,H);
+  }
+  // 标题行 + 底部留白 10px（配置 exportTitle 的图带标题行）
+  var expTitle=(cfg&&cfg.exportTitle)||null;
+  var titleH=expTitle?68:0, bottomPad=10;
+  var out=document.createElement('canvas');out.width=W;out.height=H+titleH+bottomPad;
+  var octx=out.getContext('2d');
+  octx.fillStyle='#FFFFFF';octx.fillRect(0,0,out.width,out.height);
+  if(expTitle){
+    // 标题行：无底色，属性色文字，index3 标题字体
+    octx.font='700 36px KaiTi,"Noto Serif SC","Noto Serif CJK SC",serif';
+    octx.fillStyle=(cfg&&cfg.exportTitleColor)||'#DE4A97';
+    octx.textAlign='center';octx.textBaseline='middle';
+    octx.fillText(expTitle,W/2,titleH/2);
+  }
+  octx.drawImage(off,0,titleH);
+  if(tmp){try{tmp.destroy();}catch(e){}}
+  out.toBlob(function(blob){
+    if(!blob){alert('导出失败');return;}
+    setPngDpiBlob(blob,600).then(function(finalBlob){
+      saveBlob(finalBlob,((batchData&&batchData.attr)||'图表')+'_'+baseName+'.png');
+    });
+  },'image/png');
+}
 function downloadExcel(){
   if(!batchData||!window.XLSX){alert('请先生成表格或等待加载');return;}
+  var rows=batchData.rows,attr=batchData.attr;
+  // 统计图规格：与透视表同步（行=卡牌，列=影召组×被动）
+  var cardSeen={},cardNames=[],sls={},pls={};
+  rows.forEach(function(row){
+    if(!cardSeen[row.card.id]){cardSeen[row.card.id]=1;cardNames.push(row.card.name);}
+    sls[row.sl]=1;pls[row.pl]=1;
+  });
+  var slArr=Object.keys(sls).map(Number).sort(function(a,b){return a-b;});
+  var plArr=Object.keys(pls).map(Number).sort(function(a,b){return a-b;});
+  var CN=['一','二','三','四','五'];
   var wb=buildExportWorkbook(batchData,getGalleryLevel,rebuildCards);
-  XLSX.writeFile(wb,batchData.attr+'_Score批量计算.xlsx');
+  // 追加“统计图”工作表（承载原生图表）
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['各影召等级统计图（S14 竞技场战力，被动111~555）']]),'统计图');
+  var spec={
+    sheetName:attr+'·竞技场战力',
+    perGroupCols:plArr.length,
+    cardNames:cardNames,
+    chartTitles:slArr.map(function(sl){return '复苏'+attr+'卡牌影'+(CN[sl]||(sl+1))+'竞技场战力';})
+  };
+  var out=XLSX.write(wb,{bookType:'xlsx',type:'array'});
+  injectExcelCharts(out,spec).then(function(res){
+    saveBlob(res instanceof Blob?res:new Blob([res]),attr+'_Score批量计算.xlsx');
+  });
 }
 
 // === Tab切换 ===

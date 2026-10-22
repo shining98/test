@@ -104,10 +104,12 @@ function buildCharts(){
   document.documentElement.style.setProperty('--attr-border',st.border);
   document.getElementById('pageTitle').textContent=st.title;
   document.title=st.title;
+  var gComb=document.createElement('optgroup');gComb.label='组合部位';
+  sel.appendChild(gComb);
   GROUPS.forEach(function(g){
     var opt=document.createElement('option');
     opt.value=g.id;opt.textContent=g.name;
-    sel.appendChild(opt);
+    gComb.appendChild(opt);
     var div=document.createElement('div');
     div.className='chart';div.id='chart-'+g.id;
     var h='<div class="chart-title" style="color:'+st.color+'">'+st.title+'</div>';
@@ -118,7 +120,7 @@ function buildCharts(){
     CATS[cat].forEach(function(it){
       var isB=BOLD_ITEMS.indexOf(it.name)>=0;
       var nm=isB?'<b>'+it.name+'</b>':it.name;
-      var rr=it.rare.indexOf('闪')===0?'<b>'+it.rare+'</b>':it.rare;
+      var rr=String(it.rare||'').indexOf('闪')===0?'<b>'+it.rare+'</b>':it.rare;
       h+='<tr><td>'+nm+'</td><td>'+it.designer+'</td><td class="r-'+it.rare+'">'+rr+'</td><td>'+it.type+'</td><td>'+it.bs+'</td><td>'+it.t1+'</td><td>'+it.t2+'</td></tr>';
     });
     h+='</tbody></table>';
@@ -127,6 +129,15 @@ function buildCharts(){
     div.innerHTML=h;
     chartsDiv.appendChild(div);
   });
+  // 单部位导出选项
+  var gSingle=document.createElement('optgroup');gSingle.label='单部位';
+  ['发型','连衣裙','上衣','下装','外套','袜子','鞋子','发饰','帽子','耳饰','项链','项圈','手饰','手套','手持物','面饰','胸饰','挂饰','背饰','戒指','其他'].forEach(function(cat){
+    if(!CATS[cat])return;
+    var opt=document.createElement('option');
+    opt.value='c:'+cat;opt.textContent=cat;
+    gSingle.appendChild(opt);
+  });
+  sel.appendChild(gSingle);
 }
 buildCharts();
 function toggleRare(state){
@@ -143,7 +154,7 @@ var PAD=Math.floor((CW-TW)/2);
 var RH=80;
 var HEADERS=['名称','设计师','稀有度','类型','基础分','标签1','标签2'];
 var RARE_C={'闪耀':'#FFC000','闪·漫':'#FFC000','闪熠':'#FFC000','华梦':'#FFC000','闪·涟':'#FFC000','闪瑰':'#FFC000','闪·寰':'#FFC000','闪·斓':'#FFC000','非凡':'#8e6b8a','新启':'#F1638B'};
-function isShiny(r){return r.indexOf('闪')===0;}
+function isShiny(r){return String(r||'').indexOf('闪')===0;}
 
 // Centered text function using textAlign
 function cText(ctx,t,x,w,y,c){
@@ -164,7 +175,7 @@ function drawTbl(ctx,items,sy){
     ctx.fillStyle=idx%2===0?st.bg:st.bg2;ctx.fillRect(x,y,TW-10,RH);
     ctx.fillStyle=st.border;ctx.fillRect(x,y+RH-1,TW-10,1);
     var it=items[idx],isB=BOLD_ITEMS.indexOf(it.name)>=0;
-    var vs=[it.name,it.designer,it.rare,it.type,String(it.bs),it.t1,it.t2];
+    var vs=[it.name||'',it.designer||'',it.rare||'',it.type||'',String(it.bs||0),it.t1||'',it.t2||''];
     for(var i=0;i<vs.length;i++){
       var c=(i===2)?(RARE_C[vs[i]]||st.color):(isB?st.color:st.color);
       var f=isB?'700 44px "Noto Serif SC","Noto Serif CJK SC",serif':(isShiny(vs[i])?'700 42px "Noto Serif SC","Noto Serif CJK SC",serif':'700 40px "Noto Serif SC","Noto Serif CJK SC",serif');
@@ -212,7 +223,7 @@ function renderGroup(g){
 function doExport(){
   var v=sel.value;
   if(!v){alert('请先选择一个部位');return;}
-  var g=GROUPS.filter(function(x){return x.id===v;})[0];
+  var g=(v.indexOf('c:')===0)?{id:v,name:v.slice(2),cats:[v.slice(2)]}:(GROUPS.filter(function(x){return x.id===v;})[0]||null);
   if(!g)return;
   var p=document.getElementById('progress');
   p.textContent='正在生成 '+g.name+'...';
