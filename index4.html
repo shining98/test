@@ -169,6 +169,10 @@ tr:hover{background:rgba(43,108,176,.04)}
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span id="singleShadowTitle">卡牌影召竞技场战力</span><button class="btn btn-outline btn-sm" onclick="downloadChartPng('chartSingleShadow','影召竞技场战力')">下载PNG</button></div>
       <canvas id="chartSingleShadow"></canvas>
     </div>
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span id="singleScoreTitle">卡牌影召得分</span><button class="btn btn-outline btn-sm" onclick="downloadChartPng('chartSingleScore','影召得分')">下载PNG</button></div>
+      <canvas id="chartSingleScore"></canvas>
+    </div>
   </div>
 
   <!-- 批量生成 -->
@@ -186,6 +190,10 @@ tr:hover{background:rgba(43,108,176,.04)}
       <div class="card">
         <div class="card-title">各影召等级统计图 <span class="note">（影一~影五 · S14 竞技场战力 · 被动111~555）</span></div>
         <div id="shadowCharts"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">各影召等级得分图 <span class="note">（影一~影五 · Score[16] 得分 · 被动111~555）</span></div>
+        <div id="shadowScoreCharts"></div>
       </div>
     </div>
     <div id="batchResult"></div>
@@ -514,8 +522,16 @@ function calcTotalPower(){
 }
 
 // === 单卡计算显示 ===
+// === 柔和色系：10 个不同色系，步长3保证相邻条形不同色系，同色系至少隔10根 ===
+var SOFT_PALETTE=[
+  'hsl(355,62%,72%)','hsl(25,66%,72%)','hsl(48,66%,74%)','hsl(75,48%,70%)','hsl(135,42%,68%)',
+  'hsl(170,45%,66%)','hsl(210,55%,70%)','hsl(245,50%,72%)','hsl(280,45%,72%)','hsl(320,52%,74%)'
+];
+function softColor(i){return SOFT_PALETTE[((i*3)%SOFT_PALETTE.length+SOFT_PALETTE.length)%SOFT_PALETTE.length];}
+
 // === 单卡：影一~影五 竞技场战力图（样式同各影召统计图） ===
-function buildSingleShadowData(card,params){
+function buildSingleShadowData(card,params,metric){
+  metric=metric||'score';
   var PLABELS=['被动111','被动222','被动333','被动444','被动555'];
   var CN=['一','二','三','四','五'];
   var isEpic=card.rarity==='非凡';
@@ -528,7 +544,7 @@ function buildSingleShadowData(card,params){
         var p=JSON.parse(JSON.stringify(params));
         p.shadowLv=sl;p.passLv=pl;
         var r=calcXinForCard(card,p);
-        if(r)v=r.Score[14];
+        if(r)v=(metric==='sum')?r.Score[16]:r.Score[14]; // 得分=Score[16]，战力=Score[14]
       }catch(e){}
       row.push(v);
     }
@@ -539,8 +555,8 @@ function buildSingleShadowData(card,params){
   }
   var datasets=[];
   for(var sl=0;sl<5;sl++){
-    var color='hsl('+(sl*47%360)+',55%,52%)';
-    datasets.push({label:'影'+CN[sl],data:vals[sl],backgroundColor:color,borderColor:color,borderWidth:1});
+    var color=softColor(sl);
+    datasets.push({label:'影'+CN[sl],data:vals[sl],backgroundColor:color,borderColor:'#FFFFFF',borderWidth:1.5,categoryPercentage:0.85,barPercentage:1});
   }
   var all=[];vals.forEach(function(row){row.forEach(function(v){if(v!==null&&v!==undefined)all.push(v);});});
   return {
@@ -549,26 +565,42 @@ function buildSingleShadowData(card,params){
     maxV:all.length?Math.max.apply(null,all):0
   };
 }
-function renderSingleShadowChart(card,params){
-  var cv=document.getElementById('chartSingleShadow');
+// 爆发部位标题描述：如 裙头爆发 / 裙双饰爆发 / 双饰爆发
+function burstTitlePart(){
+  function on(id){var el=document.getElementById(id);return !!(el&&parseFloat(el.value)>0);}
+  var named=[];
+  if(on('b0'))named.push('裙');
+  if(on('b3'))named.push('头');
+  if(on('b7'))named.push('鞋');
+  var accN=0;
+  ['b1','b2','b4','b5','b6'].forEach(function(id){if(on(id))accN++;});
+  if(accN===1)named.push('饰');
+  else if(accN>=2)named.push(['双','三','四','五','五'][Math.min(accN,5)-2]+'饰');
+  return named.length?named.join('')+'爆发':'';
+}
+function renderSingleShadowChart(card,params,metric){
+  metric=metric||'score';
+  var isSum=(metric==='sum');
+  var cv=document.getElementById(isSum?'chartSingleScore':'chartSingleShadow');
   if(!cv||!window.Chart)return;
-  var d=buildSingleShadowData(card,params);
+  var d=buildSingleShadowData(card,params,metric);
   var attrName=(card&&card.style)||'';
   var ts=ATTR_UI[attrName]||{c:'#DE4A97',bg:'#fff0f5'};
   var _FF='"Noto Serif SC","Noto Serif CJK SC",serif';
-  if(chartSingleShadowInst){try{chartSingleShadowInst.destroy();}catch(e){}}
-  cv.height=Math.max(240,d.labels.length*70);
+  var oldInst=isSum?chartSingleScoreInst:chartSingleShadowInst;
+  if(oldInst){try{oldInst.destroy();}catch(e){}}
+  cv.height=Math.max(300,d.labels.length*100);
   var cfg={
     type:'bar',
     data:{labels:d.labels,datasets:d.datasets},
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:true,position:'top',labels:{font:{size:10,family:_FF}}},datalabels:{display:true,anchor:'end',align:'right',clamp:true,font:{size:8,family:_FF},color:'#444',formatter:function(v,ctx){var n=(ctx&&ctx.dataset&&ctx.dataset.label)?ctx.dataset.label:((ctx&&ctx.chart&&ctx.chart.data&&ctx.chart.data.labels&&ctx.chart.data.labels[ctx.dataIndex]!==undefined)?ctx.chart.data.labels[ctx.dataIndex]:'');return n+' '+(v===null||v===undefined?'':Number(v).toLocaleString());}},tooltip:{enabled:false}},scales:{x:{beginAtZero:false,suggestedMin:Math.max(0,d.minV-(d.maxV-d.minV)*0.25),suggestedMax:d.maxV*1.12,ticks:{color:ts.c,font:{family:_FF},callback:function(v){return v.toLocaleString();}},border:{color:ts.c}},y:{ticks:{color:ts.c,font:{size:9,family:_FF}},border:{color:ts.c}}}}
+    options:{indexAxis:'y',responsive:true,layout:{padding:{bottom:20}},plugins:{legend:{display:true,position:'top',labels:{font:{size:10,family:_FF}}},datalabels:{display:true,anchor:'end',align:'right',clamp:true,font:{size:8,family:_FF},color:'#444',formatter:function(v,ctx){var n=(ctx&&ctx.dataset&&ctx.dataset.label)?ctx.dataset.label:((ctx&&ctx.chart&&ctx.chart.data&&ctx.chart.data.labels&&ctx.chart.data.labels[ctx.dataIndex]!==undefined)?ctx.chart.data.labels[ctx.dataIndex]:'');return n+' '+(v===null||v===undefined?'':Number(v).toLocaleString());}},tooltip:{enabled:false}},scales:{x:{beginAtZero:false,suggestedMin:Math.max(0,d.minV-(d.maxV-d.minV)*0.25),suggestedMax:d.maxV*1.12,ticks:{color:ts.c,font:{family:_FF},callback:function(v){return v.toLocaleString();}},border:{color:ts.c,width:3}},y:{ticks:{color:ts.c,font:{size:9,family:_FF}},border:{color:ts.c,width:3}}}}
   };
   var snap={type:cfg.type,data:plainCopy(cfg.data),options:plainCopy(cfg.options)};
-  snap.exportTitle='复苏'+attrName+'卡牌'+(d.isEpic?'满破':'')+card.name+'竞技场战力';
+  snap.exportTitle='复苏'+attrName+'卡牌'+(d.isEpic?'满破':'')+card.name+(isSum?burstTitlePart()+'得分':'竞技场战力');
   snap.exportTitleColor=ts.c;
-  chartExportCfg['chartSingleShadow']=snap;
-  chartSingleShadowInst=new Chart(cv,cfg);
-  var tEl=document.getElementById('singleShadowTitle');
+  chartExportCfg[isSum?'chartSingleScore':'chartSingleShadow']=snap;
+  if(isSum){chartSingleScoreInst=new Chart(cv,cfg);}else{chartSingleShadowInst=new Chart(cv,cfg);}
+  var tEl=document.getElementById(isSum?'singleScoreTitle':'singleShadowTitle');
   if(tEl){tEl.textContent=snap.exportTitle;tEl.style.color=ts.c;}
 }
 function calcCurrentCard(){
@@ -627,8 +659,9 @@ function calcCurrentCard(){
   mv+='</table>';
   document.getElementById('midVars').innerHTML=mv;
 
-  // 影召等级竞技场战力图
+  // 影召等级竞技场战力图 + 得分图
   renderSingleShadowChart(card,params);
+  renderSingleShadowChart(card,params,'sum');
 }
 
 // === 批量生成 ===
@@ -779,7 +812,7 @@ function runBatch(){
 }
 
 // === 生成条形图 ===
-var chartShadowInsts=[], chartExportCfg={}, chartSingleShadowInst=null;
+var chartShadowInsts=[], chartExportCfg={}, chartSingleShadowInst=null, chartSingleScoreInst=null;
 // 五属性样式（与 index 首页一致）
 var ATTR_UI={'典雅':{c:'#C99759',bg:'#f5ead8'},'清新':{c:'#78C0A8',bg:'#ddf4ec'},'甜美':{c:'#E8879C',bg:'#fce8ee'},'性感':{c:'#9A80C0',bg:'#ece4f4'},'帅气':{c:'#84A8E5',bg:'#e0ecf8'}};
 // 深拷贝纯配置（函数按引用保留）——导出用，避开 Chart.js 选项解析器代理
@@ -812,22 +845,31 @@ if(window.Chart){Chart.register({
     ctx.lineTo(ca.right-S,ca.bottom-S*0.62);
     ctx.lineTo(ca.right-S,ca.bottom+S*0.62);
     ctx.closePath();ctx.fill();
+    // 纵轴：延长轴线 + 箭头整体抬升至第一根条形之上
+    var extY=14;
+    var bw=(xs&&xs.options&&xs.options.border&&xs.options.border.width)||3;
+    ctx.strokeStyle=col;ctx.lineWidth=bw;
     ctx.beginPath();
-    ctx.moveTo(ca.left,ca.top-S);
-    ctx.lineTo(ca.left-S*0.62,ca.top+S);
-    ctx.lineTo(ca.left+S*0.62,ca.top+S);
+    ctx.moveTo(ca.left,ca.top-extY);ctx.lineTo(ca.left,ca.bottom);
+    ctx.moveTo(ca.left,ca.bottom);ctx.lineTo(ca.right,ca.bottom);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(ca.left,ca.top-extY-S);
+    ctx.lineTo(ca.left-S*0.62,ca.top-extY+S);
+    ctx.lineTo(ca.left+S*0.62,ca.top-extY+S);
     ctx.closePath();ctx.fill();
     ctx.restore();
   }
 });}
 // 各影召等级统计图数据：{影召等级:{labels,datasets(被动111~555)}}
-function buildShadowChartData(rows){
+function buildShadowChartData(rows,metric){
+  metric=metric||'score';
   var PLABELS=['被动111','被动222','被动333','被动444','被动555'];
   var cardOrder=[],cardSeen={},sls={},maxVals={};
   rows.forEach(function(row){
     if(!cardSeen[row.card.id]){cardSeen[row.card.id]=1;cardOrder.push(row.card);}
     sls[row.sl]=1;
-    if(row.sl===4&&row.pl===4)maxVals[row.card.id]=row.r.Score[14]; // 影五·被动555
+    if(row.sl===4&&row.pl===4)maxVals[row.card.id]=(metric==='sum')?row.r.Score[16]:row.r.Score[14]; // 影五·被动555
   });
   var out={};
   Object.keys(sls).map(Number).sort(function(a,b){return a-b;}).forEach(function(sl){
@@ -835,20 +877,20 @@ function buildShadowChartData(rows){
     rows.forEach(function(row){
       if(row.sl!==sl)return;
       plSet[row.pl]=1;
-      vals[row.card.id+'_'+row.pl]=row.r.Score[14];
+      vals[row.card.id+'_'+row.pl]=(metric==='sum')?row.r.Score[16]:row.r.Score[14];
     });
     var pls=Object.keys(plSet).map(Number).sort(function(a,b){return a-b;});
     // 纵轴=被动，变量（系列）=卡牌
     var datasets=cardOrder.map(function(c,i){
-      var color='hsl('+(i*47%360)+',55%,52%)';
+      var color=softColor(i);
       var isEpic=c.rarity==='非凡';
       return {
-        label:(isEpic?'满破':'')+c.name,isEpic:isEpic,
+        label:(isEpic?'满破':'')+c.name,isEpic:isEpic,categoryPercentage:0.85,barPercentage:1,
         data:pls.map(function(pl){
           if(isEpic&&maxVals[c.id]!==undefined)return maxVals[c.id]; // 非凡卡统一影五·被动555
           var v=vals[c.id+'_'+pl];return v===undefined?null:v;
         }),
-        backgroundColor:color,borderColor:color,borderWidth:1
+        backgroundColor:color,borderColor:'#FFFFFF',borderWidth:1.5
       };
     });
     out[sl]={labels:pls.map(function(pl){return PLABELS[pl]||('被动'+(pl+1));}),datasets:datasets};
@@ -857,13 +899,17 @@ function buildShadowChartData(rows){
 }
 function generateCharts(rows){
   document.getElementById('batchCharts').style.display='block';
-  // 各影召等级统计图（影一~影五，按被动111~555）
-  var scBox=document.getElementById('shadowCharts');
-  scBox.innerHTML='';
   chartShadowInsts.forEach(function(c){if(c)c.destroy();});
   chartShadowInsts=[];
+  renderShadowGroup(rows,'score','shadowCharts','chartShadow','竞技场战力');
+  renderShadowGroup(rows,'sum','shadowScoreCharts','chartScore','得分');
+}
+function renderShadowGroup(rows,metric,boxId,idPrefix,labelName){
+  // 各影召等级统计图（影一~影五，按被动111~555）
+  var scBox=document.getElementById(boxId);
+  scBox.innerHTML='';
   var CN_S=['一','二','三','四','五'];
-  var scd=buildShadowChartData(rows);
+  var scd=buildShadowChartData(rows,metric);
   Object.keys(scd).map(Number).sort(function(a,b){return a-b;}).forEach(function(sl){
     var d=scd[sl];
     var wrap=document.createElement('div');
@@ -874,26 +920,27 @@ function generateCharts(rows){
     var _attr=(batchData&&batchData.attr)||'';
     var _ts=ATTR_UI[_attr]||{c:'#DE4A97',bg:'#fff0f5'};
     var _FF='"Noto Serif SC","Noto Serif CJK SC",serif';
-    tSpan.textContent='复苏'+_attr+'卡牌影'+(CN_S[sl]||(sl+1))+'竞技场战力';
+    var _suffix=(metric==='sum')?burstTitlePart():'';
+    tSpan.textContent='复苏'+_attr+'卡牌影'+(CN_S[sl]||(sl+1))+_suffix+labelName;
     tSpan.style.cssText='color:'+_ts.c;
     var dBtn=document.createElement('button');
     dBtn.className='btn btn-outline btn-sm';
     dBtn.textContent='下载PNG';
-    dBtn.onclick=(function(cid,fname){return function(){downloadChartPng(cid,fname);};})('chartShadow'+sl,((batchData&&batchData.attr)||'图表')+'_影'+(CN_S[sl]||(sl+1))+'_竞技场战力');
+    dBtn.onclick=(function(cid,fname){return function(){downloadChartPng(cid,fname);};})(idPrefix+sl,((batchData&&batchData.attr)||'图表')+'_影'+(CN_S[sl]||(sl+1))+'_'+(metric==='sum'?burstTitlePart():'')+labelName);
     title.appendChild(tSpan);title.appendChild(dBtn);
     var maxV=0,minV=Infinity;
     d.datasets.forEach(function(ds){ds.data.forEach(function(v){if(v!==null&&v>maxV)maxV=v;if(v!==null&&v<minV)minV=v;});});
     if(minV===Infinity)minV=0;
     var cv=document.createElement('canvas');
-    cv.id='chartShadow'+sl;
-    cv.height=Math.max(240,d.labels.length*70);
+    cv.id=idPrefix+sl;
+    cv.height=Math.max(300,d.labels.length*100);
     wrap.appendChild(title);wrap.appendChild(cv);scBox.appendChild(wrap);
     var cfgSc={
       type:'bar',
       data:{labels:d.labels,datasets:d.datasets},
-      options:{indexAxis:'y',responsive:true,plugins:{legend:{display:true,position:'top',labels:{font:{size:10,family:_FF}}},datalabels:{display:true,anchor:'end',align:'right',clamp:true,font:{size:8,family:_FF},color:'#444',formatter:function(v,ctx){var n=(ctx&&ctx.dataset&&ctx.dataset.label)?ctx.dataset.label:((ctx&&ctx.chart&&ctx.chart.data&&ctx.chart.data.labels&&ctx.chart.data.labels[ctx.dataIndex]!==undefined)?ctx.chart.data.labels[ctx.dataIndex]:'');return n+' '+(v===null||v===undefined?'':Number(v).toLocaleString());}},tooltip:{enabled:false}},scales:{x:{beginAtZero:false,suggestedMin:Math.max(0,minV-(maxV-minV)*0.25),suggestedMax:maxV*1.12,ticks:{color:_ts.c,font:{family:_FF},callback:function(v){return v.toLocaleString();}},border:{color:_ts.c}},y:{ticks:{color:_ts.c,font:{size:9,family:_FF}},border:{color:_ts.c}}}}
+      options:{indexAxis:'y',responsive:true,layout:{padding:{bottom:20}},plugins:{legend:{display:true,position:'top',labels:{font:{size:10,family:_FF}}},datalabels:{display:true,anchor:'end',align:'right',clamp:true,font:{size:8,family:_FF},color:'#444',formatter:function(v,ctx){var n=(ctx&&ctx.dataset&&ctx.dataset.label)?ctx.dataset.label:((ctx&&ctx.chart&&ctx.chart.data&&ctx.chart.data.labels&&ctx.chart.data.labels[ctx.dataIndex]!==undefined)?ctx.chart.data.labels[ctx.dataIndex]:'');return n+' '+(v===null||v===undefined?'':Number(v).toLocaleString());}},tooltip:{enabled:false}},scales:{x:{beginAtZero:false,suggestedMin:Math.max(0,minV-(maxV-minV)*0.25),suggestedMax:maxV*1.12,ticks:{color:_ts.c,font:{family:_FF},callback:function(v){return v.toLocaleString();}},border:{color:_ts.c,width:3}},y:{ticks:{color:_ts.c,font:{size:9,family:_FF}},border:{color:_ts.c,width:3}}}}
     };
-    chartExportCfg['chartShadow'+sl]={type:cfgSc.type,data:plainCopy(cfgSc.data),options:plainCopy(cfgSc.options),exportTitle:'复苏'+_attr+'卡牌影'+(CN_S[sl]||(sl+1))+'竞技场战力',exportTitleColor:_ts.c};
+    chartExportCfg[idPrefix+sl]={type:cfgSc.type,data:plainCopy(cfgSc.data),options:plainCopy(cfgSc.options),exportTitle:'复苏'+_attr+'卡牌影'+(CN_S[sl]||(sl+1))+_suffix+labelName,exportTitleColor:_ts.c};
     chartShadowInsts.push(new Chart(cv,cfgSc));
   });
 }
@@ -1080,15 +1127,15 @@ function setPngDpiBlob(blob,dpi){
 function downloadChartPng(canvasId,baseName){
   var src=document.getElementById(canvasId);
   if(!src){alert('图表未就绪');return;}
-  // A3 适配：画布宽 2000px（较 2930 缩小），导出文字放大（刻度/图例 20px、数据标签 22px）
-  var W=2000;
+  // 导出尺寸同 index3：设计宽 2000 按 2.93 倍高清渲染 = 5860px（2930@2x）
+  var W=2000,SC=5860/W;
   var cfg=(typeof chartExportCfg!=='undefined')?chartExportCfg[canvasId]:null;
   var H;
   if(cfg&&cfg.data){
-    // 高度按内容自适应：每个条形约 26px + 边距
+    // 高度按内容自适应：每个条形约 37px + 边距
     var groups=(cfg.data.labels||[]).length||1;
     var perGroup=(cfg.data.datasets||[]).length||1;
-    H=Math.min(7014,Math.max(400,groups*perGroup*26+160));
+    H=Math.min(7014,Math.max(400,groups*perGroup*37+160));
   }else{
     H=Math.max(1,Math.round(src.height/src.width*W));
     if(H>7014)H=7014;   // A3 横向 @600dpi 高度上限
@@ -1100,7 +1147,7 @@ function downloadChartPng(canvasId,baseName){
     try{
       var fp=cfg.options.plugins||{};
       var opts=Object.assign({},cfg.options,{
-        responsive:false,animation:false,devicePixelRatio:1,resizeDelay:0,maintainAspectRatio:false,
+        responsive:false,animation:false,devicePixelRatio:SC,resizeDelay:0,maintainAspectRatio:false,
         plugins:Object.assign({},fp,{
           legend:Object.assign({},fp.legend||{},{labels:Object.assign({},(fp.legend&&fp.legend.labels)||{},{font:{size:24,family:'"Noto Serif SC","Noto Serif CJK SC",serif'}})}),
           datalabels:Object.assign({},fp.datalabels||{},{font:{size:20,family:'"Noto Serif SC","Noto Serif CJK SC",serif'}})
@@ -1119,18 +1166,18 @@ function downloadChartPng(canvasId,baseName){
   }
   // 标题行 + 底部留白 10px（配置 exportTitle 的图带标题行）
   var expTitle=(cfg&&cfg.exportTitle)||null;
-  var titleH=expTitle?68:0, bottomPad=10;
-  var out=document.createElement('canvas');out.width=W;out.height=H+titleH+bottomPad;
+  var titleH=expTitle?68:0, bottomPad=20;
+  var out=document.createElement('canvas');out.width=Math.round(W*SC);out.height=Math.round((H+titleH+bottomPad)*SC);
   var octx=out.getContext('2d');
   octx.fillStyle='#FFFFFF';octx.fillRect(0,0,out.width,out.height);
   if(expTitle){
     // 标题行：无底色，属性色文字，index3 标题字体
-    octx.font='700 36px KaiTi,"Noto Serif SC","Noto Serif CJK SC",serif';
+    octx.font='700 '+Math.round(36*SC)+'px KaiTi,"Noto Serif SC","Noto Serif CJK SC",serif';
     octx.fillStyle=(cfg&&cfg.exportTitleColor)||'#DE4A97';
     octx.textAlign='center';octx.textBaseline='middle';
-    octx.fillText(expTitle,W/2,titleH/2);
+    octx.fillText(expTitle,out.width/2,Math.round(titleH*SC/2));
   }
-  octx.drawImage(off,0,titleH);
+  octx.drawImage(off,0,Math.round(titleH*SC));
   if(tmp){try{tmp.destroy();}catch(e){}}
   out.toBlob(function(blob){
     if(!blob){alert('导出失败');return;}

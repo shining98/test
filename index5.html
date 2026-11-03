@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>忆海收集统计</title>
+<style>
+  *{box-sizing:border-box}
+  body{background:#ffffff;font-family:'Noto Serif SC','Noto Serif CJK SC',serif;color:#222;margin:0;padding:26px 32px 30px}
+  .set-tabs{display:flex;gap:8px;justify-content:center;margin:0 0 10px}
+  .set-btn{font-family:inherit;font-size:13px;padding:5px 18px;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px}
+  .set-btn.active{background:#222;color:#fff;border-color:#222}
+  h1{text-align:center;font-family:KaiTi,'Noto Serif SC',serif;font-size:26px;font-weight:700;color:#222;margin:4px 0 6px;letter-spacing:1px}
+  .top-row{display:flex;justify-content:space-between;align-items:center;width:90%}
+  .subtitle{text-align:left;font-size:13px;color:#444;margin:0 0 14px}
+  .btn-export{font-family:inherit;font-size:12px;padding:4px 16px;border:1px solid #222;background:#fff;color:#222;cursor:pointer;border-radius:4px}
+  .btn-export:hover{background:#f5f5f5}
+  .table-wrap{width:90%}
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid #a5a5a5;padding:3px 6px;text-align:center;vertical-align:middle;font-size:12px;line-height:1.55}
+  th{background:#f5f5f5;font-weight:700;font-size:12.5px}
+  td{background:#fff}
+  .ver-num{font-size:15px}
+  .cat-multi{line-height:1.35}
+  .tag{display:inline-block;padding:0 7px;border-radius:4px;font-size:11px;font-weight:600;margin:1px 2px;line-height:1.7}
+  .tag-闪耀,.tag-闪瑰,.tag-新启,.tag-闪萦{background:transparent;color:#FFC000;font-weight:400}
+  .tag-非凡{background:transparent;color:#44546A;font-weight:400}
+  .tag-稀有{background:transparent;color:#BF9000;font-weight:400}
+  .tag-闪·斓{background:transparent;color:#FFC000;font-weight:400}
+  .tag-新,.tag-复{background:transparent;color:#222;font-weight:400;padding:0}
+  .footer{text-align:center;font-family:KaiTi,'Noto Serif SC',serif;font-weight:700;font-size:26px;color:#222;margin:18px 0 0}
+</style>
+</head>
+<body>
+  <div class="set-tabs" id="setTabs"></div>
+  <h1 id="mhTitle"></h1>
+  <div class="top-row">
+    <p class="subtitle" id="mhSubtitle"></p>
+    <button class="btn-export" onclick="exportImage()">导出图片</button>
+  </div>
+  <div class="table-wrap"><table id="mhTable"></table></div>
+  <div class="footer" id="mhFooter"></div>
+<script src="data3.js"></script>
+<script>
+(function(){
+  // 列结构：类别列=新/复（徽章），第5列=版本配置（纯文字，表头留空）
+  var COLS=['版本数','套装名称','稀有度','部件数量','套装积分','累计积分','开始日期','结束日期','持续天数']; // 中间「类别」为 colspan=2
+
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function linesHtml(s){return esc(s).split('\n').join('<br>');}
+  function tagHtml(t){return '<span class="tag tag-'+esc(t)+'">'+esc(t)+'</span>';}
+
+  // 连续同值分组（新/复列、版本配置列、日期列的合并）
+  function groupRuns(n,getValue){
+    var runs=[];
+    for(var i=0;i<n;i++){
+      var v=getValue(i);
+      var last=runs[runs.length-1];
+      if(last&&last.value===v){last.len++;}
+      else runs.push({start:i,len:1,value:v});
+    }
+    return runs;
+  }
+
+  // 一期数据 -> 各列合并单元格方案（页面渲染与导出图共用）
+  function buildGroups(D){
+    var cum=0,out=[];
+    D.versions.forEach(function(v){
+      var n=v.suits.length;
+      var vSum=v.suits.reduce(function(a,s){return a+s.points;},0);
+      var statusRuns=groupRuns(n,function(i){return v.suits[i].status;});
+      var catRuns=groupRuns(n,function(i){return v.suits[i].category;});
+      var startRuns=groupRuns(n,function(i){return v.suits[i].start||v.start;});
+      var dateRuns=groupRuns(n,function(i){var s=v.suits[i];return (s.end||v.end)+'|'+(s.days||v.days);});
+      // 累计积分=到该日期组末尾的累计（与开始日期同组合并）
+      startRuns.forEach(function(r){
+        var upTo=0;
+        for(var j=0;j<r.start+r.len;j++)upTo+=v.suits[j].points;
+        r.cum=cum+upTo;
+      });
+      cum+=vSum;
+      out.push({v:v,n:n,statusRuns:statusRuns,catRuns:catRuns,startRuns:startRuns,dateRuns:dateRuns});
+    });
+    return out;
+  }
+
+  function render(){
+    var D=MH_DATA;
+    document.getElementById('mhTitle').textContent=D.title;
+    document.getElementById('mhSubtitle').textContent=D.subtitle;
+    document.getElementById('mhFooter').textContent=D.footer;
+
+    var html='<thead><tr><th>版本数</th><th>套装名称</th><th>稀有度</th><th colspan="2">类别</th>'+COLS.slice(3).map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
+    buildGroups(D).forEach(function(g){
+      var v=g.v,n=g.n;
+      var statusCells={},catCells={},startCells={},cumCells={},dateCells={};
+      g.statusRuns.forEach(function(r){statusCells[r.start]='<td rowspan="'+r.len+'">'+tagHtml(r.value)+'</td>';});
+      g.catRuns.forEach(function(r){catCells[r.start]='<td rowspan="'+r.len+'"'+(String(r.value).indexOf('\n')>=0?' class="cat-multi"':'')+'>'+linesHtml(r.value)+'</td>';});
+      g.startRuns.forEach(function(r){
+        startCells[r.start]='<td rowspan="'+r.len+'">'+esc(r.value)+'</td>';
+        cumCells[r.start]='<td rowspan="'+r.len+'">'+r.cum+'</td>';
+      });
+      g.dateRuns.forEach(function(r){
+        var parts=r.value.split('|');
+        dateCells[r.start+'e']='<td rowspan="'+r.len+'">'+esc(parts[0])+'</td>';
+        dateCells[r.start+'d']='<td rowspan="'+r.len+'">'+esc(parts[1])+'</td>';
+      });
+
+      v.suits.forEach(function(s,i){
+        var tds=[];
+        if(i===0)tds.push('<td class="ver-num" rowspan="'+n+'">'+v.id+'</td>');
+        tds.push('<td>'+esc(s.name)+'</td>');
+        tds.push('<td>'+tagHtml(s.rarity)+'</td>');
+        if(statusCells[i])tds.push(statusCells[i]);
+        if(catCells[i])tds.push(catCells[i]);
+        tds.push('<td>'+s.parts+'</td>');
+        tds.push('<td>'+s.points+'</td>');
+        if(cumCells[i])tds.push(cumCells[i]);
+        if(startCells[i])tds.push(startCells[i]);
+        if(dateCells[i+'e'])tds.push(dateCells[i+'e']);
+        if(dateCells[i+'d'])tds.push(dateCells[i+'d']);
+        html+='<tr>'+tds.join('')+'</tr>';
+      });
+    });
+
+    html+='</tbody>';
+    document.getElementById('mhTable').innerHTML=html;
+  }
+
+  // ===== 期数切换 =====
+  var tabsEl=document.getElementById('setTabs');
+  MH_SETS.forEach(function(st,i){
+    var b=document.createElement('button');
+    b.className='set-btn'+(i===0?' active':'');
+    b.textContent=st.title.replace('忆海收集','').replace('统计','');
+    b.onclick=function(){
+      MH_DATA=MH_SETS[i];
+      Array.prototype.forEach.call(tabsEl.children,function(el,j){el.className='set-btn'+(j===i?' active':'');});
+      render();
+    };
+    tabsEl.appendChild(b);
+  });
+
+  render();
+
+  // ===== 导出图片（宽度同 index3：2930 逻辑宽 @2x = 5860px PNG） =====
+  var ECOL=[140,420,220,150,300,170,170,170,350,350,170];
+  var EXS=[145];ECOL.forEach(function(w){EXS.push(EXS[EXS.length-1]+w);});
+  function rareColor(r){return (String(r).indexOf('闪')>=0||r==='新启')?'#FFC000':(r==='非凡'?'#44546A':(r==='稀有'?'#BF9000':'#222'));}
+
+  window.exportImage=function(){
+    var D=MH_DATA;
+    var CW=2930,sc=2,RH=80,PAD=145;
+    var groups=buildGroups(D);
+    var totalRows=1+D.versions.reduce(function(a,v){return a+v.suits.length;},0);
+    var ty=260;
+    var imgH=ty+totalRows*RH+75+Math.round(96*0.9)+31; // 落款上方75px、字形底部留白30px
+    var cv=document.createElement('canvas');
+    cv.width=Math.round(CW*sc);cv.height=Math.round(imgH*sc);
+    var ctx=cv.getContext('2d');ctx.scale(sc,sc);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,CW,imgH);
+
+    // 标题（KaiTi 标题字体）+ 副标题
+    ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.font='700 96px KaiTi,"Noto Serif SC",serif';ctx.fillStyle='#222';
+    ctx.fillText(D.title,CW/2,70);
+    ctx.font='400 42px "Noto Serif SC","Noto Serif CJK SC",serif';ctx.textAlign='left';
+    ctx.fillText(D.subtitle,PAD,70+96+36);
+
+    function cell(x,y,w,h,lines,o){
+      o=o||{};
+      ctx.fillStyle=o.bg||'#fff';ctx.fillRect(x,y,w,h);
+      ctx.strokeStyle='#a5a5a5';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h); // 相邻格共线重合，全线统一2px
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      var fs=o.size||36;
+      ctx.font=(o.bold?'700 ':'400 ')+fs+'px "Noto Serif SC","Noto Serif CJK SC",serif';
+      ctx.fillStyle=o.color||'#222';
+      var lh=fs*1.28,y0=y+h/2-(lines.length-1)*lh/2;
+      lines.forEach(function(t,i){ctx.fillText(t,x+w/2,y0+i*lh);});
+    }
+
+    // 表头（「类别」横跨 新/复 + 版本配置 两列）
+    [['版本数',0],['套装名称',1],['稀有度',2],['类别',3],['部件数量',5],['套装积分',6],['累计积分',7],['开始日期',8],['结束日期',9],['持续天数',10]].forEach(function(h){
+      var c=h[1],w=(c===3)?ECOL[3]+ECOL[4]:ECOL[c];
+      cell(EXS[c],ty,w,RH,[h[0]],{bg:'#f5f5f5',bold:1,size:40});
+    });
+
+    // 数据行
+    var rIdx=0;
+    groups.forEach(function(g){
+      var v=g.v,n=g.n;
+      var sCells={},cCells={},stCells={},cuCells={},dCells={};
+      g.statusRuns.forEach(function(r){sCells[r.start]=r;});
+      g.catRuns.forEach(function(r){cCells[r.start]=r;});
+      g.startRuns.forEach(function(r){stCells[r.start]=r;cuCells[r.start]=r;});
+      g.dateRuns.forEach(function(r){dCells[r.start]=r;});
+
+      for(var i=0;i<n;i++){
+        var y=ty+RH*(1+rIdx+i);
+        if(i===0)cell(EXS[0],y,ECOL[0],RH*n,[String(v.id)],{size:44});
+        var s=v.suits[i];
+        cell(EXS[1],y,ECOL[1],RH,[s.name],{});
+        cell(EXS[2],y,ECOL[2],RH,[s.rarity],{color:rareColor(s.rarity)});
+        if(sCells[i])cell(EXS[3],y,ECOL[3],RH*sCells[i].len,[sCells[i].value],{});
+        if(cCells[i])cell(EXS[4],y,ECOL[4],RH*cCells[i].len,String(cCells[i].value).split('\n'),{});
+        cell(EXS[5],y,ECOL[5],RH,[String(s.parts)],{});
+        cell(EXS[6],y,ECOL[6],RH,[String(s.points)],{});
+        if(cuCells[i])cell(EXS[7],y,ECOL[7],RH*cuCells[i].len,[String(cuCells[i].cum)],{});
+        if(stCells[i])cell(EXS[8],y,ECOL[8],RH*stCells[i].len,[stCells[i].value],{});
+        if(dCells[i]){
+          var pr=dCells[i].value.split('|');
+          cell(EXS[9],y,ECOL[9],RH*dCells[i].len,[pr[0]],{});
+          cell(EXS[10],y,ECOL[10],RH*dCells[i].len,[pr[1]],{});
+        }
+      }
+      rIdx+=n;
+    });
+
+    // 落款（KaiTi 标题字体）
+    var fy=ty+totalRows*RH+75;
+    ctx.textAlign='center';ctx.textBaseline='top';
+    ctx.font='700 96px KaiTi,"Noto Serif SC",serif';ctx.fillStyle='#222';
+    ctx.fillText(D.footer,CW/2,fy);
+
+    cv.toBlob(function(blob){
+      if(!blob)return;
+      var u=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=u;a.download=D.title+'.png';
+      document.body.appendChild(a);a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){URL.revokeObjectURL(u);},2000);
+    },'image/png');
+  };
+})();
+</script>
+</body>
+</html>

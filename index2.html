@@ -208,10 +208,11 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 <div class="c2-panel" id="arenaPanel">
   <section class="c2-settings"><div class="c2-field-row"><div class="c2-field"><label>属性</label><select id="aAttr"></select></div><div class="c2-field"><label>标签（可选0~1个）</label><select id="aTag"></select></div></div></section>
   <details class="c2-collapsible" id="aRestruct"><summary>重构服装等级 <small>(满级80)</small></summary><div class="c2-collapsible-body"><div class="c2-field" style="margin-bottom:.5rem"><label>属性筛选</label><select id="rcFilterA" onchange="fillRestructTable('restructTbody')"><option value="">全部</option></select></div><table class="c2-restruct-table"><thead><tr><th>服装</th><th>属性</th><th>类型</th><th>增益</th><th>等级</th><th>设计诠释/级</th><th>模式增益/级</th><th>加成</th><th>绽放瞬间</th></tr></thead><tbody id="restructTbody"></tbody></table></div></details>
+  <details class="c2-collapsible" id="aCardData"><summary>卡牌数据 <small>(影召/被动等级，竞技场与心阶通用)</small></summary><div class="c2-collapsible-body"><div class="c2-field" style="margin-bottom:.5rem"><label>属性筛选</label><select id="cdFilterA" onchange="fillCardDataTable('cardDataTbody')"><option value="">全部</option></select></div><table class="c2-restruct-table"><thead><tr><th>卡牌</th><th>属性</th><th>稀有</th><th>影召等级</th><th>被动1</th><th>被动2</th><th>被动3</th><th>复苏</th></tr></thead><tbody id="cardDataTbody"></tbody></table></div></details>
   <details class="c2-collapsible" id="aGalArea"><summary>馆藏等级 <small>各馆藏×2%，修改后自动保存</small></summary><div class="c2-collapsible-body"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px" id="aCalcGalGrid"></div></div></details>
   <details class="c2-collapsible" id="aImpArea"><summary>印象数据 <small>设置各属性印象等级和拥有状态</small></summary><div class="c2-collapsible-body" id="aImpBody"></div></details>
   <details class="c2-collapsible" id="aCalcArea"><summary>计算器参数 <small>用于计算实际战斗得分</small></summary><div class="c2-collapsible-body">
-    <div class="c2-field-row"><div class="c2-field"><label>卡牌属性</label><select id="aCalcStyle"></select></div><div class="c2-field"><label>卡牌选择</label><select id="aCalcCard"></select></div></div>
+    <div class="c2-field-row"><div class="c2-field"><label>卡牌属性</label><select id="aCalcStyle"></select></div><div class="c2-field"><label>卡牌选择</label><select id="aCalcCard"></select></div><div class="c2-field" style="flex:0 0 auto"><label>自动选卡</label><button type="button" id="aAutoCardBtn" class="c2-btn c2-btn-primary" style="width:auto;padding:.45rem .8rem;font-size:.78rem;white-space:nowrap">按公式选最佳</button></div></div>
     <div class="c2-field-row"><div class="c2-field"><label>影召等级</label><select id="aCalcShadow"></select></div><div class="c2-field"><label>被动1</label><select id="aCalcPass1"></select></div><div class="c2-field"><label>被动2</label><select id="aCalcPass2"></select></div><div class="c2-field"><label>被动3</label><select id="aCalcPass3"></select></div></div>
     <div class="c2-field-row"><div class="c2-field" style="flex:0 0 auto"><label>复苏</label><label style="display:flex;align-items:center;gap:4px;cursor:pointer;padding:6px 0"><input type="checkbox" id="aCalcRec" style="width:15px;height:15px;accent-color:var(--c2-accent)"><span style="font-size:12px">已复苏</span></label></div><div class="c2-field"><label>馆藏</label><div id="aCalcGalSummary" style="font-size:12px;color:var(--c2-accent);font-weight:600;padding:6px 0"></div></div><div class="c2-field"><label>卡牌搭配之力</label><div id="aCalcCardPower" style="font-size:12px;color:var(--c2-accent);font-weight:600;padding:6px 0"></div></div><div class="c2-field"><label>忆海①</label><select id="aCalcYh1"></select></div><div class="c2-field"><label>忆海②</label><select id="aCalcYh2"></select></div></div>
     <div class="c2-field-row"><div class="c2-field"><label>核心印象</label><select id="aCalcImpType"><option value="heart">心印象</option><option value="shadow">影印象</option></select></div><div class="c2-field"><label>印象选择</label><select id="aCalcImpSel" style="width:100%"></select></div><div class="c2-field"><label>印象等级</label><select id="aCalcImpLvl"><option value="0">Lv.1</option><option value="1">Lv.2</option><option value="2">Lv.3</option><option value="3">Lv.4</option><option value="4" selected>Lv.5</option></select></div></div>
@@ -230,6 +231,7 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
   </section>
   <details class="c2-collapsible" id="hFixedArea"><summary>固定服装设置 <small>每个位置可固定各类型，连衣裙与上衣+下装互斥</small></summary><div class="c2-collapsible-body" id="hFixedBody"></div></details>
   <details class="c2-collapsible" id="hRestruct"><summary>重构服装等级 <small>(满级80)</small></summary><div class="c2-collapsible-body"><div class="c2-field" style="margin-bottom:.5rem"><label>属性筛选</label><select id="rcFilterH" onchange="fillRestructTable('restructTbody2')"><option value="">全部</option></select></div><table class="c2-restruct-table"><thead><tr><th>服装</th><th>属性</th><th>类型</th><th>增益</th><th>等级</th><th>设计诠释/级</th><th>模式增益/级</th><th>加成</th><th>绽放瞬间</th></tr></thead><tbody id="restructTbody2"></tbody></table></div></details>
+  <details class="c2-collapsible" id="hCardData"><summary>卡牌数据 <small>(影召/被动等级，竞技场与心阶通用)</small></summary><div class="c2-collapsible-body"><div class="c2-field" style="margin-bottom:.5rem"><label>属性筛选</label><select id="cdFilterH" onchange="fillCardDataTable('cardDataTbody2')"><option value="">全部</option></select></div><table class="c2-restruct-table"><thead><tr><th>卡牌</th><th>属性</th><th>稀有</th><th>影召等级</th><th>被动1</th><th>被动2</th><th>被动3</th><th>复苏</th></tr></thead><tbody id="cardDataTbody2"></tbody></table></div></details>
   <details class="c2-collapsible" id="hGalArea"><summary>馆藏等级 <small>各馆藏×2%，修改后自动保存</small></summary><div class="c2-collapsible-body"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px" id="hCalcGalGrid"></div></div></details>
   <details class="c2-collapsible" id="hImpArea"><summary>印象数据 <small>设置各属性印象等级和拥有状态</small></summary><div class="c2-collapsible-body" id="hImpBody"></div></details>
   <div id="hCalcAreas"></div>
@@ -270,6 +272,7 @@ function bR(a,l){if(!a||!a.length)return 0;if(l<=BL[0])return a[0];if(l>=BL[5])r
 var BLOOM={};function uBloom(){rItems.forEach(function(i){BLOOM[i.id]=bR(i.bloomMoment,LV[i.id]||MAX_LV);});}uBloom();
 /* ===== SCORING ===== */
 function fS(item,mode){var l=LV[item.id]||MAX_LV,t=Math.floor(item.bs*SM);if(item.designInterpretation&&item.designInterpretation.perLevel)t+=item.designInterpretation.perLevel*l;if(item.bonus==="竞技光芒"&&mode==="arena"&&item.competitiveLight&&item.competitiveLight.perLevel)t+=item.competitiveLight.perLevel*l;if(item.bonus==="心阶引领"&&mode==="heart"&&item.shadowSynergyLevel&&item.shadowSynergyLevel.perLevel)t+=item.shadowSynergyLevel.perLevel*l;return Math.floor(t);}
+function tagW(i){return i&&i.cat==='连衣裙'?2:1;}
 function tBi(it,t1,t2){var s=0;if(t1&&(it.t1===t1||it.t2===t1))s|=1;if(t2&&(it.t1===t2||it.t2===t2))s|=2;return s;}
 function tB(n,a){if(n<=0)return 0;return a[Math.min(n,a.length)-1];}
 function cF(raw,mode,t1c,t2c){if(mode==='heart')return raw+Math.floor(raw*tB(t1c,H1B))+Math.floor(raw*tB(t2c,H2B));if(mode==='arena')return raw+Math.floor(raw*tB(t1c,AB));return raw;}
@@ -307,7 +310,7 @@ function recommendFixed(pool,mode,t1,t2,fixed){
   if(!fixed["鞋子"]){var a=eff.filter(function(i){return i.cat==="鞋子"&&!fixedId[i.id];}).sort(function(a,b){return pw(b)-pw(a);});if(a.length){mainItems.push(a[0]);fixedId[a[0].id]=1;}}
   if(!fixed["连衣裙"]&&!fixed["上衣"]&&!fixed["下装"]){var dr=eff.filter(function(i){return i.cat==="连衣裙"&&!fixedId[i.id];}).sort(function(a,b){return pw(b)-pw(a);});var tp=eff.filter(function(i){return i.cat==="上衣"&&!fixedId[i.id];}).sort(function(a,b){return pw(b)-pw(a);});var bt=eff.filter(function(i){return i.cat==="下装"&&!fixedId[i.id];}).sort(function(a,b){return pw(b)-pw(a);});var dP=dr.length?pw(dr[0]):0,tP=(tp.length&&bt.length)?pw(tp[0])+pw(bt[0]):0;if(dP>=tP&&dr.length){mainItems.push(dr[0]);fixedId[dr[0].id]=1;path="连衣裙";}else if(tp.length&&bt.length){mainItems.push(tp[0]);mainItems.push(bt[0]);fixedId[tp[0].id]=1;fixedId[bt[0].id]=1;path="上衣+下装";}}else if(fixed["上衣"]&&!fixed["下装"]){var a=eff.filter(function(i){return i.cat==="下装"&&!fixedId[i.id];}).sort(function(a,b){return pw(b)-pw(a);});if(a.length){mainItems.push(a[0]);fixedId[a[0].id]=1;}}else if(!fixed["上衣"]&&fixed["下装"]){var a=eff.filter(function(i){return i.cat==="上衣"&&!fixedId[i.id];}).sort(function(a,b){return pw(b)-pw(a);});if(a.length){mainItems.push(a[0]);fixedId[a[0].id]=1;}}
   var mainRaw=0;mainItems.forEach(function(i){mainRaw+=pw(i);});var fixedAccRaw=0;fixedAccItems.forEach(function(i){fixedAccRaw+=pw(i);});
-  var fT1=0,fT2=0;mainItems.concat(fixedAccItems).forEach(function(i){if(t1&&(i.t1===t1||i.t2===t1))fT1++;if(t2&&(i.t1===t2||i.t2===t2))fT2++;});
+  var fT1=0,fT2=0;mainItems.concat(fixedAccItems).forEach(function(i){var w=tagW(i);if(t1&&(i.t1===t1||i.t2===t1))fT1+=w;if(t2&&(i.t1===t2||i.t2===t2))fT2+=w;});
   var remainSlots=Math.max(0,5-fixedAccItems.length);var accMcaps=nt===1?[Math.max(0,4-fT1)]:nt===2?[Math.max(0,4-fT1),Math.max(0,2-fT2)]:[];
   var accP=pool.filter(function(i){return !fixedId[i.id]&&ALLACC.indexOf(i.cat)>=0;});
   var grps=buildAccGrps(accP,mode,nt,tagFn),dp=runDP(grps,nt,accMcaps);
@@ -323,7 +326,7 @@ function arenaPostOpt(result,base,pool,mode,t1,t2){
   base.allItems.forEach(function(i){baseMap[gSK(i)]=i;});
   var usedId={};items.forEach(function(i){usedId[i.id]=1;});
   function hasTag(it){return t1&&(it.t1===t1||it.t2===t1);}
-  function getTC(){var c=0;items.forEach(function(i){if(hasTag(i))c++;});return c;}
+  function getTC(){var c=0;items.forEach(function(i){if(hasTag(i))c+=tagW(i);});return c;}
   function slotN(it){if(it.cat==='手持物'&&it.sc==='双手')return 2;return 1;}
   function inOutfit(id){for(var i=0;i<items.length;i++)if(items[i].id===id)return true;return false;}
   /* Phase1: swap IN tags if under 4 */
@@ -416,7 +419,7 @@ function recommendArenaDiff(pool, t1) {
       }
       return false;
     }
-    function tagCount(){var c=0;for(var i=0;i<resItems.length;i++)if(hasTag(resItems[i]))c++;return c;}
+    function tagCount(){var c=0;for(var i=0;i<resItems.length;i++)if(hasTag(resItems[i]))c+=tagW(resItems[i]);return c;}
     for(var iter=0;iter<10;iter++){
       if(tagCount()>=4)break;
       var cands=[];
@@ -457,7 +460,7 @@ function recommendArenaDiff(pool, t1) {
     }
   })();
   var raw = 0, tc1 = 0;
-  resItems.forEach(function(i) { raw += fS(i, 'arena'); if (hasTag(i)) tc1++; });
+  resItems.forEach(function(i) { raw += fS(i, 'arena'); if (hasTag(i)) tc1 += tagW(i); });
   return { finalScore: cF(raw, 'arena', Math.min(tc1, 4), 0), raw: raw, allItems: resItems, baseItems: baseItems, path: base.path, nt: 1 };
 }
 /* ===== HEART OPT ===== */
@@ -474,66 +477,71 @@ function heartOptOutfit(pool,mode,t1,t2,fixed){
   var items=base.allItems.slice(),basePw={};items.forEach(function(i){basePw[gSK(i)]=fS(i,mode);});
   var usedId={};items.forEach(function(i){usedId[i.id]=1;});
   var fixedSK={};ALLFIXCATS.forEach(function(cat){if(fixed[cat])fixedSK[gSK(fixed[cat])]=1;});
-  function getTC(){var c1=0,c2=0;items.forEach(function(i){if(tg1&&(i.t1===tg1||i.t2===tg1))c1++;if(tg2&&(i.t1===tg2||i.t2===tg2))c2++;});return[c1,c2];}
+  function getTC(){var c1=0,c2=0;items.forEach(function(i){var w=tagW(i);if(tg1&&(i.t1===tg1||i.t2===tg1))c1+=w;if(tg2&&(i.t1===tg2||i.t2===tg2))c2+=w;});return[c1,c2];}
   function met(){var tc=getTC();return(!tg1||tc[0]>=4)&&(!tg2||tc[1]>=2);}
   /* 统一换装规则（与竞技场一致，分差贪心，分差 = 换下件战力 - 换入件战力）：
      主件：同部位选分差小的；
      饰品：饰品之间相互比较，与搭配中分数最低的饰品相比，选分差小的；
      主件与饰品再互比，全局取分差最小的换装，每次换装必须更接近 标签1≥4 且 标签2≥2。 */
   (function(){
-    function conflictWith(c,exceptIdx){
-      for(var j=0;j<items.length;j++){if(j!==exceptIdx&&gSK(items[j])===gSK(c))return true;}
+    function conflictWith(c,exceptIdx,arr){
+      arr=arr||items;
+      for(var j=0;j<arr.length;j++){if(j!==exceptIdx&&gSK(arr[j])===gSK(c))return true;}
       return false;
     }
-    function deficit(tc){var d=0;if(tg1&&tc[0]<4)d+=4-tc[0];if(tg2&&tc[1]<2)d+=2-tc[1];return d;}
-    function swapGainOK(ob,nb,tc){
-      var nT1=tc[0]-((ob&1)?1:0)+((nb&1)?1:0);
-      var nT2=tc[1]-((ob&2)?1:0)+((nb&2)?1:0);
-      return deficit([nT1,nT2])<deficit(tc);
+    function tagDeficit(tc){var d=0;if(tg1&&tc[0]<4)d+=4-tc[0];if(tg2&&tc[1]<2)d+=2-tc[1];return d;}
+    function swapGainOK(oldC,c,tc){
+      var ob=tBi(oldC,tg1,tg2),nb=tBi(c,tg1,tg2),wo=tagW(oldC),wc=tagW(c);
+      var nT1=tc[0]-((ob&1)?wo:0)+((nb&1)?wc:0),nT2=tc[1]-((ob&2)?wo:0)+((nb&2)?wc:0);
+      return tagDeficit([nT1,nT2])<tagDeficit(tc);
     }
-    for(var iter=0;iter<20;iter++){
-      if(met())break;
-      var tc=getTC(),cands=[];
-      /* 主件：同部位比较，选分差小的 */
-      for(var idx=0;idx<items.length;idx++){
-        var old=items[idx];
-        if(ALLACC.indexOf(old.cat)>=0||fixedSK[gSK(old)])continue;
-        var ob=tBi(old,tg1,tg2),op=fS(old,mode),best=null,bestDiff=1e18,bestPw=-1;
-        for(var ci=0;ci<pool.length;ci++){
-          var c=pool[ci];
-          if(usedId[c.id]||gSK(c)!==gSK(old))continue;
-          var nb=tBi(c,tg1,tg2);
-          if(nb===ob||!swapGainOK(ob,nb,tc))continue;
-          var cp=fS(c,mode),diff=op-cp;
-          if(diff<bestDiff||(diff===bestDiff&&cp>bestPw)){best=c;bestDiff=diff;bestPw=cp;}
+    /* 原最小分差贪心（作为基线与兜底） */
+    function greedyFill(curItems,curUsed){
+      function gTC(){var c1=0,c2=0;curItems.forEach(function(i){var w=tagW(i);if(tg1&&(i.t1===tg1||i.t2===tg1))c1+=w;if(tg2&&(i.t1===tg2||i.t2===tg2))c2+=w;});return[c1,c2];}
+      function gMet(){var tc=gTC();return(!tg1||tc[0]>=4)&&(!tg2||tc[1]>=2);}
+      for(var iter=0;iter<20;iter++){
+        if(gMet())break;
+        var tc=gTC(),cands=[];
+        for(var idx=0;idx<curItems.length;idx++){
+          var old=curItems[idx];
+          if(ALLACC.indexOf(old.cat)>=0||fixedSK[gSK(old)])continue;
+          var ob=tBi(old,tg1,tg2),op=fS(old,mode),bestC=null,bestDiff=1e18,bestPw=-1;
+          for(var ci=0;ci<pool.length;ci++){
+            var c=pool[ci];
+            if(curUsed[c.id]||gSK(c)!==gSK(old))continue;
+            var nb=tBi(c,tg1,tg2);
+            if(nb===ob||!swapGainOK(old,c,tc))continue;
+            var cp=fS(c,mode),diff=op-cp;
+            if(diff<bestDiff||(diff===bestDiff&&cp>bestPw)){bestC=c;bestDiff=diff;bestPw=cp;}
+          }
+          if(bestC)cands.push({idx:idx,cand:bestC,diff:bestDiff});
         }
-        if(best)cands.push({idx:idx,cand:best,diff:bestDiff});
-      }
-      /* 饰品：饰品之间相互比较，与搭配中分数最低的饰品相比，选分差小的 */
-      for(var idx=0;idx<items.length;idx++){
-        var old=items[idx];
-        if(ALLACC.indexOf(old.cat)<0||fixedSK[gSK(old)])continue;
-        var ob=tBi(old,tg1,tg2),op=fS(old,mode);
-        for(var ci=0;ci<pool.length;ci++){
-          var c=pool[ci];
-          if(usedId[c.id]||ALLACC.indexOf(c.cat)<0)continue;
-          if(!accHandOK(c,idx,items))continue;
-          if(conflictWith(c,idx))continue;
-          var nb=tBi(c,tg1,tg2);
-          if(nb===ob||!swapGainOK(ob,nb,tc))continue;
-          cands.push({idx:idx,cand:c,diff:op-fS(c,mode)});
+        for(var idx=0;idx<curItems.length;idx++){
+          var old=curItems[idx];
+          if(ALLACC.indexOf(old.cat)<0||fixedSK[gSK(old)])continue;
+          var ob=tBi(old,tg1,tg2),op=fS(old,mode);
+          for(var ci=0;ci<pool.length;ci++){
+            var c=pool[ci];
+            if(curUsed[c.id]||ALLACC.indexOf(c.cat)<0)continue;
+            if(!accHandOK(c,idx,curItems))continue;
+            if(conflictWith(c,idx,curItems))continue;
+            var nb=tBi(c,tg1,tg2);
+            if(nb===ob||!swapGainOK(old,c,tc))continue;
+            cands.push({idx:idx,cand:c,diff:op-fS(c,mode)});
+          }
         }
+        if(!cands.length)break;
+        cands.sort(function(a,b){if(a.diff!==b.diff)return a.diff-b.diff;return fS(b.cand,mode)-fS(a.cand,mode);});
+        var pick2=cands[0];
+        curUsed[curItems[pick2.idx].id]=0;
+        curItems[pick2.idx]=pick2.cand;
+        curUsed[pick2.cand.id]=1;
       }
-      if(!cands.length)break;
-      /* 主件与饰品之间再比，取分差最小（同分差取换入战力高者） */
-      cands.sort(function(a,b){if(a.diff!==b.diff)return a.diff-b.diff;return fS(b.cand,mode)-fS(a.cand,mode);});
-      var pick=cands[0];
-      usedId[items[pick.idx].id]=0;
-      items[pick.idx]=pick.cand;
-      usedId[pick.cand.id]=1;
     }
+    /* 纯分差贪心：主件同部位取分差小的先换，饰品互比、主件饰品全局互比，每次换装必须更接近需求 */
+    greedyFill(items,usedId);
   })();
-  if(met()){var ch=true;while(ch){ch=false;var tc2=getTC();for(var idx=0;idx<items.length;idx++){var old=items[idx],ob=tBi(old,tg1,tg2);if(!ob)continue;if(fixedSK[gSK(old)])continue;var nT1=tc2[0]-((ob&1)?1:0),nT2=tc2[1]-((ob&2)?1:0);if((tg1&&nT1<4)||(tg2&&nT2<2))continue;var sk=gSK(old),op=fS(old,mode);for(var ci=0;ci<pool.length;ci++){var c=pool[ci];if(usedId[c.id])continue;if(gSK(c)!==sk)continue;if(tBi(c,tg1,tg2)!==0)continue;if(fS(c,mode)!==op)continue;usedId[old.id]=0;items[idx]=c;usedId[c.id]=1;tc2[0]=nT1;tc2[1]=nT2;ch=true;break;}}}}
+  if(met()){var ch=true;while(ch){ch=false;var tc2=getTC();for(var idx=0;idx<items.length;idx++){var old=items[idx],ob=tBi(old,tg1,tg2);if(!ob)continue;if(fixedSK[gSK(old)])continue;var nT1=tc2[0]-((ob&1)?tagW(old):0),nT2=tc2[1]-((ob&2)?tagW(old):0);if((tg1&&nT1<4)||(tg2&&nT2<2))continue;var sk=gSK(old),op=fS(old,mode);for(var ci=0;ci<pool.length;ci++){var c=pool[ci];if(usedId[c.id])continue;if(gSK(c)!==sk)continue;if(tBi(c,tg1,tg2)!==0)continue;if(fS(c,mode)<op)continue;usedId[old.id]=0;items[idx]=c;usedId[c.id]=1;tc2[0]=nT1;tc2[1]=nT2;ch=true;break;}}}}
   var raw=0;items.forEach(function(i){raw+=fS(i,mode);});var ftc=getTC();
   // --- bloom moment post-optimization ---
   var rcFlashTotal=calcOutfitRcFlash({allItems:items});
@@ -576,47 +584,76 @@ function heartOptOutfit(pool,mode,t1,t2,fixed){
 }
 /* ===== HEART OUTFITS ===== */
 function heartOutfits(pool,t1,t2,f1,f2,f3){
-  var res=[],used={},rem=pool.slice(),fixes=[f1,f2,f3];
-  // Collect all fixed item IDs upfront and deduplicate
-  var allFixedIds={};
-  for(var pos=0;pos<3;pos++){
-    var fix=fixes[pos]||{};
-    ALLFIXCATS.forEach(function(cat){
-      if(fix[cat]){
-        if(allFixedIds[fix[cat].id]){
-          // Item already fixed in another position - remove from this position's fix
-          delete fix[cat];
-        }else{
-          allFixedIds[fix[cat].id]=1;
+  function sumFinal(res){var s=0;for(var i=0;i<res.length;i++)s+=res[i].finalScore;return s;}
+  function cloneFix(fix){var o={};if(fix)for(var k in fix)if(fix.hasOwnProperty(k))o[k]=fix[k];return o;}
+  function runCfg(f1x,f2x,f3x){
+    var res=[],used={},rem=pool.slice(),fixes=[f1x,f2x,f3x];
+    // Collect all fixed item IDs upfront and deduplicate
+    var allFixedIds={};
+    for(var pos=0;pos<3;pos++){
+      var fix=fixes[pos]||{};
+      ALLFIXCATS.forEach(function(cat){
+        if(fix[cat]){
+          if(allFixedIds[fix[cat].id]){
+            // Item already fixed in another position - remove from this position's fix
+            delete fix[cat];
+          }else{
+            allFixedIds[fix[cat].id]=1;
+          }
         }
-      }
-    });
+      });
+    }
+    // Collect fixed IDs per position for cross-position exclusion
+    var fixIdsByPos=[];
+    for(var pos=0;pos<3;pos++){
+      var fids={};
+      var fix=fixes[pos]||{};
+      ALLFIXCATS.forEach(function(cat){if(fix[cat])fids[fix[cat].id]=1;});
+      fixIdsByPos.push(fids);
+    }
+    for(var pos=0;pos<3;pos++){
+      // Exclude items fixed in OTHER positions from the pool
+      var posPool=rem.filter(function(i){
+        for(var op=0;op<3;op++){
+          if(op===pos)continue;
+          if(fixIdsByPos[op][i.id])return false;
+        }
+        return true;
+      });
+      var r=heartOptOutfit(posPool,'heart',t1,t2,fixes[pos]||{});
+      if(!r)break;
+      res.push(r);
+      r.allItems.forEach(function(i){used[i.id]=1;});
+      rem=rem.filter(function(i){return !used[i.id];});
+    }
+    res.sort(function(a,b){return b.finalScore-a.finalScore;});
+    return res;
   }
-  // Collect fixed IDs per position for cross-position exclusion
-  var fixIdsByPos=[];
-  for(var pos=0;pos<3;pos++){
-    var fids={};
-    var fix=fixes[pos]||{};
-    ALLFIXCATS.forEach(function(cat){if(fix[cat])fids[fix[cat].id]=1;});
-    fixIdsByPos.push(fids);
+  // 逐套贪心对“裙路径/强裙归属”敏感：默认方案外，再把池中最强的2件连衣裙
+  // 分别固定到各套（不覆盖用户已固定的裙位），多方案取总分最高者（保证不劣于默认）。
+  var best=runCfg(cloneFix(f1),cloneFix(f2),cloneFix(f3));
+  var bestSum=sumFinal(best);
+  var userFixedIds={};
+  [f1,f2,f3].forEach(function(fix){if(fix)ALLFIXCATS.forEach(function(cat){if(fix[cat])userFixedIds[fix[cat].id]=1;});});
+  // 候选裙 = 默认方案实际用到的裙（含标签价值）∪ 按fS最强的裙，去重后最多3件
+  var dressCands=[],dcSeen={};
+  best.forEach(function(of){of.allItems.forEach(function(it){if(it.cat==='连衣裙'&&!dcSeen[it.id]){dcSeen[it.id]=1;dressCands.push(it);}});});
+  pool.filter(function(i){return i.cat==='连衣裙';}).sort(function(a,b){return fS(b,'heart')-fS(a,'heart');}).forEach(function(it){
+    if(dressCands.length<3&&!dcSeen[it.id]){dcSeen[it.id]=1;dressCands.push(it);}
+  });
+  for(var di=0;di<dressCands.length;di++){
+    var d=dressCands[di];
+    if(userFixedIds[d.id])continue;
+    for(var pos=0;pos<3;pos++){
+      if(([f1,f2,f3][pos]||{})['连衣裙'])continue;
+      var c1=cloneFix(f1),c2=cloneFix(f2),c3=cloneFix(f3);
+      [c1,c2,c3][pos]['连衣裙']=d;
+      var res2=runCfg(c1,c2,c3);
+      var sum2=sumFinal(res2);
+      if(sum2>bestSum){best=res2;bestSum=sum2;}
+    }
   }
-  for(var pos=0;pos<3;pos++){
-    // Exclude items fixed in OTHER positions from the pool
-    var posPool=rem.filter(function(i){
-      for(var op=0;op<3;op++){
-        if(op===pos)continue;
-        if(fixIdsByPos[op][i.id])return false;
-      }
-      return true;
-    });
-    var r=heartOptOutfit(posPool,'heart',t1,t2,fixes[pos]||{});
-    if(!r)break;
-    res.push(r);
-    r.allItems.forEach(function(i){used[i.id]=1;});
-    rem=rem.filter(function(i){return !used[i.id];});
-  }
-  res.sort(function(a,b){return b.finalScore-a.finalScore;});
-  return res;
+  return best;
 }
 /* ===== RENDERING ===== */
 function rCard(it,mode,t1,t2,idx){
@@ -647,7 +684,7 @@ function rComp(baseItems,taggedItems,mode,t1,t2){
     h+='<tr'+(chg?' class="changed"':'')+'><td>'+k+'</td><td>'+(b?b.name:'\u2014')+'</td><td class="pw">'+(b?bP.toLocaleString():'\u2014')+'</td><td>'+(t?t.name:'\u2014')+tTg+'</td><td class="pw">'+(t?tP.toLocaleString():'\u2014')+'</td><td class="pw '+cls+'">'+(d>=0?'+':'')+d+'</td></tr>';});
   h+='</tbody></table></div>';return h;}
 function rOutfit(r,mode,showComp,t1,t2){
-  var t1c=0,t2c=0;r.allItems.forEach(function(i){if(t1&&(i.t1===t1||i.t2===t1))t1c++;if(t2&&(i.t1===t2||i.t2===t2))t2c++;});t1c=Math.min(t1c,4);t2c=Math.min(t2c,2);
+  var t1c=0,t2c=0;r.allItems.forEach(function(i){var _w=tagW(i);if(t1&&(i.t1===t1||i.t2===t1))t1c+=_w;if(t2&&(i.t1===t2||i.t2===t2))t2c+=_w;});t1c=Math.min(t1c,4);t2c=Math.min(t2c,2);
   var h='<div class="c2-summary"><div class="c2-si"><div class="c2-sl">搭配之力</div><div class="c2-sv">'+r.raw.toLocaleString()+'</div></div>';
   if(r.nt>0){var bp=mode==='arena'?(tB(t1c,AB)*100).toFixed(0)+'%':'T1:'+(tB(t1c,H1B)*100).toFixed(0)+'% + T2:'+(tB(t2c,H2B)*100).toFixed(0)+'%';h+='<div class="c2-si"><div class="c2-sl">标签增益</div><div class="c2-sv">'+bp+'</div></div>';}
   h+='<div class="c2-si"><div class="c2-sl">最终得分</div><div class="c2-sv">'+r.finalScore.toLocaleString()+'</div></div>';
@@ -780,6 +817,109 @@ document.getElementById('restructTbody2').addEventListener('input',handleRTInput
 ATTRS.forEach(function(a){['rcFilterA','rcFilterH'].forEach(function(id){var sel=document.getElementById(id);if(sel){var o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);}});});
 window.fillRestructTable=fillRestructTable;
 fillRestructTable('restructTbody');fillRestructTable('restructTbody2');
+/* ===== CARD DATA TABLE（影召/被动 等级编辑）===== */
+/* ===== CARD PASSIVE LEVELS（每张卡牌的影召/被动等级，竞技场与心阶通用，持久化）===== */
+var cardPassiveLvls={};
+try{cardPassiveLvls=JSON.parse(localStorage.getItem('sn_card_passives')||'{}')||{};}catch(e){cardPassiveLvls={};}
+function getCardPassive(id){var v=cardPassiveLvls[id];return {sh:(v&&v.sh)||0,p:(v&&v.p)||[0,0,0]};}
+function saveCardPassives(){try{localStorage.setItem('sn_card_passives',JSON.stringify(cardPassiveLvls));}catch(e){}}
+var _cpSyncing=false;
+function applyCardPassives(prefix,cardId){
+  var v=getCardPassive(cardId);
+  var ss=document.getElementById(prefix+'CalcShadow');
+  if(ss&&ss.options.length>0)ss.value=String(Math.min(Math.max(v.sh||0,0),4));
+  for(var pi=0;pi<3;pi++){
+    var el=document.getElementById(prefix+'CalcPass'+(pi+1));
+    if(el&&el.options.length>0)el.value=String(Math.min(Math.max(v.p[pi]||0,0),4));
+  }
+}
+function syncCardPassiveUI(cardId,excludePrefix){
+  if(_cpSyncing)return;
+  _cpSyncing=true;
+  try{
+    ['a','h1','h2','h3'].forEach(function(p){
+      if(p===excludePrefix)return;
+      var sel=document.getElementById(p+'CalcCard');
+      if(sel&&sel.value===String(cardId)){
+        applyCardPassives(p,cardId);
+        var ss=document.getElementById(p+'CalcShadow');
+        if(ss)ss.dispatchEvent(new Event('change'));
+      }
+    });
+    if(typeof fillCardDataTable==='function'){fillCardDataTable('cardDataTbody');fillCardDataTable('cardDataTbody2');}
+  }finally{_cpSyncing=false;}
+}
+function refreshCardDataRec(){
+  ['cardDataTbody','cardDataTbody2'].forEach(function(tbId){
+    var tb=document.getElementById(tbId);if(!tb)return;
+    var cbs=tb.querySelectorAll('input[type="checkbox"]');
+    for(var i=0;i<cbs.length;i++){
+      var cid=parseInt(cbs[i].dataset.cardid);
+      if(!isNaN(cid))cbs[i].checked=!!recoveryByCardId[cid];
+    }
+  });
+}
+function fillCardDataTable(tbodyId){
+  var tb=document.getElementById(tbodyId);if(!tb)return;tb.innerHTML='';
+  var filterSel=document.getElementById(tbodyId==='cardDataTbody'?'cdFilterA':'cdFilterH');
+  var filterAttr=filterSel?filterSel.value:'';
+  cardData.forEach(function(c){
+    if(filterAttr&&c.style!==filterAttr)return;
+    var v=getCardPassive(c.id);
+    var tr=document.createElement('tr');
+    function upd(slot,val){
+      var cur=getCardPassive(c.id);
+      if(slot===0){cur.sh=parseInt(val)||0;}else{cur.p=[cur.p[0]||0,cur.p[1]||0,cur.p[2]||0];cur.p[slot-1]=parseInt(val)||0;}
+      cardPassiveLvls[c.id]=cur;
+      saveCardPassives();
+      syncCardPassiveUI(c.id,null);
+      /* 影召/被动变化后，计算器自动按公式重选最佳卡牌 */
+      if(typeof window.refreshAutoBestCards==='function')window.refreshAutoBestCards();
+    }
+    function mkSel(val,onch){
+      var sel=document.createElement('select');sel.style.cssText='width:58px;padding:.15rem .1rem;font-size:.7rem;text-align:center';
+      for(var i=0;i<5;i++){var o=document.createElement('option');o.value=i;o.textContent='Lv.'+(i+1);if(i===val)o.selected=true;sel.appendChild(o);}
+      sel.addEventListener('change',onch);return sel;
+    }
+    var td1=document.createElement('td');td1.style.textAlign='left';
+    td1.innerHTML='<span style="color:var(--c2-text)">'+c.name+'</span> <small style="color:var(--c2-muted)">'+c.designer+'</small>';
+    tr.appendChild(td1);
+    var td2=document.createElement('td');td2.innerHTML='<span class="attr-tag attr-'+c.style+'">'+c.style+'</span>';tr.appendChild(td2);
+    var td3=document.createElement('td');td3.textContent=c.rarity;td3.style.color='var(--c2-muted)';tr.appendChild(td3);
+    var td4=document.createElement('td');td4.appendChild(mkSel(Math.min(v.sh||0,4),function(){upd(0,this.value);}));tr.appendChild(td4);
+    for(var pi=0;pi<3;pi++){
+      (function(pi){
+        var td=document.createElement('td');
+        var wrap=document.createElement('div');wrap.style.cssText='display:flex;align-items:center;gap:3px;justify-content:center';
+        var tag=document.createElement('small');tag.textContent=(c.passive&&c.passive[pi])?c.passive[pi]:'—';tag.style.color='var(--c2-muted)';
+        wrap.appendChild(tag);
+        wrap.appendChild(mkSel(Math.min((v.p[pi]||0),4),function(){upd(1+pi,this.value);}));
+        td.appendChild(wrap);tr.appendChild(td);
+      })(pi);
+    }
+    var td5=document.createElement('td');
+    var recCb=document.createElement('input');recCb.type='checkbox';recCb.dataset.cardid=c.id;
+    recCb.style.cssText='width:15px;height:15px;accent-color:var(--c2-accent)';
+    recCb.checked=!!recoveryByCardId[c.id];
+    recCb.addEventListener('change',function(){
+      recoveryByCardId[c.id]=recCb.checked;
+      try{localStorage.setItem('sn_recovery',JSON.stringify(recoveryByCardId));}catch(e){}
+      refreshCardDataRec();
+      ['a','h1','h2','h3'].forEach(function(p){
+        var sel=document.getElementById(p+'CalcCard');
+        if(sel&&sel.value===String(c.id)){
+          var cb=document.getElementById(p+'CalcRec');
+          if(cb&&cb.checked!==recCb.checked){cb.checked=recCb.checked;cb.dispatchEvent(new Event('change'));}
+        }
+      });
+    });
+    td5.appendChild(recCb);tr.appendChild(td5);
+    tb.appendChild(tr);
+  });
+}
+window.fillCardDataTable=fillCardDataTable;
+ATTRS.forEach(function(a){['cdFilterA','cdFilterH'].forEach(function(id){var sel=document.getElementById(id);if(sel){var o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);}});});
+fillCardDataTable('cardDataTbody');fillCardDataTable('cardDataTbody2');
 /* ===== DROPDOWNS & TABS ===== */
 ATTRS.forEach(function(a){['aAttr','hAttr'].forEach(function(id){var sel=document.getElementById(id);var o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o);});});
 function fillTag(sel,wn){sel.innerHTML='';if(wn){var o=document.createElement('option');o.value='';o.textContent='无';sel.appendChild(o);}TAGS.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});}
@@ -790,6 +930,37 @@ renderDataList();
 document.querySelectorAll('.c2-tab').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.c2-tab').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');document.querySelectorAll('.c2-panel').forEach(function(p){p.classList.remove('show');});document.getElementById(btn.dataset.panel).classList.add('show');});});
 /* ===== CALC PARAMS (shared for Arena & Heart) ===== */
 var calcCardData={card:null,shadowIdx:0,passLvl:[0,0,0],recovery:0,gallery:0,yhjc:[0,0],impIdx:0,impLvl:4,rcIdx:0,rcLvl:80,parts:[0,0,0,0,0,0,0,0,0]};
+function buildGalGrid(prefix){
+  var galGrid=document.getElementById(prefix+'CalcGalGrid');
+  if(!galGrid)return;
+  galGrid.innerHTML='';
+  var collections=[];cardData.forEach(function(c){if(c.collection&&collections.indexOf(c.collection)<0)collections.push(c.collection);});
+  collections.forEach(function(coll){
+    var div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:4px';
+    var lbl=document.createElement('span');lbl.style.cssText='font-size:10px;color:var(--c2-muted);white-space:nowrap;min-width:0';lbl.textContent=coll;div.appendChild(lbl);
+    var sel=document.createElement('select');sel.id=prefix+'CalcGal_'+coll;sel.style.cssText='flex:1;padding:2px 4px;background:var(--c2-s2);border:1px solid var(--c2-border);border-radius:4px;color:var(--c2-text);font-size:11px;outline:none;min-width:0';
+    for(var i=0;i<=14;i++){var o=document.createElement('option');o.value=i;o.textContent=i+'('+i*2+'%)';if((galleryByCollection[coll]||0)===i)o.selected=true;sel.appendChild(o);}
+    sel.addEventListener('change',function(){
+      galleryByCollection[coll]=parseInt(this.value);
+      try{localStorage.setItem('sn_gallery',JSON.stringify(galleryByCollection));}catch(e){}
+      /* 同步另一面板同名下拉 */
+      var otherId=(prefix==='a'?'h':'a')+'CalcGal_'+coll;
+      var otherSel=document.getElementById(otherId);
+      if(otherSel)otherSel.value=this.value;
+      /* 更新两侧馆藏摘要 */
+      var card=calcCardData.card;
+      if(card&&card.collection===coll){
+        ['a','h'].forEach(function(p){var sum=document.getElementById(p+'CalcGalSummary');if(sum)sum.innerHTML='<span style="color:var(--c2-text)">'+coll+'</span> · Lv.'+this.value+' <span style="color:var(--c2-muted);font-weight:400">('+parseInt(this.value)*2+'%)</span>';}.bind(this));
+      }
+      /* 刷新搭配之力（心阶侧为 h1/h2/h3 三个计算器） */
+      if(typeof updateCardPower==='function'){
+        var targets=(prefix==='h')?['h1','h2','h3']:[prefix];
+        targets.forEach(function(tp){try{updateCardPower(tp);}catch(e){}});
+      }
+    });
+    div.appendChild(sel);galGrid.appendChild(div);
+  });
+}
 function initCalcPanel(prefix,mode){
   var sA=prefix+'CalcStyle',sC=prefix+'CalcCard',sS=prefix+'CalcShadow';
   var sP1=prefix+'CalcPass1',sP2=prefix+'CalcPass2',sP3=prefix+'CalcPass3';
@@ -798,17 +969,8 @@ function initCalcPanel(prefix,mode){
   var sIT=prefix+'CalcImpType',sIS=prefix+'CalcImpSel',sIL=prefix+'CalcImpLvl';
   var sRC=prefix+'CalcRc',sRL=prefix+'CalcRcLvl';
   var sAEl=document.getElementById(sA);sAEl.innerHTML='';ATTRS.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;sAEl.appendChild(o);});
-  /* Build per-collection gallery dropdowns */
-  var collections=[];cardData.forEach(function(c){if(c.collection&&collections.indexOf(c.collection)<0)collections.push(c.collection);});
-  var galGrid=document.getElementById(prefix+'CalcGalGrid');
-  collections.forEach(function(coll){
-    var div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:4px';
-    var lbl=document.createElement('span');lbl.style.cssText='font-size:10px;color:var(--c2-muted);white-space:nowrap;min-width:0';lbl.textContent=coll;div.appendChild(lbl);
-    var sel=document.createElement('select');sel.id=prefix+'CalcGal_'+coll;sel.style.cssText='flex:1;padding:2px 4px;background:var(--c2-s2);border:1px solid var(--c2-border);border-radius:4px;color:var(--c2-text);font-size:11px;outline:none;min-width:0';
-    for(var i=0;i<=14;i++){var o=document.createElement('option');o.value=i;o.textContent=i+'('+i*2+'%)';if((galleryByCollection[coll]||0)===i)o.selected=true;sel.appendChild(o);}
-    sel.addEventListener('change',function(){galleryByCollection[coll]=parseInt(this.value);try{localStorage.setItem('sn_gallery',JSON.stringify(galleryByCollection));}catch(e){}/*sync to other panel*/var otherId=(prefix==='a'?'h':'a')+'CalcGal_'+coll;var otherSel=document.getElementById(otherId);if(otherSel)otherSel.value=this.value;/*update summary and card power*/var card=calcCardData.card;if(card&&card.collection===coll){['a','h'].forEach(function(p){var sum=document.getElementById(p+'CalcGalSummary');if(sum)sum.innerHTML='<span style="color:var(--c2-text)">'+coll+'</span> · Lv.'+this.value+' <span style="color:var(--c2-muted);font-weight:400">('+parseInt(this.value)*2+'%)</span>';}.bind(this));}if(typeof updateCardPower==='function')updateCardPower(prefix);});
-    div.appendChild(sel);if(galGrid)galGrid.appendChild(div);
-  });
+  /* Build per-collection gallery dropdowns（竞技/心阶两面板共用） */
+  buildGalGrid(prefix);
   for(var i=0;i<Yhjc.length;i++){
     var yh1El=document.getElementById(sY1);
     var yh2El=document.getElementById(sY2);
@@ -915,7 +1077,8 @@ function initCalcPanel(prefix,mode){
   document.getElementById(sIT).addEventListener('change',function(){fillImpSel();updateCalc();updateShadowPower(prefix);});
   var rLvlSel=document.getElementById(sRL);for(var i=1;i<=80;i++){var o=document.createElement('option');o.value=i;o.textContent='等级'+i;if(i===80)o.selected=true;rLvlSel.appendChild(o);}
   if(prefix==='a'){var pDiv=document.getElementById('aCalcParts');for(var i=1;i<=8;i++){var lb=document.createElement('label');lb.style.cssText='display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer';var cb=document.createElement('input');cb.type='checkbox';cb.id='aCalcPart'+i;cb.style.cssText='width:14px;height:14px';cb.dataset.idx=i;lb.appendChild(cb);var sp=document.createElement('span');sp.textContent=['裙','饰品1','饰品2','头','饰品3','饰品4','饰品5','鞋'][i-1];lb.appendChild(sp);pDiv.appendChild(lb);}}
-  function fillCards(){var attr=document.getElementById(sA).value,sel=document.getElementById(sC);sel.innerHTML='';var emptyOpt=document.createElement('option');emptyOpt.value='';emptyOpt.textContent='请选择卡牌';sel.appendChild(emptyOpt);var cards=[];for(var i=0;i<cardData.length;i++){var c=cardData[i];if(c.style===attr)cards.push(c);}cards.sort(function(a,b){return b.styles[attr]-a.styles[attr];});cards.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.designer+' - '+c.name;sel.appendChild(o);});}
+  function fillCards(){var attr=document.getElementById(sA).value,sel=document.getElementById(sC);var _prev=sel.value;sel.innerHTML='';var emptyOpt=document.createElement('option');emptyOpt.value='';emptyOpt.textContent='请选择卡牌';sel.appendChild(emptyOpt);var cards=[];for(var i=0;i<cardData.length;i++){var c=cardData[i];if(c.style===attr)cards.push(c);}cards.sort(function(a,b){return b.styles[attr]-a.styles[attr];});cards.forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.designer+' - '+c.name;sel.appendChild(o);});/* 重建后保留原选择（若仍在列表中） */
+  if(_prev){for(var j=0;j<sel.options.length;j++){if(sel.options[j].value===_prev){sel.selectedIndex=j;break;}}}}
   function updateCardPower(prefix){
     var card=calcCardData.card;if(!card)return;
     var rec=document.getElementById(prefix+'CalcRec').checked;
@@ -935,10 +1098,12 @@ function initCalcPanel(prefix,mode){
     var cardPower=attrIdx>=0?dp[attrIdx]:Math.max.apply(null,dp);
     var slots=impSlots[prefix]||[null,null,null,null,null];
     var impPower=0;
-    slots.forEach(function(id){if(id){var imp=elegantImpressionData.filter(function(x){return x.id===id;})[0];if(imp&&(!mainAttr||imp.attr===mainAttr))impPower+=(imp.maxPower||0);}});
+    // 印象搭配之力只对本属性生效：印象装备跟随卡牌属性，但仅当印象属性=主属性时计入，否则为0
+    var impMatched=!mainAttr||card.style===mainAttr;
+    slots.forEach(function(id){if(id){var imp=elegantImpressionData.filter(function(x){return x.id===id;})[0];if(imp&&impMatched&&(!mainAttr||imp.attr===mainAttr))impPower+=(imp.maxPower||0);}});
     // Add resonance bonus to impression power
     var impResonance=calcResonance(slots);
-    impPower+=impResonance;
+    if(impMatched)impPower+=impResonance;
     // Shadow synergy: if selected card name matches an outfit item's shadowSynergy, add bonus
     var synergyPower=0;
     var selCardEl=document.getElementById(prefix+'CalcCard');
@@ -967,7 +1132,7 @@ function initCalcPanel(prefix,mode){
   }
   window.updateShadowPower=updateShadowPower;
   window.updateCardPower=updateCardPower;
-  function fillShadow(){var id=parseInt(document.getElementById(sC).value),card=findCard(id);if(!card)return;calcCardData.card=card;var ss=document.getElementById(sS);ss.innerHTML='';for(var j=0;j<5;j++){var o=document.createElement('option');o.value=j;o.textContent=shadowLabels[j];ss.appendChild(o);}var pKey=(card.rarity==='非凡')?'非凡':'闪耀';for(var p=0;p<3;p++){var pSel=document.getElementById(prefix+'CalcPass'+(p+1));pSel.innerHTML='';for(var i=0;i<5;i++){var o=document.createElement('option');o.value=i;o.textContent='等级'+(i+1)+' ('+toPercent(passiveTable[pKey][card.passive[p]][i])+')';pSel.appendChild(o);}}var galSum=document.getElementById(prefix+'CalcGalSummary');if(galSum){var gl=galleryByCollection[card.collection]||0;galSum.innerHTML='<span style="color:var(--c2-text)">'+card.collection+'</span> · Lv.'+gl+' <span style="color:var(--c2-muted);font-weight:400">('+gl*2+'%)</span>';}updateCardPower(prefix);syncRecFromStorage();fillRc();fillImpSel();buildImpSlots(prefix);updateCalc();}
+  function fillShadow(){var id=parseInt(document.getElementById(sC).value),card=findCard(id);if(!card)return;calcCardData.card=card;var ss=document.getElementById(sS);ss.innerHTML='';for(var j=0;j<5;j++){var o=document.createElement('option');o.value=j;o.textContent=shadowLabels[j];ss.appendChild(o);}var pKey=(card.rarity==='非凡')?'非凡':'闪耀';for(var p=0;p<3;p++){var pSel=document.getElementById(prefix+'CalcPass'+(p+1));pSel.innerHTML='';for(var i=0;i<5;i++){var o=document.createElement('option');o.value=i;o.textContent='等级'+(i+1)+' ('+toPercent(passiveTable[pKey][card.passive[p]][i])+')';pSel.appendChild(o);}}var _cp=getCardPassive(card.id);ss.value=String(_cp.sh);for(var _pi=0;_pi<3;_pi++){var _ps=document.getElementById(prefix+'CalcPass'+(_pi+1));if(_ps)_ps.value=String(_cp.p[_pi]||0);}var galSum=document.getElementById(prefix+'CalcGalSummary');if(galSum){var gl=galleryByCollection[card.collection]||0;galSum.innerHTML='<span style="color:var(--c2-text)">'+card.collection+'</span> · Lv.'+gl+' <span style="color:var(--c2-muted);font-weight:400">('+gl*2+'%)</span>';}updateCardPower(prefix);syncRecFromStorage();fillRc();fillImpSel();buildImpSlots(prefix);updateCalc();}
   // Recovery checkbox: load from localStorage and save on change
   var recEl=document.getElementById(prefix+'CalcRec');
   // Restore recovery state per card
@@ -991,15 +1156,30 @@ function initCalcPanel(prefix,mode){
       if(otherRec)otherRec.checked=recEl.checked;
     }
     updateCardPower(prefix);updateShadowPower(prefix);
+    if(typeof refreshCardDataRec==='function')refreshCardDataRec();
   });
   function fillRc(){var sel=document.getElementById(sRC);sel.innerHTML='';for(var i=reconstructData.length-1;i>=0;i--){var d=reconstructData[i];if(d.attribute!==document.getElementById(sA).value)continue;var o=document.createElement('option');o.value=i;o.textContent=d.name;sel.appendChild(o);}updateCalc();}
   function updateCalc(){var card=calcCardData.card;if(!card)return;calcCardData.shadowIdx=parseInt(document.getElementById(sS).value);for(var p=0;p<3;p++)calcCardData.passLvl[p]=parseInt(document.getElementById(prefix+'CalcPass'+(p+1)).value);calcCardData.recovery=document.getElementById(sR).checked?1:0;calcCardData.gallery=galleryByCollection[card.collection]||0;var yh1El=document.getElementById(sY1);var yh2El=document.getElementById(sY2);calcCardData.yhjc[0]=yh1El?parseInt(yh1El.value):0;calcCardData.yhjc[1]=yh2El?parseInt(yh2El.value):0;calcCardData.impType=document.getElementById(sIT).value;calcCardData.impIdx=parseInt(document.getElementById(sIS).value);calcCardData.impLvl=parseInt(document.getElementById(sIL).value);calcCardData.rcIdx=parseInt(document.getElementById(sRC).value);calcCardData.rcLvl=parseInt(document.getElementById(sRL).value);}
-  document.getElementById(sA).addEventListener('change',function(){fillCards();fillRc();});
+  document.getElementById(sA).addEventListener('change',function(){fillCards();fillRc();if(prefix==='a')autoPickBestCard(prefix);});
   document.getElementById(sC).addEventListener('change',fillShadow);
   [sS,sP1,sP2,sP3,sR,sY1,sY2,sIT,sIS,sIL,sRC,sRL].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',function(){updateCalc();updateShadowPower(prefix);});});
   // Auto-refresh arrangement when shadow level or passives change
   [sS,sP1,sP2,sP3].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',function(){if(impSlots[prefix]&&impSlots[prefix].some(function(x){return x!==null;}))autoArrangeImp(prefix);});});
+  // 影召/被动 等级按卡牌持久化（切换卡牌自动恢复）
+  [sS,sP1,sP2,sP3].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('change',function(){
+    if(_cpSyncing)return;
+    var card=calcCardData.card;if(!card)return;
+    cardPassiveLvls[card.id]={sh:parseInt(document.getElementById(sS).value)||0,p:[
+      parseInt(document.getElementById(prefix+'CalcPass1').value)||0,
+      parseInt(document.getElementById(prefix+'CalcPass2').value)||0,
+      parseInt(document.getElementById(prefix+'CalcPass3').value)||0]};
+    saveCardPassives();
+    syncCardPassiveUI(card.id,prefix);
+  });});
   fillCards();
+  /* 自动选卡按钮（仅竞技场；心阶手动选卡） */
+  var _ab=document.getElementById(prefix+'AutoCardBtn');
+  if(_ab&&!_ab.dataset.bound){_ab.dataset.bound='1';_ab.addEventListener('click',function(){autoPickBestCard(prefix);});}
   // Persist nail: per mode
   (function(){
     var el=document.getElementById(prefix+'CalcNail');if(!el)return;
@@ -1032,7 +1212,7 @@ function calcBattleScore(rawPower,mode,totalPower,prefix,rcFlashOverride){
   var shadowCoeff=card.shadow[idx]||0;
   var heartVal=card.heartSkill[idx]||0;
   var sfmVal=card.shadowFlashMoment[idx]||0;
-  var imp=elegantImpressionData.filter(function(i){return i.id===calcCardData.impIdx;})[0]||impressionData[calcCardData.impIdx];
+  var imp=elegantImpressionData.filter(function(i){return i.id===calcCardData.impIdx;})[0]||impressionData[calcCardData.impIdx]||{skillOne:[0,0,0,0,0],skillTwo:[0,0,0,0,0],burstRate:0};
   if(!imp)return null;
   var impSkill1=imp.skillOne[calcCardData.impLvl]||0;
   var impSkill2=imp.skillTwo[calcCardData.impLvl];
@@ -1092,6 +1272,125 @@ function calcBattleScore(rawPower,mode,totalPower,prefix,rcFlashOverride){
   var skillSum=0;for(var i=0;i<8;i++)skillSum+=xin[i];skillSum+=yzzh+sysj;if(mode==='heart')skillSum+=baofa;
   return{score:scoreSum,skillSum:skillSum,yh:yh,nail:nail,raw:rawPower,dp:dp};
 }
+/* ===== AUTO CARD SELECTION（仅竞技场自动选卡；心阶为手动选卡）===== */
+/* 卡牌主属性搭配之力（与计算器“设计师之影”口径一致：复苏/馆藏按卡牌数据） */
+function cardMainPower(card,mainAttr){
+  var dp=calcCarddp(card,!!recoveryByCardId[card.id],galleryByCollection[card.collection]||0);
+  var attrIdx=['典雅','清新','甜美','性感','帅气'].indexOf(mainAttr);
+  return attrIdx>=0?dp[attrIdx]:Math.max.apply(null,dp);
+}
+function syncCalcDataFromPanel(prefix){
+  var cs=document.getElementById(prefix+'CalcCard');
+  if(!cs||!cs.value)return;
+  var card=findCard(parseInt(cs.value));if(!card)return;
+  calcCardData.card=card;
+  var shEl=document.getElementById(prefix+'CalcShadow');
+  calcCardData.shadowIdx=shEl?parseInt(shEl.value)||0:0;
+  for(var pi=0;pi<3;pi++){var el=document.getElementById(prefix+'CalcPass'+(pi+1));calcCardData.passLvl[pi]=el?parseInt(el.value)||0:0;}
+  var recEl=document.getElementById(prefix+'CalcRec');calcCardData.recovery=recEl&&recEl.checked?1:0;
+  var itEl=document.getElementById(prefix+'CalcImpType');if(itEl)calcCardData.impType=itEl.value;
+  var isEl=document.getElementById(prefix+'CalcImpSel');if(isEl)calcCardData.impIdx=parseInt(isEl.value)||0;
+  var ilEl=document.getElementById(prefix+'CalcImpLvl');if(ilEl)calcCardData.impLvl=parseInt(ilEl.value)||0;
+}
+function evalCardBattle(card,mode,rawPower,totalPower,prefix,rcFlash){
+  if(!card||typeof calcBattleScore!=='function')return null;
+  var saved={card:calcCardData.card,shadowIdx:calcCardData.shadowIdx,passLvl:calcCardData.passLvl.slice(),impIdx:calcCardData.impIdx,impLvl:calcCardData.impLvl,impType:calcCardData.impType};
+  var v=getCardPassive(card.id);
+  calcCardData.card=card;calcCardData.shadowIdx=v.sh||0;calcCardData.passLvl=[v.p[0]||0,v.p[1]||0,v.p[2]||0];
+  var br=null;
+  try{br=calcBattleScore(rawPower,mode,totalPower,prefix,rcFlash);}catch(e){br=null;}
+  calcCardData.card=saved.card;calcCardData.shadowIdx=saved.shadowIdx;calcCardData.passLvl=saved.passLvl;calcCardData.impIdx=saved.impIdx;calcCardData.impLvl=saved.impLvl;calcCardData.impType=saved.impType;
+  return br;
+}
+function applyAutoCard(prefix,card){
+  if(!card)return false;
+  var stEl=document.getElementById(prefix+'CalcStyle');
+  if(stEl&&stEl.value!==card.style){stEl.value=card.style;stEl.dispatchEvent(new Event('change'));}
+  var cs=document.getElementById(prefix+'CalcCard');
+  if(!cs)return false;
+  function pick(){for(var i=0;i<cs.options.length;i++){if(cs.options[i].value===String(card.id)){cs.selectedIndex=i;return true;}}return false;}
+  if(!pick()){
+    if(stEl){stEl.value=card.style;stEl.dispatchEvent(new Event('change'));}
+    if(!pick())return false;
+  }
+  cs.dispatchEvent(new Event('change'));
+  if(typeof window.autoArrangeImp==='function'){try{window.autoArrangeImp(prefix);}catch(e){}}
+  syncCalcDataFromPanel(prefix);
+  return true;
+}
+/* ===== AUTO PICK BEST CARD（计算器参数：根据卡牌数据的影召/被动等级 + 计算公式自动选最佳卡牌）=====
+   比对规则：取得分高者（完全同分时取技能倍率高者），得分计入各卡主属性搭配之力；候选限于计算器当前“卡牌属性” */
+var _autoPickingCard=false;
+function autoPickBestCard(prefix){
+  if(_autoPickingCard)return null;
+  var cs=document.getElementById(prefix+'CalcCard');if(!cs)return null;
+  var attrEl=document.getElementById(prefix+'CalcStyle');
+  var attr=attrEl?attrEl.value:'';
+  var mode=prefix==='a'?'arena':'heart';
+  var rawPower=0;
+  var opEl=document.getElementById(prefix+'CalcOutfitPower');
+  if(opEl)rawPower=parseFloat((opEl.textContent||'').replace(/,/g,''))||0;
+  var rcFlash=0;
+  var rcSel=document.getElementById(prefix+'CalcRc'),rlSel=document.getElementById(prefix+'CalcRcLvl');
+  if(rcSel&&rlSel){var d=reconstructData[parseInt(rcSel.value)];if(d)rcFlash=getFlashBonus(d.id,parseInt(rlSel.value));}
+  /* 临时同步面板印象设置参与比较；未选印象时用中性值（纯公式，不含印象加成） */
+  var _svImp={idx:calcCardData.impIdx,lvl:calcCardData.impLvl,type:calcCardData.impType};
+  var itEl=document.getElementById(prefix+'CalcImpType');if(itEl)calcCardData.impType=itEl.value;
+  var isEl=document.getElementById(prefix+'CalcImpSel');var _iv=isEl?parseInt(isEl.value):NaN;calcCardData.impIdx=isNaN(_iv)?NaN:_iv;
+  var ilEl=document.getElementById(prefix+'CalcImpLvl');if(ilEl)calcCardData.impLvl=parseInt(ilEl.value)||4;
+  var best=null,bestSk=-Infinity,bestSc=-Infinity;
+  var _mainAttrEl=document.getElementById(prefix==='a'?'aAttr':'hAttr');
+  var _mainAttr=_mainAttrEl?_mainAttrEl.value:'';
+  /* 心阶三套互斥：跳过其他面板已选用的卡牌；不够时兜底忽略互斥 */
+  var _taken={};
+  if(prefix.charAt(0)==='h'){
+    ['h1','h2','h3'].forEach(function(p){
+      if(p===prefix)return;
+      var s=document.getElementById(p+'CalcCard');
+      if(s&&s.value)_taken[s.value]=1;
+    });
+  }
+  function _tryPick(respectTaken){
+    var b=null,bSk=-Infinity,bSc=-Infinity;
+    cardData.forEach(function(card){
+      if(attr&&card.style!==attr)return;
+      if(respectTaken&&_taken[String(card.id)])return;
+      /* evalCardBattle 自动套用卡牌数据中该卡的影召/被动等级；得分计入该卡主属性搭配之力 */
+      var _cp=cardMainPower(card,_mainAttr);
+      var br=evalCardBattle(card,mode,rawPower,rawPower+_cp,prefix,rcFlash);
+      if(!br)return;
+      var sc=br.score;
+      if(sc>bSc||(sc===bSc&&br.skillSum>bSk)){bSc=sc;bSk=br.skillSum;b=card;}
+    });
+    return b;
+  }
+  best=_tryPick(true)||_tryPick(false);
+  calcCardData.impIdx=_svImp.idx;calcCardData.impLvl=_svImp.lvl;calcCardData.impType=_svImp.type;
+  if(!best)return null;
+  _autoPickingCard=true;
+  try{applyAutoCard(prefix,best);}finally{_autoPickingCard=false;}
+  return best;
+}
+window.autoPickBestCard=autoPickBestCard;
+function refreshAutoBestCards(){try{var s=document.getElementById('aCalcCard');if(s&&s.options.length>1)autoPickBestCard('a');}catch(e){}}
+window.refreshAutoBestCards=refreshAutoBestCards;
+function autoSelectCardArena(rawPower,rcFlash){
+  /* 比对规则：取得分高者（完全同分时取技能倍率高者），得分计入各卡主属性搭配之力 */
+  var best=null,bestBr=null,bestSc=-Infinity,bestSk=-Infinity;
+  var _mainAttrEl=document.getElementById('aAttr');
+  var _mainAttr=_mainAttrEl?_mainAttrEl.value:'';
+  cardData.forEach(function(card){
+    var _cp=cardMainPower(card,_mainAttr);
+    var br=evalCardBattle(card,'arena',rawPower,rawPower+_cp,'a',rcFlash);
+    if(!br)return;
+    /* 取得分高者（完全同分时取技能倍率高者） */
+    var sc=br.score;
+    if(!bestBr||sc>bestSc||(sc===bestSc&&br.skillSum>bestSk)){bestBr=br;bestSc=sc;bestSk=br.skillSum;best=card;}
+  });
+  if(best)applyAutoCard('a',best);
+  return best;
+}
+window.syncCalcDataFromPanel=syncCalcDataFromPanel;window.evalCardBattle=evalCardBattle;window.applyAutoCard=applyAutoCard;window.autoSelectCardArena=autoSelectCardArena;
 
 /* ===== IMPRESSION DATA UI ===== */
 var impOwned={};// {id:true/false}
@@ -1244,8 +1543,13 @@ function updateImpSummary(prefix){
   var slots=impSlots[prefix]||[null,null,null,null,null];
   var impMap={};if(window.elegantImpressionData)elegantImpressionData.forEach(function(i){impMap[i.id]=i;});
   var totalPower=0;
-  slots.forEach(function(id){if(id&&impMap[id])totalPower+=getImpPower(impMap[id]);});
-  var resonance=calcResonance(slots);
+  // 印象搭配之力只对本属性生效：仅印象属性=主属性时计入，否则为0
+  var _mAttrEl=document.getElementById(prefix.charAt(0)==='h'?'hAttr':'aAttr');
+  var _mAttr=_mAttrEl?_mAttrEl.value:'';
+  var _card0=calcCardData.card;
+  var impMatched=!_mAttr||!_card0||_card0.style===_mAttr;
+  slots.forEach(function(id){if(id&&impMap[id]&&impMatched&&(!_mAttr||impMap[id].attr===_mAttr))totalPower+=getImpPower(impMap[id]);});
+  var resonance=impMatched?calcResonance(slots):0;
   var coreImp=slots[2]?impMap[slots[2]]:null;
   var coreHtml=coreImp?'<span>核心: <b style="color:'+(coreImp.type==='影召'?'#9A80C0':'#E8879C')+'">'+coreImp.name+'</b> '+(coreImp.type==='影召'?'影':'心')+'</span>':'<span>核心: <b style="color:var(--c2-muted)">未设置</b></span>';
   // Calculate battle score for display
@@ -1493,6 +1797,7 @@ try{
 }catch(e){alert('自动排列出错: '+e.message);}
 }
 initCalcPanel('a','arena');
+  buildGalGrid('h');
 /* ===== Heart mode: 3 calculator sections ===== */
 function buildHeartCalcAreas(){
   console.log('[buildHeartCalcAreas] Called');
@@ -1631,49 +1936,41 @@ function buildHeartCalcAreas(){
     })(p);
   }
 
-  // Duplicate card prevention
-  function syncCardDropdowns(){
-    console.log('[syncCardDropdowns] Called');
-    var usedIds={};
-    for(var i=0;i<3;i++){
-      var p=prefixes[i];
-      var sel=document.getElementById(p+'CalcCard');
-      if(!sel)continue;
-      console.log('[syncCardDropdowns] '+p+' value:', sel.value, 'options:', sel.options.length);
-      if(sel.value)usedIds[sel.value]=p;
+  // Duplicate card prevention（changedPrefix 面板优先保留，其余先到先得，冲突者自动换卡）
+  function syncCardDropdowns(changedPrefix){
+    var owner={};
+    if(changedPrefix){
+      var _cs=document.getElementById(changedPrefix+'CalcCard');
+      if(_cs&&_cs.value)owner[_cs.value]=changedPrefix;
     }
-    console.log('[syncCardDropdowns] usedIds:', JSON.stringify(usedIds));
     for(var i=0;i<3;i++){
       var p=prefixes[i];
+      if(p===changedPrefix)continue;
       var sel=document.getElementById(p+'CalcCard');
-      if(!sel)continue;
-      var disabledCount=0;
-      for(var j=0;j<sel.options.length;j++){
-        var opt=sel.options[j];
-        if(opt.value&&usedIds[opt.value]&&usedIds[opt.value]!==p){
-          opt.disabled=true;opt.style.color='#ccc';disabledCount++;
-        }else{
-          opt.disabled=false;opt.style.color='';
-        }
-      }
-      console.log('[syncCardDropdowns] '+p+' disabled:', disabledCount);
-      // If current selection is disabled (owned by another), switch to first available
-      if(sel.value&&usedIds[sel.value]&&usedIds[sel.value]!==p){
+      if(sel&&sel.value&&!owner[sel.value])owner[sel.value]=p;
+    }
+    /* 冲突面板（非刚操作者）自动换成第一张未被占用的卡 */
+    for(var i=0;i<3;i++){
+      var p=prefixes[i];
+      if(p===changedPrefix)continue;
+      var sel=document.getElementById(p+'CalcCard');
+      if(!sel||!sel.value)continue;
+      if(owner[sel.value]!==p){
         for(var j=0;j<sel.options.length;j++){
-          if(!sel.options[j].disabled&&sel.options[j].value){sel.selectedIndex=j;break;}
+          var o=sel.options[j];
+          if(o.value&&!owner[o.value]){sel.selectedIndex=j;owner[o.value]=p;break;}
         }
-        console.log('[syncCardDropdowns] '+p+' auto-switched to:', sel.value);
       }
     }
-    // Re-collect after auto-switch
-    var usedIds2={};
-    for(var i=0;i<3;i++){var p=prefixes[i];var sel=document.getElementById(p+'CalcCard');if(sel&&sel.value)usedIds2[sel.value]=p;}
+    /* 禁用其他面板已占用的选项 */
     for(var i=0;i<3;i++){
-      var p=prefixes[i];var sel=document.getElementById(p+'CalcCard');if(!sel)continue;
+      var p=prefixes[i];
+      var sel=document.getElementById(p+'CalcCard');
+      if(!sel)continue;
       for(var j=0;j<sel.options.length;j++){
         var opt=sel.options[j];
-        if(opt.value&&usedIds2[opt.value]&&usedIds2[opt.value]!==p){opt.disabled=true;opt.style.color='#ccc';}
-        else{opt.disabled=false;opt.style.color='';}
+        var occ=opt.value&&owner[opt.value]&&owner[opt.value]!==p;
+        opt.disabled=!!occ;opt.style.color=occ?'#ccc':'';
       }
     }
   }
@@ -1681,7 +1978,7 @@ function buildHeartCalcAreas(){
     (function(p){
       setTimeout(function(){
         var sel=document.getElementById(p+'CalcCard');
-        if(sel)sel.addEventListener('change',function(){syncCardDropdowns();});
+        if(sel)sel.addEventListener('change',function(){syncCardDropdowns(p);});
         var impSel=document.getElementById(p+'CalcImpSel');
         if(impSel)impSel.addEventListener('change',function(){});
       },100);
@@ -1703,6 +2000,8 @@ try{
   if(r&&tag)r=arenaPostOpt(r,r0,pool,'arena',tag,'');
   if(!r){el.innerHTML='<div class="c2-empty-state">未找到方案</div>';return;}
   outfitByPrefix['a']=r.allItems;
+  // 自动选卡：得分最高（计入主属性搭配之力）+ 自动配印象
+  try{autoSelectCardArena(r.raw,calcOutfitRcFlash(r));}catch(e){}
   // Shadow synergy swap: if card matches a reconstruction item, check if swapping improves score
   (function(){var _c=calcCardData.card;if(!_c)return;var _cn=_c.name;var _used={};r.allItems.forEach(function(i){_used[i.id]=1;});
   function _synPow(it){return(it.shadowSynergy===_cn&&it.shadowSynergyLevel)?it.shadowSynergyLevel.perLevel*(LV[it.id]||MAX_LV):0;}
@@ -1718,14 +2017,15 @@ try{
         var _tbGain=(_tbFs-_dressFs)+(_tbSyn-_dressSyn);
         if(_tbGain>0){_used[_dress.id]=0;r.allItems[_dressIdx]=_top;r.allItems.push(_bot);_used[_top.id]=1;_used[_bot.id]=1;}}}}
   // Recalculate
-  var _newRaw=0;r.allItems.forEach(function(i){_newRaw+=fS(i,'arena');});r.raw=_newRaw;r.finalScore=cF(_newRaw,'arena',Math.min(r.allItems.filter(function(i){return i.t1===tag||i.t2===tag;}).length,4),0);
+  var _newRaw=0;r.allItems.forEach(function(i){_newRaw+=fS(i,'arena');});r.raw=_newRaw;var _atc=0;r.allItems.forEach(function(i){if(i.t1===tag||i.t2===tag)_atc+=tagW(i);});r.finalScore=cF(_newRaw,'arena',Math.min(_atc,4),0);
   })();
   outfitByPrefix['a']=r.allItems;
   // Calculate arena power with new outfit: 美甲+服装搭配+设计师之影+妆容研习+羁绊
+  syncCalcDataFromPanel('a');
   var _card=calcCardData.card;
   var _nail=parseFloat(document.getElementById('aCalcNail').value)||0;
   var _shadowPower=0;
-  if(_card){var _rec=document.getElementById('aCalcRec').checked;var _gl=galleryByCollection[_card.collection]||0;var _dp=calcCarddp(_card,_rec,_gl);var _attrIdx=['典雅','清新','甜美','性感','帅气'].indexOf(attr);var _cardPwr=_attrIdx>=0?_dp[_attrIdx]:Math.max.apply(null,_dp);var _slots=impSlots['a']||[null,null,null,null,null];var _impPwr=0;_slots.forEach(function(id){if(id){var imp=elegantImpressionData.filter(function(x){return x.id===id;})[0];if(imp&&(!attr||imp.attr===attr))_impPwr+=(imp.maxPower||0);}});_impPwr+=calcResonance(_slots);var _synPwr=0;var _selCardEl=document.getElementById('aCalcCard');var _selCardId=_selCardEl?parseInt(_selCardEl.value):0;var _selCard=_selCardId?findCard(_selCardId):null;var _selCardName=_selCard?_selCard.name:'';r.allItems.forEach(function(it){if(it.shadowSynergy&&it.shadowSynergy===_selCardName&&it.shadowSynergyLevel&&it.shadowSynergyLevel.perLevel){_synPwr+=it.shadowSynergyLevel.perLevel*(LV[it.id]||MAX_LV);}});_shadowPower=_cardPwr+_impPwr+_synPwr;}
+  if(_card){var _rec=document.getElementById('aCalcRec').checked;var _gl=galleryByCollection[_card.collection]||0;var _dp=calcCarddp(_card,_rec,_gl);var _attrIdx=['典雅','清新','甜美','性感','帅气'].indexOf(attr);var _cardPwr=_attrIdx>=0?_dp[_attrIdx]:Math.max.apply(null,_dp);var _slots=impSlots['a']||[null,null,null,null,null];var _impPwr=0;var _impMatched=!attr||_card.style===attr;_slots.forEach(function(id){if(id){var imp=elegantImpressionData.filter(function(x){return x.id===id;})[0];if(imp&&_impMatched&&(!attr||imp.attr===attr))_impPwr+=(imp.maxPower||0);}});if(_impMatched)_impPwr+=calcResonance(_slots);var _synPwr=0;var _selCardEl=document.getElementById('aCalcCard');var _selCardId=_selCardEl?parseInt(_selCardEl.value):0;var _selCard=_selCardId?findCard(_selCardId):null;var _selCardName=_selCard?_selCard.name:'';r.allItems.forEach(function(it){if(it.shadowSynergy&&it.shadowSynergy===_selCardName&&it.shadowSynergyLevel&&it.shadowSynergyLevel.perLevel){_synPwr+=it.shadowSynergyLevel.perLevel*(LV[it.id]||MAX_LV);}});_shadowPower=_cardPwr+_impPwr+_synPwr;}
   var _mkEl=document.getElementById('aCalcMakeup');var _makeup=_mkEl?parseFloat(_mkEl.value)||0:0;
   var _bdEl=document.getElementById('aCalcBond');var _bond=_bdEl?parseFloat(_bdEl.value)||0:0;
   var aTotalPower=_nail+r.finalScore+_shadowPower+_makeup+_bond;
@@ -1747,10 +2047,11 @@ document.getElementById('hGenBtn').addEventListener('click',function(){
   // Store outfit items for shadow synergy lookup
   for(var si=0;si<OF.length;si++){outfitByPrefix[prefixes[si]]=OF[si].allItems;}
   if(!OF.length){el.innerHTML='<div class="c2-empty-state">未找到方案</div>';return;}
+  /* 心阶手动选卡：沿用各计算器中已选卡牌，不再自动选卡 */
   // Shadow synergy swap for each heart outfit
-  (function(){var _c=calcCardData.card;if(!_c)return;var _cn=_c.name;
+  (function(){var _cn='';
   function _synPow(it){return(it.shadowSynergy===_cn&&it.shadowSynergyLevel)?it.shadowSynergyLevel.perLevel*(LV[it.id]||MAX_LV):0;}
-  OF.forEach(function(of){var _used={};of.allItems.forEach(function(i){_used[i.id]=1;});
+  OF.forEach(function(of,ofI){var _sc=document.getElementById(prefixes[ofI]+'CalcCard');var _sCard=_sc&&_sc.value?findCard(parseInt(_sc.value)):null;_cn=_sCard?_sCard.name:(calcCardData.card?calcCardData.card.name:'');var _used={};of.allItems.forEach(function(i){_used[i.id]=1;});
   // Single-item swap
   for(var _ri=0;_ri<of.allItems.length;_ri++){var _old=of.allItems[_ri];var _sk=gSK(_old);var _oldFs=fS(_old,'heart');var _oldSyn=_synPow(_old);var _bestCand=null,_bestGain=-1e15;for(var _ci=0;_ci<pool.length;_ci++){var _c2=pool[_ci];if(_used[_c2.id])continue;if(gSK(_c2)!==_sk)continue;if(!_c2.shadowSynergy||_c2.shadowSynergy!==_cn)continue;if(!_c2.shadowSynergyLevel)continue;var _newFs=fS(_c2,'heart');var _newSyn=_synPow(_c2);var _gain=(_newFs-_oldFs)+(_newSyn-_oldSyn);if(_gain>_bestGain){_bestGain=_gain;_bestCand=_c2;}}if(_bestCand&&_bestGain>0){_used[_old.id]=0;of.allItems[_ri]=_bestCand;_used[_bestCand.id]=1;}}
   // Dress→top+bottom path swap
@@ -1762,19 +2063,22 @@ document.getElementById('hGenBtn').addEventListener('click',function(){
       if(_top.id!==_bot.id){var _tbFs=fS(_top,'heart')+fS(_bot,'heart');var _tbSyn=_synPow(_top)+_synPow(_bot);
         if((_tbFs-_dressFs)+(_tbSyn-_dressSyn)>0){_used[_dress.id]=0;of.allItems[_dressIdx]=_top;of.allItems.push(_bot);_used[_top.id]=1;_used[_bot.id]=1;}}}}
   // Recalculate
-  var _newRaw=0;of.allItems.forEach(function(i){_newRaw+=fS(i,'heart');});of.raw=_newRaw;var _tc1=0,_tc2=0;of.allItems.forEach(function(i){if(t1&&(i.t1===t1||i.t2===t1))_tc1++;if(t2&&(i.t1===t2||i.t2===t2))_tc2++;});of.finalScore=cF(_newRaw,'heart',Math.min(_tc1,4),Math.min(_tc2,2));
+  var _newRaw=0;of.allItems.forEach(function(i){_newRaw+=fS(i,'heart');});of.raw=_newRaw;var _tc1=0,_tc2=0;of.allItems.forEach(function(i){var w=tagW(i);if(t1&&(i.t1===t1||i.t2===t1))_tc1+=w;if(t2&&(i.t1===t2||i.t2===t2))_tc2+=w;});of.finalScore=cF(_newRaw,'heart',Math.min(_tc1,4),Math.min(_tc2,2));
   });
   for(var si=0;si<OF.length;si++){outfitByPrefix[prefixes[si]]=OF[si].allItems;}})();
   var grand=0;for(var si=0;si<OF.length;si++)grand+=OF[si].finalScore;
   var cls=['s1','s2','s3'],lbl=['套装 1 \u00b7 最高分','套装 2 \u00b7 次高','套装 3 \u00b7 剩余'];
   var totalRaw=0,totalItems=0;for(var si=0;si<OF.length;si++){totalRaw+=OF[si].raw;totalItems+=OF[si].allItems.length;}
   var h='<div class="c2-results-section"><div class="c2-section-title"><span>心阶搭配</span><span class="total">'+t1+'(4件取整)+'+t2+'(2件取整) \u00b7 总分: '+grand.toLocaleString()+'</span></div>';
+  // 先写入各套服装搭配之力并刷新总战力，确保战斗分取最新数据
+  for(var _si=0;_si<OF.length;_si++){var _p=prefixes[_si];var _oe=document.getElementById(_p+'CalcOutfitPower');if(_oe)_oe.innerHTML='<span style="color:var(--c2-text)">'+OF[_si].finalScore.toLocaleString()+'</span>';}
+  if(typeof updateShadowPower==='function'){for(var _si2=0;_si2<OF.length;_si2++)updateShadowPower(prefixes[_si2]);}
   var battleResults=[];
   for(var si=0;si<OF.length;si++){
     var p=prefixes[si];
     var totalEl=document.getElementById(p+'CalcTotalPower');
     var totalPower=totalEl?parseFloat(totalEl.textContent.replace(/,/g,''))||0:0;
-    var br=totalPower>0?calcBattleScore(OF[si].raw,'heart',totalPower,prefixes[si],calcOutfitRcFlash(OF[si])):null;
+    syncCalcDataFromPanel(prefixes[si]);var br=totalPower>0?calcBattleScore(OF[si].raw,'heart',totalPower,prefixes[si],calcOutfitRcFlash(OF[si])):null;
     updateRestrictFromOutfit(prefixes[si],OF[si]);
     battleResults.push(br);
   }
