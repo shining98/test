@@ -1455,7 +1455,7 @@ const D=[
 {id:1318,name:"霜织华章",cat:"外套",type:"原型",attr:"性感",rare:"闪耀",designer:"玛格丽特",t1:"礼服",t2:"时尚",bs:231},
 {id:1319,name:"青璃云披",cat:"外套",type:"散件",attr:"性感",rare:"闪耀",designer:"夜宵",t1:"云端",t2:"幻想",bs:231},
 {id:1320,name:"流华潋梦",cat:"外套",type:"散件",attr:"性感",rare:"闪耀",designer:"海",t1:"幻想",t2:"浪漫",bs:224},
-{id:1321,name:"风枕烟青",cat:"外套",type:"散件",attr:"性感",rare:"闪耀",designer:"闻人典",t1:"礼服",t2:"知性",bs:217},
+{id:1321,name:"风枕烟青",cat:"外套",type:"散件",attr:"性感",rare:"闪耀",designer:"闻人典",t1:"制服",t2:"知性",bs:217},
 {id:1322,name:"披拂曙光",cat:"外套",type:"原型",attr:"性感",rare:"闪耀",designer:"瑞因",t1:"礼服",t2:"时尚",bs:217},
 {id:1323,name:"宣临之礼",cat:"外套",type:"原型",attr:"性感",rare:"闪耀",designer:"赫丽特",t1:"幻想",t2:"礼服",bs:217},
 // --- 上衣 ---

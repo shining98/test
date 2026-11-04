@@ -251,6 +251,8 @@ var reconstructData = [
   { id:45, rarity:"闪耀", attribute:"典雅", name:"寂夜之辉",                       bonusType:"竞技光芒", baseScore:1068 },
   { id:46, rarity:"闪·漫", attribute:"性感", name:"于暗渊凝望",                    bonusType:"竞技光芒", baseScore:1086 },
   { id:47, rarity:"闪耀", attribute:"典雅", name:"览四时风月",                       bonusType:"竞技光芒", baseScore:1207 },
+  { id:48, rarity:"闪耀", attribute:"甜美", name:"苍峦渡春归",                           bonusType:"竞技光芒", baseScore:1195 },
+  { id:49, rarity:"闪耀", attribute:"帅气", name:"寂海之箴",                       bonusType:"竞技光芒", baseScore:1056 },
 ];
 
 // ============ 通用函数 ============
@@ -258,10 +260,10 @@ function getBonusValue(id, level) { return (id <= 33) ? level * 30 : level * 60;
 
 var flashLevels      = [1, 16, 32, 48, 60, 80];
 var flashTable_1_33  = [0.02, 0.04, 0.06, 0.08, 0.1, 0.12];
-var flashTable_34_47 = [0.04, 0.08, 0.12, 0.16, 0.2, 0.24];
+var flashTable_34_49 = [0.04, 0.08, 0.12, 0.16, 0.2, 0.24];
 
 function getFlashBonus(id, level) {
-  var table = (id <= 33) ? flashTable_1_33 : flashTable_34_47;
+  var table = (id <= 33) ? flashTable_1_33 : flashTable_34_49;
   var result = 0;
   for (var i = 0; i < flashLevels.length; i++) {
     if (level >= flashLevels[i]) result = table[i];
