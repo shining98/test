@@ -1516,11 +1516,11 @@ var MH_SETS = [
        {
         id: 7, start: '2026年11月5日', end: '2026年11月18日', days: 14,
         suits: [
-          { name: '献予荆棘之心', rarity: '闪萦', status: '新', category: '单闪\n单非凡', parts: 15, points: 920 },
+          { name: '献予荆棘之心', rarity: '闪萦', status: '新', category: '单闪\n单非凡', parts: 16, points: 960 },
           { name: '一笼困心', rarity: '非凡', status: '新', category: '单闪\n单非凡', parts: 9, points: 380 },
-          { name: '绮夜万术', rarity: '非凡', status: '新', category: '新意节', parts: 8, points: 260 },
-          { name: '夜吻小恶魔', rarity: '稀有', status: '新', category: '累充', parts: 7, points: 100 },
-          { name: '绯红的终舞', rarity: '稀有', status: '新', category: '联动免活', parts: 8, points: 90 }
+          { name: '绮夜万术', rarity: '非凡', status: '新', category: '新意节', parts: 10, points: 300 },
+          { name: '夜吻小恶魔', rarity: '稀有', status: '新', category: '累充', parts: 8, points: 105 },
+          { name: '绯红的终舞', rarity: '稀有', status: '新', category: '免活', parts: 8, points: 90 }
         ]
       }
     ]

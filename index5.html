@@ -7,8 +7,12 @@
 <style>
   *{box-sizing:border-box}
   body{background:#ffffff;font-family:'Noto Serif SC','Noto Serif CJK SC',serif;color:#222;margin:0;padding:26px 32px 30px}
-  .set-tabs{display:flex;gap:8px;justify-content:center;margin:0 0 10px}
-  .set-btn{font-family:inherit;font-size:13px;padding:5px 18px;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px}
+  .set-switch{display:flex;align-items:center;gap:8px;width:90%;margin:0 auto 10px}
+  .set-arrow{flex:0 0 auto;font-family:inherit;font-size:14px;width:30px;height:30px;padding:0;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px;line-height:1}
+  .set-arrow:hover{background:#f5f5f5}
+  .set-tabs{display:flex;flex:1 1 auto;flex-wrap:nowrap;gap:8px;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:2px}
+  .set-tabs::-webkit-scrollbar{display:none}
+  .set-btn{flex:0 0 auto;font-family:inherit;font-size:13px;padding:5px 18px;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px}
   .set-btn.active{background:#222;color:#fff;border-color:#222}
   h1{text-align:center;font-family:KaiTi,'Noto Serif SC',serif;font-size:26px;font-weight:700;color:#222;margin:4px 0 6px;letter-spacing:1px}
   .top-row{display:flex;justify-content:space-between;align-items:center;width:90%}
@@ -23,16 +27,20 @@
   .ver-num{font-size:15px}
   .cat-multi{line-height:1.35}
   .tag{display:inline-block;padding:0 7px;border-radius:4px;font-size:11px;font-weight:600;margin:1px 2px;line-height:1.7}
-  .tag-闪耀,.tag-闪瑰,.tag-新启,.tag-闪萦{background:transparent;color:#FFC000;font-weight:400}
+  .tag-flash{background:transparent;color:#FFC000;font-weight:400}
+  .tag-新启{background:transparent;color:#FFC000;font-weight:400}
   .tag-非凡{background:transparent;color:#44546A;font-weight:400}
   .tag-稀有{background:transparent;color:#BF9000;font-weight:400}
-  .tag-闪·斓{background:transparent;color:#FFC000;font-weight:400}
   .tag-新,.tag-复{background:transparent;color:#222;font-weight:400;padding:0}
   .footer{text-align:center;font-family:KaiTi,'Noto Serif SC',serif;font-weight:700;font-size:26px;color:#222;margin:18px 0 0}
 </style>
 </head>
 <body>
-  <div class="set-tabs" id="setTabs"></div>
+  <div class="set-switch">
+    <button class="set-arrow" id="setPrev" aria-label="上一期">◀</button>
+    <div class="set-tabs" id="setTabs"></div>
+    <button class="set-arrow" id="setNext" aria-label="下一期">▶</button>
+  </div>
   <h1 id="mhTitle"></h1>
   <div class="top-row">
     <p class="subtitle" id="mhSubtitle"></p>
@@ -48,7 +56,7 @@
 
   function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function linesHtml(s){return esc(s).split('\n').join('<br>');}
-  function tagHtml(t){return '<span class="tag tag-'+esc(t)+'">'+esc(t)+'</span>';}
+  function tagHtml(t){var s=String(t);return '<span class="tag tag-'+esc(t)+(s.indexOf('闪')>=0?' tag-flash':'')+'">'+esc(t)+'</span>';}
 
   // 连续同值分组（新/复列、版本配置列、日期列的合并）
   function groupRuns(n,getValue){
@@ -127,21 +135,33 @@
     document.getElementById('mhTable').innerHTML=html;
   }
 
-  // ===== 期数切换 =====
+  // ===== 期数切换（单行滑动不一次性显示全部，左右箭头移动，无滑块） =====
   var tabsEl=document.getElementById('setTabs');
+  var curIndex=MH_SETS.length-1; /* 默认由最新期开始 */
+  function selectPeriod(i){
+    if(i<0)i=MH_SETS.length-1;
+    if(i>=MH_SETS.length)i=0; /* 环形移动 */
+    curIndex=i;
+    MH_DATA=MH_SETS[i];
+    Array.prototype.forEach.call(tabsEl.children,function(el,j){el.className='set-btn'+(j===i?' active':'');});
+    var b=tabsEl.children[i];
+    if(b&&b.scrollIntoView){try{b.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});}catch(e){try{b.scrollIntoView();}catch(e2){}}}
+    render();
+  }
   MH_SETS.forEach(function(st,i){
     var b=document.createElement('button');
-    b.className='set-btn'+(i===0?' active':'');
+    b.className='set-btn'+(i===curIndex?' active':'');
     b.textContent=st.title.replace('忆海收集','').replace('统计','');
-    b.onclick=function(){
-      MH_DATA=MH_SETS[i];
-      Array.prototype.forEach.call(tabsEl.children,function(el,j){el.className='set-btn'+(j===i?' active':'');});
-      render();
-    };
+    b.onclick=function(){selectPeriod(i);};
     tabsEl.appendChild(b);
   });
-
-  render();
+  document.getElementById('setPrev').addEventListener('click',function(){selectPeriod(curIndex-1);});
+  document.getElementById('setNext').addEventListener('click',function(){selectPeriod(curIndex+1);});
+  /* 滑动：滚轮纵向滚动转为横向滚动条滑动 */
+  tabsEl.addEventListener('wheel',function(e){
+    if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){tabsEl.scrollLeft+=e.deltaY;e.preventDefault();}
+  },{passive:false});
+  selectPeriod(curIndex);
 
   // ===== 导出图片（宽度同 index3：2930 逻辑宽 @2x = 5860px PNG） =====
   var ECOL=[140,420,220,150,300,170,170,170,350,350,170];
@@ -154,7 +174,7 @@
     var groups=buildGroups(D);
     var totalRows=1+D.versions.reduce(function(a,v){return a+v.suits.length;},0);
     var ty=260;
-    var imgH=ty+totalRows*RH+75+Math.round(96*0.9)+31; // 落款上方75px、字形底部留白30px
+    var imgH=ty+totalRows*RH+75+Math.round(96*0.9)+51; // 落款上方75px、字形底部留白50px（含新增20px）
     var cv=document.createElement('canvas');
     cv.width=Math.round(CW*sc);cv.height=Math.round(imgH*sc);
     var ctx=cv.getContext('2d');ctx.scale(sc,sc);

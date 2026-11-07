@@ -102,7 +102,7 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
     <button class="launch-btn" onclick="enterApp('tabCard')">卡牌查询</button>
     <button class="launch-btn" onclick="enterApp('tabPower')">搭配之力计算器</button>
     <button class="launch-btn" onclick="enterApp('tabRecon')">重构服装查询</button>
-    <button class="launch-btn" onclick="window.location.href='index2.html'">搭配推荐</button>
+    <button class="launch-btn" style="display:none" onclick="window.location.href='index2.html'">搭配推荐</button>
   </div>
 </div>
 <!-- ============ 主应用 ============ -->
@@ -115,7 +115,7 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
   <button class="nav-btn active" id="navCard" onclick="switchTab('tabCard')">卡牌查询</button>
   <button class="nav-btn" id="navPower" onclick="switchTab('tabPower')">搭配之力计算器</button>
   <button class="nav-btn" id="navRecon" onclick="switchTab('tabRecon')">重构服装查询</button>
-  <button class="nav-btn" id="navRecommend" onclick="window.location.href='index2.html'">搭配推荐</button>
+  <button class="nav-btn" id="navRecommend" style="display:none" onclick="window.location.href='index2.html'">搭配推荐</button>
 </div>
 <button class="back-btn" onclick="backToLaunch()">&larr; 返回选择</button>
 <!-- ============ 卡牌查询 ============ -->
@@ -130,7 +130,7 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
   <div class="i-g" id="cfInfo"></div>
   <div id="cfBars"></div>
   <div class="sub">影召技能</div>
-  <table><thead><tr><th></th><th>影一</th><th>影二</th><th>影三</th><th>影四</th><th>影五</th></tr></thead><tbody id="cfShadowTable"></tbody></table>
+  <table><thead><tr id="cfShadowHead"><th></th><th>影一</th><th>影二</th><th>影三</th><th>影四</th><th>影五</th></tr></thead><tbody id="cfShadowTable"></tbody></table>
 </div>
 </div>
 <div class="cd" id="cfPowerCard" style="display:none">
@@ -359,20 +359,23 @@ function cfCardChg(){
   document.getElementById("cfBars").innerHTML=bh;
   var hasHeartSkill=card.heartSkill.some(function(v){return v>0;});
   var hasShadowFlash=card.shadowFlashMoment.some(function(v){return v>0;});
+  var nSh=(card.name==='谕')?6:5; /* 影六仅对「谕」生效 */
+  var hh=document.getElementById('cfShadowHead');
+  if(hh){var _hs='<th></th>';for(var n=0;n<nSh;n++)_hs+='<th>'+shadowLabels[n]+'</th>';hh.innerHTML=_hs;}
   var st='<tr><td style="color:var(--muted)">影召系数</td>';
-  for(var n=0;n<5;n++)st+='<td>'+toPercent(card.shadow[n])+'</td>';
+  for(var n=0;n<nSh;n++)st+='<td>'+toPercent(card.shadow[n])+'</td>';
   st+='</tr>';
   if(hasHeartSkill){
     st+='<tr><td style="color:var(--muted)">心技能</td>';
-    for(var n=0;n<5;n++){var v=card.heartSkill[n];st+='<td style="color:'+(v>0?'var(--accent)':'var(--dim)')+';font-weight:'+(v>0?700:400)+'">'+(v>0?toPercent(v):'—')+'</td>';}
+    for(var n=0;n<nSh;n++){var v=card.heartSkill[n];st+='<td style="color:'+(v>0?'var(--accent)':'var(--dim)')+';font-weight:'+(v>0?700:400)+'">'+(v>0?toPercent(v):'—')+'</td>';}
     st+='</tr>';
   }
   if(hasShadowFlash){
     st+='<tr><td style="color:var(--muted)">闪耀瞬间</td>';
-    for(var n=0;n<5;n++){var v=card.shadowFlashMoment[n];st+='<td style="color:'+(v>0?'var(--accent)':'var(--dim)')+';font-weight:'+(v>0?700:400)+'">'+(v>0?toPercent(v):'—')+'</td>';}
+    for(var n=0;n<nSh;n++){var v=card.shadowFlashMoment[n];st+='<td style="color:'+(v>0?'var(--accent)':'var(--dim)')+';font-weight:'+(v>0?700:400)+'">'+(v>0?toPercent(v):'—')+'</td>';}
     st+='</tr>';
   }
-  if(card.extraFlash===1){st+='<tr><td style="color:var(--muted)">额外闪瞬</td><td colspan="5" style="color:#48886c;font-weight:700">有额外闪瞬效果</td></tr>';}
+  if(card.extraFlash===1){st+='<tr><td style="color:var(--muted)">额外闪瞬</td><td colspan="'+nSh+'" style="color:#48886c;font-weight:700">有额外闪瞬效果</td></tr>';}
   document.getElementById("cfShadowTable").innerHTML=st;
   document.getElementById("cfPowerCard").style.display="block";
   cfPowerCalc();
@@ -442,7 +445,8 @@ function pcCardChg(){
   if(!pcCurrentCard)return;
   var card=pcCurrentCard;
   var shadowSel=document.getElementById("pcShadowLvl");shadowSel.innerHTML="";
-  for(var j=0;j<5;j++){var o=document.createElement("option");o.value=j;o.textContent=shadowLabels[j];shadowSel.appendChild(o);}
+  var nSh=(card.name==='谕')?6:5; /* 影六仅对「谕」生效 */
+  for(var j=0;j<nSh;j++){var o=document.createElement("option");o.value=j;o.textContent=shadowLabels[j]||('影'+(j+1));shadowSel.appendChild(o);}
   for(var p=0;p<3;p++){var typeSel=document.getElementById("pcPass"+(p+1)+"Type");typeSel.innerHTML="";var o=document.createElement("option");o.textContent=card.passive[p];typeSel.appendChild(o);}
   var pKey=(card.rarity==="非凡")?"非凡":"闪耀";
   for(var p=0;p<3;p++){var part=card.passive[p],lvlSel=document.getElementById("pcPass"+(p+1)+"Lvl");lvlSel.innerHTML="";for(var i=0;i<5;i++){var o=document.createElement("option");o.value=i;o.textContent="等级"+(i+1)+" ("+toPercent(passiveTable[pKey][part][i])+")";lvlSel.appendChild(o);}}
