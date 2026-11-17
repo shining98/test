@@ -2620,10 +2620,10 @@ const D=[
 // --- 戒指 ---
 {id:2399,name:"星漫漪光",cat:"戒指",type:"心绽",attr:"清新",rare:"闪耀",designer:"路德伊",t1:"幻想",t2:"浪漫",bs:203},
 {id:2400,name:"澄焰之吻",cat:"戒指",type:"心绽",attr:"清新",rare:"闪耀",designer:"赫菲斯",t1:"幻想",t2:"浪漫",bs:178},
-{id:2401,name:"沉沦深瞳",cat:"戒指",type:"复苏",attr:"清新",rare:"闪耀",designer:"莉莉斯",t1:"幻想",t2:"礼服",bs:163},
+{id:2401,name:"沉沦深瞳",cat:"戒指",type:"复苏",attr:"清新",rare:"闪耀",designer:"莉莉斯",t1:"幻想",t2:"礼服",bs:162},
 {id:2402,name:"冥骸绽愿",cat:"戒指",type:"复苏",attr:"清新",rare:"闪耀",designer:"玛格丽特",t1:"礼服",t2:"知性",bs:160},
 {id:2403,name:"无期预言",cat:"戒指",type:"复苏",attr:"清新",rare:"闪耀",designer:"莫笛",t1:"礼服",t2:"幻想",bs:149},
-{id:2404,name:"凝望深瞳",cat:"戒指",type:"原型",attr:"清新",rare:"闪耀",designer:"莉莉斯",t1:"幻想",t2:"礼服",bs:148},
+{id:2404,name:"凝望深瞳",cat:"戒指",type:"原型",attr:"清新",rare:"闪耀",designer:"莉莉斯",t1:"幻想",t2:"礼服",bs:147},
 {id:2405,name:"花息箴言",cat:"戒指",type:"复苏",attr:"清新",rare:"闪耀",designer:"暖暖",t1:"幻想",t2:"妮妮尔",bs:143},
 {id:2406,name:"遗忘乐章",cat:"戒指",type:"原型",attr:"清新",rare:"闪耀",designer:"莫笛",t1:"礼服",t2:"幻想",bs:136},
 {id:2407,name:"枯骨生色",cat:"戒指",type:"原型",attr:"清新",rare:"闪耀",designer:"玛格丽特",t1:"礼服",t2:"知性",bs:135},
