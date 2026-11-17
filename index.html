@@ -62,9 +62,10 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
 .i-b{background:#f4f8fc;border:1px solid #dce6f0;border-radius:8px;padding:9px 10px}
 .i-b .l{font-size:9px;color:var(--dim);letter-spacing:.05em;font-weight:600}
 .i-b .v{font-size:13px;font-weight:700;color:var(--text);margin-top:1px}
+.gold,td.gold,.i-b .v.gold{color:#D4A017;font-weight:700}
 .i-b .v.accent{color:var(--accent)}.i-b .v.info{color:#4870a8}.i-b .v.success{color:#48886c}
 .i-b .v.c-典雅{color:var(--c-典雅)}.i-b .v.c-清新{color:var(--c-清新)}.i-b .v.c-甜美{color:var(--c-甜美)}.i-b .v.c-性感{color:var(--c-性感)}.i-b .v.c-帅气{color:var(--c-帅气)}
-.bw{margin-bottom:8px}.bl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:2px}.bl .bv{font-weight:700;color:var(--accent)}
+.bw{margin-bottom:8px}.bl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:2px}.bl .bv{font-weight:700}
 .bt{height:5px;background:#dce6f0;border-radius:3px;overflow:hidden}.bf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-l));transition:width .4s}
 .tg{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
 .tg-典雅{background:var(--c-典雅-bg);color:var(--c-典雅)}.tg-清新{background:var(--c-清新-bg);color:var(--c-清新)}
@@ -89,7 +90,7 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
 .modal .close-btn{display:block;width:100%;margin-top:14px;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;letter-spacing:.06em}
 .modal .close-btn:hover{background:#1e5a9e}
 .pass-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.pass-col select{width:100%}.pass-col select+select{margin-top:4px}
+.pass-col select{width:100%;font-size:11px;padding:6px 16px 6px 4px;background-position:right 3px center}.pass-col select+select{margin-top:4px}
 </style>
 </head>
 <body>
@@ -100,7 +101,7 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
   <div class="launch-sub">SHINING NIKKI TOOLBOX</div>
   <div class="launch-btns">
     <button class="launch-btn" onclick="enterApp('tabCard')">卡牌查询</button>
-    <button class="launch-btn" onclick="enterApp('tabPower')">搭配之力计算器</button>
+    <button class="launch-btn" onclick="enterApp('tabPower')">卡牌计算器</button>
     <button class="launch-btn" onclick="enterApp('tabRecon')">重构服装查询</button>
     <button class="launch-btn" style="display:none" onclick="window.location.href='index2.html'">搭配推荐</button>
   </div>
@@ -113,11 +114,11 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
 </header>
 <div class="nav">
   <button class="nav-btn active" id="navCard" onclick="switchTab('tabCard')">卡牌查询</button>
-  <button class="nav-btn" id="navPower" onclick="switchTab('tabPower')">搭配之力计算器</button>
+  <button class="nav-btn" id="navPower" onclick="switchTab('tabPower')">卡牌计算器</button>
   <button class="nav-btn" id="navRecon" onclick="switchTab('tabRecon')">重构服装查询</button>
   <button class="nav-btn" id="navRecommend" style="display:none" onclick="window.location.href='index2.html'">搭配推荐</button>
 </div>
-<button class="back-btn" onclick="backToLaunch()">&larr; 返回选择</button>
+<button class="back-btn" onclick="backToLaunch()">&larr; 返回首页</button>
 <!-- ============ 卡牌查询 ============ -->
 <div class="section show" id="tabCard">
 <div class="cd">
@@ -143,10 +144,10 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
 <div class="i-g5" id="cfCarddpArea"></div>
 </div>
 </div>
-<!-- ============ 搭配之力计算器 ============ -->
+<!-- ============ 卡牌计算器 ============ -->
 <div class="section" id="tabPower">
 <div class="cd">
-<div class="cd-t">搭配之力计算器</div>
+<div class="cd-t">卡牌计算器</div>
 <div class="sub">模式选择</div>
 <div class="row"><div><label class="lbl">模式</label><select id="pcMode" onchange="pcModeChg()"><option value="arena">竞技场</option><option value="heart">心阶</option><option value="league">联盟最后一关</option></select></div></div>
 <div class="sub" id="partTitle" style="display:none">爆发部位选择</div>
@@ -187,16 +188,11 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
     <select id="pcPass3Lvl" onchange="pcPassiveChg()"></select>
   </div>
 </div>
-<div class="sub">增益参数</div>
-<div class="row">
+<div class="sub" style="display:none">增益参数</div>
+<div class="row" style="display:none">
   <div style="flex:0 0 auto"><label class="lbl">复苏</label><label class="cb"><input type="checkbox" id="pcRecovery" onchange="pcSyncRecovery()"><span style="font-size:12px">已复苏</span></label></div>
   <div style="flex:0 0 140px"><label class="lbl">馆藏</label><select id="pcCollName" disabled class="coll-name"></select></div>
   <div><label class="lbl">馆藏等级 (&times;2%)</label><select id="pcGallery" onchange="pcSyncGallery()"></select></div>
-</div>
-<div class="sub">忆海收集</div>
-<div class="row">
-  <div><label class="lbl">忆海收集①</label><select id="pcYhjc1" onchange="pcCalc()"></select></div>
-  <div><label class="lbl">忆海收集②</label><select id="pcYhjc2" onchange="pcCalc()"></select></div>
 </div>
 <div class="div"></div>
 <div class="sub">重构服装参数</div>
@@ -218,7 +214,13 @@ tr.top td{background:rgba(43,108,176,.08);color:var(--accent);font-weight:900}
   <div><div class="i-b"><div class="l">技能二</div><div class="v" id="pcImpS2">—</div></div></div>
 </div>
 <div class="div"></div>
-<div class="sub">其他参数</div>
+<div class="sub">忆海收集</div>
+<div class="row">
+  <div><label class="lbl">忆海收集①</label><select id="pcYhjc1" onchange="pcCalc()"></select></div>
+  <div><label class="lbl">忆海收集②</label><select id="pcYhjc2" onchange="pcCalc()"></select></div>
+</div>
+<div class="div"></div>
+<div class="sub">搭配之力</div>
 <div class="row">
   <div><label class="lbl">总搭配之力</label><input type="number" id="pcTotal" placeholder="键盘输入" style="width:100%;padding:9px 11px;background:var(--sel-bg);color:var(--sel-fg);border:1px solid var(--sel-border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>
   <div><label class="lbl">美甲搭配之力</label><input type="number" id="pcNail" placeholder="键盘输入" style="width:100%;padding:9px 11px;background:var(--sel-bg);color:var(--sel-fg);border:1px solid var(--sel-border);border-radius:8px;font-size:13px;font-family:inherit;outline:none"></div>
@@ -325,17 +327,32 @@ function pcSyncRecovery(){if(!pcCurrentCard)return;var val=document.getElementBy
 function pcSyncGallery(){if(!pcCurrentCard)return;var val=parseInt(document.getElementById("pcGallery").value);galleryByCollection[pcCurrentCard.collection]=val;var cfId=parseInt(document.getElementById("cfCard").value);var cfCard=findCard(cfId);if(cfCard&&cfCard.collection===pcCurrentCard.collection)document.getElementById("cfGallery").value=val;pcCalc();}
 function cfInit(){
   var gs=document.getElementById("cfGallery");
-  for(var i=0;i<=14;i++){var o=document.createElement("option");o.value=i;o.textContent="等级"+i+" ("+(i*2)+"%)";if(i===0)o.selected=true;gs.appendChild(o);}
+  for(var i=0;i<=16;i++){var o=document.createElement("option");o.value=i;o.textContent="等级"+i+" ("+(i*2)+"%)";if(i===0)o.selected=true;gs.appendChild(o);}
   cfStyleChg();
+}
+function sortCardsByAttr(cards,s){
+  cards.sort(function(a,b){
+    if(a.name==='蒸汽幻想')return 1;if(b.name==='蒸汽幻想')return -1;
+    return b.styles[s]-a.styles[s];
+  });
+  /* 华宴不歇：固定放在本属性第一张非凡卡上方 */
+  var hy=-1,fi=-1;
+  for(var i=0;i<cards.length;i++){
+    if(hy<0&&cards[i].name==='华宴不歇')hy=i;
+    if(fi<0&&cards[i].rarity==='非凡')fi=i;
+  }
+  if(hy>=0&&fi>=0){
+    var c=cards.splice(hy,1)[0];
+    if(hy<fi)fi--;
+    cards.splice(fi,0,c);
+  }
+  return cards;
 }
 function cfStyleChg(){
   var s=document.getElementById("cfStyle").value,sel=document.getElementById("cfCard");sel.innerHTML="";
   var cards=[];
   for(var i=0;i<cardData.length;i++){var c=cardData[i];if(c.style===s)cards.push(c);}
-  cards.sort(function(a,b){
-    if(a.id===90)return 1;if(b.id===90)return -1;
-    return b.styles[s]-a.styles[s];
-  });
+  sortCardsByAttr(cards,s);
   for(var i=0;i<cards.length;i++){var c=cards[i];var o=document.createElement("option");o.value=c.id;o.textContent=c.designer+" - "+c.name;sel.appendChild(o);}
   if(sel.options.length>0)sel.selectedIndex=0;
   cfCardChg();
@@ -346,7 +363,7 @@ function cfCardChg(){
   loadCardSettings(card);
   document.getElementById("cfDet").classList.add("show");
   var h='';
-  h+='<div class="i-b"><div class="l">稀有度</div><div class="v">'+card.rarity+'</div></div>';
+  h+='<div class="i-b"><div class="l">稀有度</div><div class="v'+(String(card.rarity).indexOf('闪')===0?' gold':'')+'">'+card.rarity+'</div></div>';
   h+='<div class="i-b"><div class="l">属性</div><div class="v"><span class="tg tg-'+card.style+'">'+card.style+'</span></div></div>';
   h+='<div class="i-b"><div class="l">设计师</div><div class="v">'+card.designer+' - '+card.name+'</div></div>';
   h+='<div class="i-b"><div class="l">馆藏</div><div class="v">'+card.collection+'</div></div>';
@@ -355,7 +372,7 @@ function cfCardChg(){
   document.getElementById("cfInfo").innerHTML=h;
   var mx=0;for(var k in card.styles)if(card.styles[k]>mx)mx=card.styles[k];
   var bh='';
-  for(var i=0;i<A.length;i++){var n=A[i],v=card.styles[n],p=(v/mx*100).toFixed(1);var ac=getComputedStyle(document.documentElement).getPropertyValue('--c-'+n).trim()||'var(--accent)';bh+='<div class="bw"><div class="bl"><span>'+n+'</span><span class="bv">'+v+'</span></div><div class="bt"><div class="bf" style="width:'+p+'%;background:'+ac+'"></div></div></div>';}
+  for(var i=0;i<A.length;i++){var n=A[i],v=card.styles[n],p=(v/mx*100).toFixed(1);var ac=getComputedStyle(document.documentElement).getPropertyValue('--c-'+n).trim()||'var(--accent)';bh+='<div class="bw"><div class="bl"><span>'+n+'</span><span class="bv" style="color:'+ac+'">'+v+'</span></div><div class="bt"><div class="bf" style="width:'+p+'%;background:'+ac+'"></div></div></div>';}
   document.getElementById("cfBars").innerHTML=bh;
   var hasHeartSkill=card.heartSkill.some(function(v){return v>0;});
   var hasShadowFlash=card.shadowFlashMoment.some(function(v){return v>0;});
@@ -389,7 +406,7 @@ function cfPowerCalc(){
   for(var i=0;i<5;i++)c+='<div class="i-b"><div class="l">'+A[i]+'</div><div class="v '+styleColorMap[A[i]]+'">'+Carddp[i]+'</div></div>';
   document.getElementById("cfCarddpArea").innerHTML=c;
 }
-/* ---- 搭配之力计算器 ---- */
+/* ---- 卡牌计算器 ---- */
 var pcCurrentCard=null;
 function pcModeUpdateUI(){
   var mode=document.getElementById("pcMode").value;
@@ -406,7 +423,7 @@ function pcInit(){
   gameData.passive=[0,0,0,0];gameData.xin=[0,0,0,0,0,0,0,0];gameData.yzzh=[0];gameData.sysj=[0];gameData.baofa=[0];
   for(var i=0;i<9;i++)partSelection[i]=0;
   var gs=document.getElementById("pcGallery");
-  for(var i=0;i<=14;i++){var o=document.createElement("option");o.value=i;o.textContent="等级"+i+" ("+(i*2)+"%)";if(i===0)o.selected=true;gs.appendChild(o);}
+  for(var i=0;i<=16;i++){var o=document.createElement("option");o.value=i;o.textContent="等级"+i+" ("+(i*2)+"%)";if(i===0)o.selected=true;gs.appendChild(o);}
   var y1=document.getElementById("pcYhjc1");
   for(var i=0;i<Yhjc.length;i++){var o=document.createElement("option");o.value=i;o.textContent="等级"+i+" ("+toPercent(Yhjc[i])+")";if(i===0)o.selected=true;y1.appendChild(o);}
   var y2=document.getElementById("pcYhjc2");
@@ -427,10 +444,7 @@ function pcStyleChg(){
   var attr=document.getElementById("pcStyle").value,sel=document.getElementById("pcCard");sel.innerHTML="";
   var cards=[];
   for(var i=0;i<cardData.length;i++){var c=cardData[i];if(c.style===attr)cards.push(c);}
-  cards.sort(function(a,b){
-    if(a.id===90)return 1;if(b.id===90)return -1;
-    return b.styles[attr]-a.styles[attr];
-  });
+  sortCardsByAttr(cards,attr);
   for(var i=0;i<cards.length;i++){var c=cards[i];var o=document.createElement("option");o.value=c.id;o.textContent=c.designer+" - "+c.name;sel.appendChild(o);}
   document.getElementById("pcRcStyle").value=attr;
   pcRcStyleChg();
@@ -478,7 +492,12 @@ function pcPassiveChg(){
 }
 function pcRcStyleChg(){
   var attr=document.getElementById("pcRcStyle").value,sel=document.getElementById("pcRcCard");sel.innerHTML="";
-  for(var i=reconstructData.length-1;i>=0;i--){var d=reconstructData[i];if(d.attribute!==attr)continue;var o=document.createElement("option");o.value=i;o.textContent=d.name;sel.appendChild(o);}
+  var items=[];
+  for(var i=0;i<reconstructData.length;i++){var d=reconstructData[i];if(d.attribute!==attr)continue;items.push({idx:i,d:d});}
+  /* 按基础分降序（并列按原序） */
+  var bsOf=function(x){return Array.isArray(x.baseScore)?x.baseScore.reduce(function(a,b){return a+b;},0):x.baseScore;};
+  items.sort(function(a,b){var dd=bsOf(b.d)-bsOf(a.d);return dd!==0?dd:a.idx-b.idx;});
+  for(var j=0;j<items.length;j++){var o=document.createElement("option");o.value=items[j].idx;o.textContent=items[j].d.name;sel.appendChild(o);}
   if(sel.options.length>0){sel.selectedIndex=0;pcRcChg();}
 }
 function pcRcChg(){
@@ -504,7 +523,12 @@ function pcImpChg(){
 function rcInit(){document.getElementById("rcLvl").innerHTML=lvlOpts(1,80,80);rcStyleChg();}
 function rcStyleChg(){
   var attr=document.getElementById("rcStyle").value,sel=document.getElementById("rcCard");sel.innerHTML="";
-  for(var i=reconstructData.length-1;i>=0;i--){var d=reconstructData[i];if(d.attribute!==attr)continue;var o=document.createElement("option");o.value=i;o.textContent=d.name;sel.appendChild(o);}
+  var items=[];
+  for(var i=0;i<reconstructData.length;i++){var d=reconstructData[i];if(d.attribute!==attr)continue;items.push({idx:i,d:d});}
+  /* 按基础分降序 */
+  var bsOf=function(x){return Array.isArray(x.baseScore)?x.baseScore.reduce(function(a,b){return a+b;},0):x.baseScore;};
+  items.sort(function(a,b){var d=bsOf(b.d)-bsOf(a.d);return d!==0?d:a.idx-b.idx;});
+  for(var j=0;j<items.length;j++){var o=document.createElement("option");o.value=items[j].idx;o.textContent=items[j].d.name;sel.appendChild(o);}
   if(sel.options.length>0)sel.selectedIndex=0;
   rcShow();
 }
@@ -532,7 +556,7 @@ function rcShow(){
     heartDp+=Math.floor(scores[k]*factor+dp+xjyl);
   }
   var h='';
-  h+='<tr><td style="color:var(--muted)">稀有度</td><td>'+d.rarity+'</td></tr>';
+  h+='<tr><td style="color:var(--muted)">稀有度</td><td'+(String(d.rarity).indexOf('闪')===0?' class="gold"':'')+'>'+d.rarity+'</td></tr>';
   h+='<tr><td style="color:var(--muted)">属性</td><td><span class="tg tg-'+d.attribute+'">'+d.attribute+'</span></td></tr>';
   h+='<tr><td style="color:var(--muted)">基础分</td><td>'+baseScoreSum+'</td></tr>';
   h+='<tr><td style="color:var(--muted)">设计诠释</td><td style="color:#4870a8;font-weight:700">+'+bv+'</td></tr>';

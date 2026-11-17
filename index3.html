@@ -21,7 +21,7 @@ thead th{background:var(--attr-color,#DE4A97);color:#fff;font-size:40px;font-wei
 tbody td{font-size:40px;font-weight:700;text-align:center;padding:18px 0;border-bottom:1px solid var(--attr-border,#f8bbd0)}
 tbody tr:nth-child(odd){background:var(--attr-bg,#fff0f5)}
 tbody tr:nth-child(even){background:var(--attr-bg2,#ffe4ec)}
-.r-闪耀,.r-闪·漫,.r-闪熠,.r-华梦,.r-闪·涟,.r-闪瑰,.r-闪·寰,.r-闪·斓{color:#FFC000}
+.r-闪耀,.r-闪萦,.r-闪·漫,.r-闪熠,.r-华梦,.r-闪·涟,.r-闪瑰,.r-闪·寰,.r-闪·斓{color:#FFC000}
 .r-非凡{color:#8e6b8a}
 .r-新启{color:#F1638B}
 .chart-bottom{text-align:center;font-size:96px;font-weight:700;color:var(--attr-color,#DE4A97);padding:30px 0 30px;font-family:'Noto Serif SC','Noto Serif CJK SC',serif}
@@ -35,6 +35,7 @@ tbody tr:nth-child(even){background:var(--attr-bg2,#ffe4ec)}
 <select id="attrSelect"><option value="">全部属性</option><option value="甜美" selected>甜美</option><option value="性感">性感</option><option value="清新">清新</option><option value="帅气">帅气</option><option value="典雅">典雅</option></select>
 <div id="rareCheckGroup" style="display:inline-flex;flex-wrap:wrap;gap:6px;vertical-align:middle;margin:0 8px">
   <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪耀" checked> 闪耀</label>
+  <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪萦" checked> 闪萦</label>
   <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="闪熠" checked> 闪熠</label>
   <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="华梦" checked> 华梦</label>
   <label style="font-size:14px;cursor:pointer"><input type="checkbox" class="rareChk" value="非凡" checked> 非凡</label>
@@ -153,7 +154,7 @@ var TW=COL_W.reduce(function(a,b){return a+b},0)+30;
 var PAD=Math.floor((CW-TW)/2);
 var RH=80;
 var HEADERS=['名称','设计师','稀有度','类型','基础分','标签1','标签2'];
-var RARE_C={'闪耀':'#FFC000','闪·漫':'#FFC000','闪熠':'#FFC000','华梦':'#FFC000','闪·涟':'#FFC000','闪瑰':'#FFC000','闪·寰':'#FFC000','闪·斓':'#FFC000','非凡':'#8e6b8a','新启':'#F1638B'};
+var RARE_C={'闪耀':'#FFC000','闪萦':'#FFC000','闪·漫':'#FFC000','闪熠':'#FFC000','华梦':'#FFC000','闪·涟':'#FFC000','闪瑰':'#FFC000','闪·寰':'#FFC000','闪·斓':'#FFC000','非凡':'#8e6b8a','新启':'#F1638B'};
 function isShiny(r){return String(r||'').indexOf('闪')===0;}
 
 // Centered text function using textAlign

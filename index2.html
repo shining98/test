@@ -65,6 +65,11 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 .code2-scope .c2-d-toolbar{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
 .code2-scope .c2-d-toolbar .c2-field{flex:none;min-width:130px;margin-bottom:0}
 .code2-scope .c2-d-count{font-family:'DM Mono',monospace;font-size:.85rem;color:var(--c2-muted);margin-left:auto}.c2-d-count b{color:var(--c2-accent)}
+.code2-scope .d-filter-title{font-size:.75rem;color:var(--c2-muted);letter-spacing:.08em;margin:.6rem 0 .4rem}
+.code2-scope .d-btn-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
+.code2-scope .d-btn{flex:0 0 auto;min-width:64px;font-family:inherit;font-size:.8rem;padding:7px 14px;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;transition:all .15s}
+.code2-scope .d-btn:hover{filter:brightness(.93)}
+.code2-scope .d-btn.active{background:var(--ab)!important;color:#fff!important;border-color:var(--abc)!important;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .code2-scope .c2-d-table-wrap{max-height:68vh;overflow-y:auto;border:1px solid var(--c2-border);border-radius:var(--c2-r);background:var(--c2-s1)}
 .code2-scope .c2-d-table{width:100%;border-collapse:collapse;font-size:.78rem}
 .code2-scope .c2-d-table thead{position:sticky;top:0;z-index:2;background:var(--c2-s1);box-shadow:0 2px 4px rgba(0,0,0,.06)}
@@ -74,10 +79,10 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 .code2-scope .c2-d-table .c2-cb-cell{width:34px;text-align:center}
 .code2-scope .c2-d-table input[type=checkbox]{width:15px;height:15px;accent-color:var(--c2-accent);cursor:pointer}
 .code2-scope .c2-d-table .c2-tag-cell{display:flex;gap:.25rem;flex-wrap:wrap;justify-content:center;align-items:center;min-width:80px}
-.code2-scope .c2-d-table th:nth-child(7),.code2-scope .c2-d-table td:nth-child(7){min-width:90px;text-align:center}
+.code2-scope .c2-d-table th:nth-child(8),.code2-scope .c2-d-table td:nth-child(8){min-width:90px;text-align:center}
 .code2-scope .c2-d-table .c2-mini-tag{font-size:.6rem;padding:.1rem 0;border-radius:3px;background:var(--c2-s3);color:var(--c2-dim2);display:inline-block;width:3.6em;text-align:center;box-sizing:border-box}
 .code2-scope .c2-mini-rare{font-size:.6rem;padding:.1rem 0;border-radius:3px;font-weight:600;color:#fff;display:inline-block;width:3.6em;text-align:center;box-sizing:border-box}
-.code2-scope .c2-mini-rare.c2-rare-闪耀,.code2-scope .c2-mini-rare.c2-rare-闪·漫,.code2-scope .c2-mini-rare.c2-rare-闪熠,.code2-scope .c2-mini-rare.c2-rare-闪·斓,.code2-scope .c2-mini-rare.c2-rare-闪瑰,.code2-scope .c2-mini-rare.c2-rare-闪·寰,.code2-scope .c2-mini-rare.c2-rare-闪·涟{background:linear-gradient(135deg,#F2D388,#D99A23)}
+.code2-scope .c2-mini-rare.c2-rare-闪耀,.code2-scope .c2-mini-rare.c2-rare-闪萦,.code2-scope .c2-mini-rare.c2-rare-闪·漫,.code2-scope .c2-mini-rare.c2-rare-闪熠,.code2-scope .c2-mini-rare.c2-rare-闪·斓,.code2-scope .c2-mini-rare.c2-rare-闪瑰,.code2-scope .c2-mini-rare.c2-rare-闪·寰,.code2-scope .c2-mini-rare.c2-rare-闪·涟{background:linear-gradient(135deg,#F2D388,#D99A23)}
 .code2-scope .c2-mini-rare.c2-rare-华梦{background:linear-gradient(135deg,#F2D388,#D99A23)}
 .code2-scope .c2-mini-rare.c2-rare-非凡{background:linear-gradient(135deg,#A8B4C0,#5C6A75)}
 .code2-scope .c2-mini-rare.c2-rare-稀有{background:linear-gradient(135deg,#D4B88A,#C39F6B)}
@@ -129,7 +134,7 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 .code2-scope .c2-card-type{font-size:.6rem;letter-spacing:.06em;padding:.15rem .5rem;border-radius:100px;border:1px solid var(--c2-dim2);color:var(--c2-dim2)}
 .code2-scope .c2-card-type.special{border-color:var(--c2-dim);color:var(--c2-accent)}
 .code2-scope .c2-card-rare{font-size:.6rem;letter-spacing:.06em;padding:.15rem .5rem;border-radius:100px;font-weight:600}
-.code2-scope .c2-rare-闪耀,.code2-scope .c2-rare-闪·漫,.code2-scope .c2-rare-闪熠,.code2-scope .c2-rare-闪·斓,.code2-scope .c2-rare-闪瑰,.code2-scope .c2-rare-闪·寰,.code2-scope .c2-rare-闪·涟{background:linear-gradient(135deg,#F2D388,#D99A23);color:#fff;border:1px solid #C88E1A}
+.code2-scope .c2-rare-闪耀,.code2-scope .c2-rare-闪萦,.code2-scope .c2-rare-闪·漫,.code2-scope .c2-rare-闪熠,.code2-scope .c2-rare-闪·斓,.code2-scope .c2-rare-闪瑰,.code2-scope .c2-rare-闪·寰,.code2-scope .c2-rare-闪·涟{background:linear-gradient(135deg,#F2D388,#D99A23);color:#fff;border:1px solid #C88E1A}
 .code2-scope .c2-rare-华梦{background:linear-gradient(135deg,#F2D388,#D99A23);color:#fff;border:1px solid #C88E1A}
 .code2-scope .c2-rare-非凡{background:linear-gradient(135deg,#A8B4C0,#5C6A75);color:#fff;border:1px solid #6B7A87}
 .code2-scope .c2-rare-稀有{background:linear-gradient(135deg,#D4B88A,#C39F6B);color:#fff;border:1px solid #A88A55}
@@ -195,15 +200,41 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 </nav>
 <div class="c2-panel show" id="dataPanel">
   <div class="c2-d-toolbar">
-    <div class="c2-field"><label>属性</label><select id="dAttr"></select></div>
-    <div class="c2-field"><label>部位</label><select id="dCat"></select></div>
-    <div class="c2-field"><label>类型</label><select id="dType"></select></div>
-    <div class="c2-field"><label>标签</label><select id="dTag"></select></div>
     <button class="c2-btn c2-btn-sm c2-btn-outline" id="dSelAll">全选</button>
     <button class="c2-btn c2-btn-sm c2-btn-outline" id="dDesAll">全不选</button>
     <span class="c2-d-count" id="dCount">0 / 0</span>
   </div>
-  <div class="c2-d-table-wrap"><table class="c2-d-table"><thead><tr><th class="c2-cb-cell"><input type="checkbox" id="dMasterCb" checked></th><th>名称</th><th>设计师</th><th>稀有度</th><th>部位</th><th>类型</th><th>基础分</th><th>标签</th></tr></thead><tbody id="dTbody"></tbody></table></div>
+  <details class="c2-collapsible" id="dAttrBox" open>
+    <summary>属性</summary>
+    <div class="c2-collapsible-body">
+      <div class="d-btn-row" id="dAttrRow"></div>
+    </div>
+  </details>
+  <details class="c2-collapsible" id="dRareBox">
+    <summary>稀有度</summary>
+    <div class="c2-collapsible-body">
+      <div class="d-btn-row" id="dRareRow"></div>
+    </div>
+  </details>
+  <details class="c2-collapsible" id="dFilterBox">
+    <summary>部位</summary>
+    <div class="c2-collapsible-body">
+      <div class="d-btn-row" id="dCatRow"></div>
+    </div>
+  </details>
+  <details class="c2-collapsible" id="dTypeBox">
+    <summary>类型</summary>
+    <div class="c2-collapsible-body">
+      <div class="d-btn-row" id="dTypeRow"></div>
+    </div>
+  </details>
+  <details class="c2-collapsible" id="dTagBox">
+    <summary>标签</summary>
+    <div class="c2-collapsible-body">
+      <div class="d-btn-row" id="dTagGrid"></div>
+    </div>
+  </details>
+  <div class="c2-d-table-wrap"><table class="c2-d-table"><thead><tr><th class="c2-cb-cell"><input type="checkbox" id="dMasterCb" checked></th><th>名称</th><th>设计师</th><th>属性</th><th>稀有度</th><th>部位</th><th>类型</th><th>基础分</th><th>标签</th></tr></thead><tbody id="dTbody"></tbody></table></div>
 </div>
 <div class="c2-panel" id="arenaPanel">
   <section class="c2-settings"><div class="c2-field-row"><div class="c2-field"><label>属性</label><select id="aAttr"></select></div><div class="c2-field"><label>标签（可选0~1个）</label><select id="aTag"></select></div></div></section>
@@ -249,6 +280,7 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 (function(){
 /* ===== CONSTANTS ===== */
 var SM=37.534,BL=[1,16,32,48,64,80],MAX_LV=80;
+var HPO_STRONG=1; /* 成对换装搜索开关：双跑对比时弱跑置0 */
 var AB=[.05,.15,.20,.40],H1B=[.05,.20,.30,.60],H2B=[.10,.40];
 var REG=["发饰","帽子","耳饰","项链","项圈","手饰","手套","胸饰","挂饰","戒指","其他"];
 var ALLACC=REG.concat(["手持物","面饰","背饰"]);
@@ -546,6 +578,68 @@ function heartOptOutfit(pool,mode,t1,t2,fixed){
     greedyFill(items,usedId);
   })();
   if(met()){var ch=true;while(ch){ch=false;var tc2=getTC();for(var idx=0;idx<items.length;idx++){var old=items[idx],ob=tBi(old,tg1,tg2);if(!ob)continue;if(fixedSK[gSK(old)])continue;var nT1=tc2[0]-((ob&1)?tagW(old):0),nT2=tc2[1]-((ob&2)?tagW(old):0);if((tg1&&nT1<4)||(tg2&&nT2<2))continue;var sk=gSK(old),op=fS(old,mode);for(var ci=0;ci<pool.length;ci++){var c=pool[ci];if(usedId[c.id])continue;if(gSK(c)!==sk)continue;if(tBi(c,tg1,tg2)!==0)continue;if(fS(c,mode)<op)continue;usedId[old.id]=0;items[idx]=c;usedId[c.id]=1;tc2[0]=nT1;tc2[1]=nT2;ch=true;break;}}}}
+  /* --- 成对换装搜索：两槽位联合替换，解决“标签一出一进”互补换装单步不可行的问题 --- */
+  (function(){
+    if(!HPO_STRONG)return;
+    function tcArr(arr){var c1=0,c2=0;for(var i=0;i<arr.length;i++){var w=tagW(arr[i]);if(tg1&&(arr[i].t1===tg1||arr[i].t2===tg1))c1+=w;if(tg2&&(arr[i].t1===tg2||arr[i].t2===tg2))c2+=w;}return[c1,c2];}
+    function finArr(arr){var r=0;for(var i=0;i<arr.length;i++)r+=fS(arr[i],mode);var t=tcArr(arr);return cF(r,mode,Math.min(t[0],4),Math.min(t[1],2));}
+    function okCand(c,idx,arr){
+      for(var j=0;j<arr.length;j++){if(j!==idx&&gSK(arr[j])===gSK(c))return false;}
+      if(ALLACC.indexOf(c.cat)>=0&&!accHandOK(c,idx,arr))return false;
+      return true;
+    }
+    var candMap={};
+    function candsOf(sk){
+      if(candMap[sk])return candMap[sk];
+      var arr=pool.filter(function(i){return gSK(i)===sk;});
+      arr.sort(function(a,b){return fS(b,mode)-fS(a,mode);});
+      var out=[],seen={};
+      arr.slice(0,6).forEach(function(i){if(!seen[i.id]){seen[i.id]=1;out.push(i);}});
+      if(tg1)arr.filter(function(i){return (tBi(i,tg1,tg2)&1)!==0;}).slice(0,4).forEach(function(i){if(!seen[i.id]){seen[i.id]=1;out.push(i);}});
+      if(tg2)arr.filter(function(i){return (tBi(i,tg1,tg2)&2)!==0;}).slice(0,4).forEach(function(i){if(!seen[i.id]){seen[i.id]=1;out.push(i);}});
+      candMap[sk]=out;return out;
+    }
+    var cur=finArr(items),guard=0;
+    while(guard++<10){
+      var bestGain=0,bi=-1,bj=-1,bci=null,bcj=null,i,j,k,ki,kj,ci2,cj2,oldI,oldJ,gain,cs1,csi,csj;
+      for(i=0;i<items.length;i++){
+        if(fixedSK[gSK(items[i])])continue;
+        cs1=candsOf(gSK(items[i]));
+        for(k=0;k<cs1.length;k++){
+          ci2=cs1[k];
+          if(usedId[ci2.id]||ci2.id===items[i].id)continue;
+          if(!okCand(ci2,i,items))continue;
+          oldI=items[i];items[i]=ci2;gain=finArr(items)-cur;items[i]=oldI;
+          if(gain>bestGain){bestGain=gain;bi=i;bj=-1;bci=ci2;bcj=null;}
+        }
+      }
+      for(i=0;i<items.length;i++){
+        if(fixedSK[gSK(items[i])])continue;
+        csi=candsOf(gSK(items[i]));
+        for(j=i+1;j<items.length;j++){
+          if(fixedSK[gSK(items[j])])continue;
+          csj=candsOf(gSK(items[j]));
+          for(ki=0;ki<csi.length;ki++){
+            ci2=csi[ki];
+            if(usedId[ci2.id]||ci2.id===items[i].id)continue;
+            for(kj=0;kj<csj.length;kj++){
+              cj2=csj[kj];
+              if(usedId[cj2.id]||cj2.id===items[j].id||cj2.id===ci2.id)continue;
+              oldI=items[i];oldJ=items[j];
+              items[i]=ci2;items[j]=cj2;
+              gain=(okCand(ci2,i,items)&&okCand(cj2,j,items))?finArr(items)-cur:-1;
+              items[i]=oldI;items[j]=oldJ;
+              if(gain>bestGain){bestGain=gain;bi=i;bj=j;bci=ci2;bcj=cj2;}
+            }
+          }
+        }
+      }
+      if(bestGain<=0)break;
+      if(bj<0){usedId[items[bi].id]=0;items[bi]=bci;usedId[bci.id]=1;}
+      else{usedId[items[bi].id]=0;usedId[items[bj].id]=0;items[bi]=bci;items[bj]=bcj;usedId[bci.id]=1;usedId[bcj.id]=1;}
+      cur+=bestGain;
+    }
+  })();
   var raw=0;items.forEach(function(i){raw+=fS(i,mode);});var ftc=getTC();
   // --- bloom moment post-optimization ---
   var rcFlashTotal=calcOutfitRcFlash({allItems:items});
@@ -633,6 +727,7 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
     res.sort(function(a,b){return b.finalScore-a.finalScore;});
     return res;
   }
+  function buildAll(){
   // 逐套贪心对“裙路径/强裙归属”敏感：默认方案外，再把池中最强的2件连衣裙
   // 分别固定到各套（不覆盖用户已固定的裙位），多方案取总分最高者（保证不劣于默认）。
   var best=runCfg(cloneFix(f1),cloneFix(f2),cloneFix(f3));
@@ -659,13 +754,112 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
       if(sum2>bestSum){best=res2;bestSum=sum2;}
     }
   }
+  /* --- 跨套换装收尾：以三套总分为目标，同槽位互换 / 未用件替换，迭代到无提升 --- */
+  (function(){
+    function finOf(arr){var r=0;for(var i=0;i<arr.length;i++)r+=fS(arr[i],'heart');var c1=0,c2=0;for(var j=0;j<arr.length;j++){var w=tagW(arr[j]);if(t1&&(arr[j].t1===t1||arr[j].t2===t1))c1+=w;if(t2&&(arr[j].t1===t2||arr[j].t2===t2))c2+=w;}return cF(r,'heart',Math.min(c1,4),Math.min(c2,2));}
+    function okIn(arr,idx,c){
+      for(var j=0;j<arr.length;j++){if(j!==idx&&gSK(arr[j])===gSK(c))return false;}
+      if(ALLACC.indexOf(c.cat)>=0&&!accHandOK(c,idx,arr))return false;
+      return true;
+    }
+    var guard=0;
+    while(guard++<12){
+      var improved=false,a,b,i,j,A,B,x,d,c,old,u,sk;
+      var used={};best.forEach(function(s){s.allItems.forEach(function(it){used[it.id]=1;});});
+      for(a=0;a<best.length&&!improved;a++){
+        for(b=a+1;b<best.length&&!improved;b++){
+          A=best[a].allItems;B=best[b].allItems;
+          for(i=0;i<A.length;i++){
+            if(userFixedIds[A[i].id])continue;
+            for(j=0;j<B.length;j++){
+              if(userFixedIds[B[j].id]||gSK(A[i])!==gSK(B[j]))continue;
+              var fA0=finOf(A),fB0=finOf(B);
+              x=A[i];A[i]=B[j];B[j]=x;
+              var fA1=finOf(A),fB1=finOf(B);
+              d=fA1+fB1-fA0-fB0;
+              var okSwap=false;
+              if(d>0){okSwap=true;}
+              else if(d===0){
+                /* 同分换装：择“高分套穿强件”的字典序方案（不影响标签与总分） */
+                var _b4=[fA0,fB0].sort(function(p,q){return q-p;});
+                var _af=[fA1,fB1].sort(function(p,q){return q-p;});
+                if(_af[0]>_b4[0]||(_af[0]===_b4[0]&&_af[1]>_b4[1]))okSwap=true;
+              }
+              if(okSwap){best[a].finalScore=fA1;best[b].finalScore=fB1;improved=true;break;}
+              x=A[i];A[i]=B[j];B[j]=x;
+            }
+            if(improved)break;
+          }
+        }
+      }
+      if(!improved){
+        for(a=0;a<best.length&&!improved;a++){
+          A=best[a].allItems;
+          for(i=0;i<A.length;i++){
+            if(userFixedIds[A[i].id])continue;
+            sk=gSK(A[i]);
+            var fA0=finOf(A);old=A[i];
+            for(u=0;u<pool.length;u++){
+              c=pool[u];
+              if(used[c.id]||gSK(c)!==sk)continue;
+              A[i]=c;
+              if(okIn(A,i,c)&&finOf(A)-fA0>0){used[old.id]=0;used[c.id]=1;best[a].finalScore=finOf(A);improved=true;break;}
+              A[i]=old;
+            }
+            if(improved)break;
+          }
+        }
+      }
+      if(!improved){
+        /* 3) 跨套路径互换：连衣裙 ↔ 上衣+下装（同分时择“高分套穿强件”） */
+        for(a=0;a<best.length&&!improved;a++){
+          A=best[a].allItems;
+          var dA=-1,aHasTB=false;
+          for(i=0;i<A.length;i++){if(A[i].cat==='连衣裙'&&dA<0)dA=i;if(A[i].cat==='上衣'||A[i].cat==='下装')aHasTB=true;}
+          if(dA<0||aHasTB)continue;
+          var dr=A[dA];
+          if(userFixedIds[dr.id])continue;
+          for(b=0;b<best.length&&!improved;b++){
+            if(a===b)continue;
+            B=best[b].allItems;
+            var tB_=-1,bB_=-1,bHasD=false;
+            for(j=0;j<B.length;j++){if(B[j].cat==='连衣裙')bHasD=true;if(B[j].cat==='上衣'&&tB_<0)tB_=j;if(B[j].cat==='下装'&&bB_<0)bB_=j;}
+            if(bHasD||tB_<0||bB_<0)continue;
+            var tp=B[tB_],bt=B[bB_];
+            if(userFixedIds[tp.id]||userFixedIds[bt.id])continue;
+            var pA0=finOf(A),pB0=finOf(B);
+            var snapA=A.slice(),snapB=B.slice();
+            A.splice(dA,1);A.push(tp);A.push(bt);
+            B.splice(Math.max(tB_,bB_),1);B.splice(Math.min(tB_,bB_),1);B.push(dr);
+            var pA1=finOf(A),pB1=finOf(B);
+            d=pA1+pB1-pA0-pB0;
+            var okP=false;
+            if(d>0)okP=true;
+            else if(d===0){var _p4=[pA0,pB0].sort(function(p,q){return q-p;});var _pf=[pA1,pB1].sort(function(p,q){return q-p;});if(_pf[0]>_p4[0]||(_pf[0]===_p4[0]&&_pf[1]>_p4[1]))okP=true;}
+            if(okP){best[a].finalScore=pA1;best[b].finalScore=pB1;improved=true;}
+            else{best[a].allItems=snapA;best[b].allItems=snapB;A=snapA;B=snapB;}
+          }
+        }
+      }
+      if(!improved)break;
+    }
+    best.forEach(function(s){var r=0;s.allItems.forEach(function(it){r+=fS(it,'heart');});s.raw=r;s.finalScore=finOf(s.allItems);});
+    best.sort(function(x,y){return y.finalScore-x.finalScore;});
+  })();
   return best;
+  }
+  /* 强/弱双跑取高者：弱跑=原算法+跨套收尾（保证不劣于旧版），强跑含成对搜索 */
+  var _sv=HPO_STRONG;
+  HPO_STRONG=1;var _s1=buildAll(),_t1s=sumFinal(_s1);
+  HPO_STRONG=0;var _s2=buildAll(),_t2s=sumFinal(_s2);
+  HPO_STRONG=_sv;
+  return _t1s>=_t2s?_s1:_s2;
 }
 /* ===== RENDERING ===== */
 function rCard(it,mode,t1,t2,idx){
   var s=fS(it,mode),lv=LV[it.id]||MAX_LV,bm=BLOOM[it.id]||0,excl=!!disabledIds[it.id];
   var h='<div class="c2-card'+(excl?' excluded':'')+'" style="animation-delay:'+idx*0.05+'" data-item-id="'+it.id+'">';
-  h+='<div class="c2-card-topline"><span class="c2-card-cat">'+it.cat+(it.sc?'\u00b7'+it.sc:'')+'</span><span class="c2-card-type'+(SPEC[it.type]?' special':'')+'">'+it.type+'</span>'+(it.rare?'<span class="c2-card-rare c2-rare-'+it.rare+'">'+it.rare+'</span>':'')+'</div>';
+  h+='<div class="c2-card-topline"><span class="c2-card-cat">'+it.cat+(it.sc?'\u00b7'+it.sc:'')+'</span><span class="c2-card-type'+(SPEC[it.type]?' special':'')+'">'+it.type+'</span>'+(it.rare?'<span class="c2-card-rare c2-rare-'+normRare(it.rare)+'">'+normRare(it.rare)+'</span>':'')+'</div>';
   h+='<div class="c2-card-name">'+it.name+'</div><div class="c2-card-tags">';
   if(it.t1){var c1=TAG_COLORS[it.t1]||'';h+='<span class="tag'+(tagMatchThis(it.t1,t1,t2)?' match':'')+'"'+(c1?' style="background:'+c1+';color:#fff"':'')+'>'+it.t1+'</span>';}
   if(it.t2){var c2=TAG_COLORS[it.t2]||'';h+='<span class="tag'+(tagMatchThis(it.t2,t1,t2)?' match':'')+'"'+(c2?' style="background:'+c2+';color:#fff"':'')+'>'+it.t2+'</span>';}
@@ -703,18 +897,46 @@ function rOutfit(r,mode,showComp,t1,t2){
 window._sendToCalc=function(raw,finalScore,mode){document.getElementById('pcTotal').value=finalScore;document.getElementById('navPower').click();};
 window._markEx=function(id){if(disabledIds[id])delete disabledIds[id];else disabledIds[id]=1;renderDataList();document.querySelectorAll('.c2-card[data-item-id="'+id+'"]').forEach(function(el){el.classList.toggle('excluded',!!disabledIds[id]);var btn=el.querySelector('.c2-card-actions .c2-btn');if(btn){btn.classList.toggle('on',!!disabledIds[id]);btn.textContent=disabledIds[id]?'已标记':'标记未拥有';}});};
 /* ===== DATA PANEL ===== */
-var dAttrSel=document.getElementById('dAttr'),dCatSel=document.getElementById('dCat'),dTypeSel=document.getElementById('dType'),dTagSel=document.getElementById('dTag');
-ATTRS.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;dAttrSel.appendChild(o);});
-['全部'].concat(CAT_ORDER).forEach(function(c){var o=document.createElement('option');o.value=c==='全部'?'':c;o.textContent=c;dCatSel.appendChild(o);});
-var TYPE_ORDER=['原型','原型拆分','复苏','复苏拆分','心绽','散件','服饰','重构','重构2','重构拆分'];
-['全部'].concat(TYPE_ORDER).forEach(function(t){var o=document.createElement('option');o.value=t==='全部'?'':t;o.textContent=t;dTypeSel.appendChild(o);});
-['全部'].concat(TAG_ORDER).forEach(function(t){var o=document.createElement('option');o.value=t==='全部'?'':t;o.textContent=t;dTagSel.appendChild(o);});
-function renderDataList(){var attr=dAttrSel.value,cat=dCatSel.value,type=dTypeSel.value,tag=dTagSel.value;var items=D.filter(function(i){return i.attr===attr&&(!cat||i.cat===cat)&&(!type||i.type===type)&&(!tag||i.t1===tag||i.t2===tag);}).sort(function(a,b){var ci=(CAT_IDX[a.cat]||99)-(CAT_IDX[b.cat]||99);return ci!==0?ci:b.bs-a.bs;});var tb=document.getElementById('dTbody'),total=items.length,enabled=0;var frag=document.createDocumentFragment();items.forEach(function(it){var on=!disabledIds[it.id];if(on)enabled++;var tr=document.createElement('tr');if(!on)tr.className='off';var ts='';if(it.t1){var c1=TAG_COLORS[it.t1]||'';ts+='<span class="c2-mini-tag"'+(c1?' style="background:'+c1+';color:#fff"':'')+'>'+it.t1+'</span>';}if(it.t2){var c2=TAG_COLORS[it.t2]||'';ts+='<span class="c2-mini-tag"'+(c2?' style="background:'+c2+';color:#fff"':'')+'>'+it.t2+'</span>';}var bm='';if(it.bonus==='竞技光芒')bm='<span class="c2-bonus-mini ba">竞技光芒</span>';else if(it.bonus==='心阶引领')bm='<span class="c2-bonus-mini bh">心阶引领</span>';tr.innerHTML='<td class="c2-cb-cell"><input type="checkbox" data-id="'+it.id+'"'+(on?' checked':'')+'></td><td>'+it.name+'</td><td style="font-size:.65rem;color:var(--muted)">'+(it.designer||'')+'</td><td><span class="c2-mini-rare c2-rare-'+it.rare+'">'+(it.rare||'')+'</span></td><td>'+it.cat+'</td><td>'+it.type+'</td><td>'+it.bs+'</td><td><div class="c2-tag-cell">'+ts+'</div></td>';frag.appendChild(tr);});tb.innerHTML='';tb.appendChild(frag);document.getElementById('dCount').innerHTML='<b>'+enabled+'</b> / '+total;document.getElementById('dMasterCb').checked=enabled===total&&total>0;}
-document.getElementById('dTbody').addEventListener('change',function(e){if(e.target.type!=='checkbox')return;var id=parseInt(e.target.dataset.id);if(e.target.checked)delete disabledIds[id];else disabledIds[id]=1;e.target.closest('tr').classList.toggle('off',!e.target.checked);var attr=dAttrSel.value,cat=dCatSel.value,type=dTypeSel.value,tag=dTagSel.value;var items=D.filter(function(i){return i.attr===attr&&(!cat||i.cat===cat)&&(!type||i.type===type)&&(!tag||i.t1===tag||i.t2===tag);});var en=items.filter(function(i){return !disabledIds[i.id];}).length;document.getElementById('dCount').innerHTML='<b>'+en+'</b> / '+items.length;document.getElementById('dMasterCb').checked=en===items.length;fillHFixed();});
-document.getElementById('dMasterCb').addEventListener('change',function(){var attr=dAttrSel.value,cat=dCatSel.value,type=dTypeSel.value,tag=dTagSel.value,ck=this.checked;D.filter(function(i){return i.attr===attr&&(!cat||i.cat===cat)&&(!type||i.type===type)&&(!tag||i.t1===tag||i.t2===tag);}).forEach(function(i){if(ck)delete disabledIds[i.id];else disabledIds[i.id]=1;});renderDataList();fillHFixed();});
-document.getElementById('dSelAll').addEventListener('click',function(){var attr=dAttrSel.value,cat=dCatSel.value,type=dTypeSel.value,tag=dTagSel.value;D.filter(function(i){return i.attr===attr&&(!cat||i.cat===cat)&&(!type||i.type===type)&&(!tag||i.t1===tag||i.t2===tag);}).forEach(function(i){delete disabledIds[i.id];});renderDataList();fillHFixed();});
-document.getElementById('dDesAll').addEventListener('click',function(){var attr=dAttrSel.value,cat=dCatSel.value,type=dTypeSel.value,tag=dTagSel.value;D.filter(function(i){return i.attr===attr&&(!cat||i.cat===cat)&&(!type||i.type===type)&&(!tag||i.t1===tag||i.t2===tag);}).forEach(function(i){disabledIds[i.id]=1;});renderDataList();fillHFixed();});
-dAttrSel.addEventListener('change',function(){renderDataList();fillHFixed();});dCatSel.addEventListener('change',renderDataList);dTypeSel.addEventListener('change',renderDataList);dTagSel.addEventListener('change',renderDataList);
+var dCatRow=document.getElementById('dCatRow'),dTypeRow=document.getElementById('dTypeRow'),dAttrRow=document.getElementById('dAttrRow');
+var dTagGrid=document.getElementById('dTagGrid'),dRareRow=document.getElementById('dRareRow');
+var ATTR_COLORS={'典雅':'#C99759','清新':'#78C0A8','甜美':'#E8879C','性感':'#9A80C0','帅气':'#84A8E5'};
+ATTRS.forEach(function(a){var b=document.createElement('button');b.type='button';b.className='d-btn';b.setAttribute('data-v',a);var col=ATTR_COLORS[a]||'#888';b.style.background=col;b.style.color='#fff';b.style.borderColor=col;b.style.setProperty('--ab',dk(col,.7));b.style.setProperty('--abc',dk(col,.5));b.textContent=a;dAttrRow.appendChild(b);});
+function dk(hex,f){var n=parseInt(hex.slice(1),16),r=Math.round(((n>>16)&255)*f),g=Math.round(((n>>8)&255)*f),b=Math.round((n&255)*f);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+CAT_ORDER.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='d-btn';b.setAttribute('data-v',c);b.style.setProperty('--ab','#2b6cb0');b.style.setProperty('--abc','#245a94');b.textContent=c;dCatRow.appendChild(b);});
+var TYPE_ORDER=['原型','原型拆分','复苏','复苏拆分','心绽','散件','服饰','重构','重构拆分'];
+TYPE_ORDER.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='d-btn';b.setAttribute('data-v',t);b.style.setProperty('--ab','#2b6cb0');b.style.setProperty('--abc','#245a94');b.textContent=t;dTypeRow.appendChild(b);});
+/* 标签多选：一行4个×4列（可折叠）；稀有度同步多选 */
+TAG_ORDER.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='d-btn';b.setAttribute('data-v',t);if(TAG_COLORS[t]){b.style.background=TAG_COLORS[t];b.style.color='#fff';b.style.borderColor=TAG_COLORS[t];b.style.setProperty('--ab',dk(TAG_COLORS[t],.7));b.style.setProperty('--abc',dk(TAG_COLORS[t],.5));}else{b.style.setProperty('--ab','#2b6cb0');b.style.setProperty('--abc','#245a94');}b.textContent=t;dTagGrid.appendChild(b);});
+var RARE_ORDER=['闪耀','闪萦','闪·漫','闪熠','闪·斓','闪瑰','闪·寰','闪·涟','华梦','非凡','新启','稀有','普通'];
+function normRare(r){return ((r&&r.indexOf('闪')>=0)||r==='华梦'||r==='新启')?'闪耀':r;}
+function rareHit(r,sel){if(sel.indexOf(normRare(r))>=0)return true;if(sel.indexOf('闪耀')>=0&&r&&r.indexOf('闪')>=0)return true;return false;}
+var rares=[],rSeen={};
+D.forEach(function(i){var nr=normRare(i.rare);if(nr&&!rSeen[nr]){rSeen[nr]=1;rares.push(nr);}});
+rares.sort(function(a,b){var ia=RARE_ORDER.indexOf(a),ib=RARE_ORDER.indexOf(b);return (ia<0?99:ia)-(ib<0?99:ib);});
+function rareBg(r){if((r&&r.indexOf('闪')>=0)||r==='华梦'||r==='新启')return[['#F2D388','#D99A23'],'#C88E1A'];if(r==='非凡')return[['#A8B4C0','#5C6A75'],'#6B7A87'];if(r==='稀有')return[['#D4B88A','#C39F6B'],'#A88A55'];return[['#C8C3D4','#B2ADC3'],'#9A95AB'];}
+rares.forEach(function(r){var b=document.createElement('button');b.type='button';b.className='d-btn';b.setAttribute('data-v',r);var s=rareBg(r);b.style.background='linear-gradient(135deg,'+s[0][0]+','+s[0][1]+')';b.style.color='#fff';b.style.borderColor=s[1];b.style.setProperty('--ab','linear-gradient(135deg,'+dk(s[0][0],.72)+','+dk(s[0][1],.72)+')');b.style.setProperty('--abc',dk(s[1],.7));b.textContent=r;dRareRow.appendChild(b);});
+function selVals(id){return [].map.call(document.querySelectorAll('#'+id+' .d-btn.active'),function(b){return b.getAttribute('data-v');});}
+function typeHit(t,sel){return sel.indexOf(t)>=0||(t==='重构2'&&sel.indexOf('重构')>=0);}
+function dItems(){
+  var tags=selVals('dTagGrid');
+  var rares2=selVals('dRareRow');
+  var cats=selVals('dCatRow');
+  var types=selVals('dTypeRow');
+  var attrs=selVals('dAttrRow');
+  return D.filter(function(i){
+    return (!attrs.length||attrs.indexOf(i.attr)>=0)&&(!cats.length||cats.indexOf(i.cat)>=0)
+      &&(!types.length||typeHit(i.type,types))
+      &&(!tags.length||tags.indexOf(i.t1)>=0||tags.indexOf(i.t2)>=0)
+      &&(!rares2.length||rareHit(i.rare,rares2));
+  });
+}
+function renderDataList(){var items=dItems().sort(function(a,b){var ai=(ATTR_ORDER.indexOf(a.attr)+1||99)-(ATTR_ORDER.indexOf(b.attr)+1||99);if(ai!==0)return ai;var ci=(CAT_IDX[a.cat]||99)-(CAT_IDX[b.cat]||99);return ci!==0?ci:b.bs-a.bs;});var tb=document.getElementById('dTbody'),total=items.length,enabled=0;var frag=document.createDocumentFragment();items.forEach(function(it){var on=!disabledIds[it.id];if(on)enabled++;var tr=document.createElement('tr');if(!on)tr.className='off';var ts='';if(it.t1){var c1=TAG_COLORS[it.t1]||'';ts+='<span class="c2-mini-tag"'+(c1?' style="background:'+c1+';color:#fff"':'')+'>'+it.t1+'</span>';}if(it.t2){var c2=TAG_COLORS[it.t2]||'';ts+='<span class="c2-mini-tag"'+(c2?' style="background:'+c2+';color:#fff"':'')+'>'+it.t2+'</span>';}var bm='';if(it.bonus==='竞技光芒')bm='<span class="c2-bonus-mini ba">竞技光芒</span>';else if(it.bonus==='心阶引领')bm='<span class="c2-bonus-mini bh">心阶引领</span>';tr.innerHTML='<td class="c2-cb-cell"><input type="checkbox" data-id="'+it.id+'"'+(on?' checked':'')+'></td><td>'+it.name+'</td><td style="font-size:.65rem;color:var(--muted)">'+(it.designer||'')+'</td><td><span class="c2-mini-tag" style="background:var(--c-'+it.attr+');color:#fff">'+it.attr+'</span></td><td><span class="c2-mini-rare c2-rare-'+normRare(it.rare)+'">'+(normRare(it.rare)||'')+'</span></td><td>'+it.cat+'</td><td>'+it.type+'</td><td>'+it.bs+'</td><td><div class="c2-tag-cell">'+ts+'</div></td>';frag.appendChild(tr);});tb.innerHTML='';tb.appendChild(frag);document.getElementById('dCount').innerHTML='<b>'+enabled+'</b> / '+total;document.getElementById('dMasterCb').checked=enabled===total&&total>0;}
+document.getElementById('dTbody').addEventListener('change',function(e){if(e.target.type!=='checkbox')return;var id=parseInt(e.target.dataset.id);if(e.target.checked)delete disabledIds[id];else disabledIds[id]=1;e.target.closest('tr').classList.toggle('off',!e.target.checked);var items=dItems();var en=items.filter(function(i){return !disabledIds[i.id];}).length;document.getElementById('dCount').innerHTML='<b>'+en+'</b> / '+items.length;document.getElementById('dMasterCb').checked=en===items.length;fillHFixed();});
+document.getElementById('dMasterCb').addEventListener('change',function(){var ck=this.checked;dItems().forEach(function(i){if(ck)delete disabledIds[i.id];else disabledIds[i.id]=1;});renderDataList();fillHFixed();});
+document.getElementById('dSelAll').addEventListener('click',function(){dItems().forEach(function(i){delete disabledIds[i.id];});renderDataList();fillHFixed();});
+document.getElementById('dDesAll').addEventListener('click',function(){dItems().forEach(function(i){disabledIds[i.id]=1;});renderDataList();fillHFixed();});
+function dBtnToggle(e){var b=e.target.closest('.d-btn');if(!b||!this.contains(b))return;b.classList.toggle('active');renderDataList();fillHFixed();}
+dAttrRow.addEventListener('click',dBtnToggle);dCatRow.addEventListener('click',dBtnToggle);dTypeRow.addEventListener('click',dBtnToggle);dTagGrid.addEventListener('click',dBtnToggle);dRareRow.addEventListener('click',dBtnToggle);
 /* ===== HEART FIXED UI (inside collapsible) ===== */
 function buildFixedUI(){
   var body=document.getElementById('hFixedBody');body.innerHTML='';
@@ -944,7 +1166,7 @@ function buildGalGrid(prefix){
     var div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:4px';
     var lbl=document.createElement('span');lbl.style.cssText='font-size:10px;color:var(--c2-muted);white-space:nowrap;min-width:0';lbl.textContent=coll;div.appendChild(lbl);
     var sel=document.createElement('select');sel.id=prefix+'CalcGal_'+coll;sel.style.cssText='flex:1;padding:2px 4px;background:var(--c2-s2);border:1px solid var(--c2-border);border-radius:4px;color:var(--c2-text);font-size:11px;outline:none;min-width:0';
-    for(var i=0;i<=14;i++){var o=document.createElement('option');o.value=i;o.textContent=i+'('+i*2+'%)';if((galleryByCollection[coll]||0)===i)o.selected=true;sel.appendChild(o);}
+    for(var i=0;i<=16;i++){var o=document.createElement('option');o.value=i;o.textContent=i+'('+i*2+'%)';if((galleryByCollection[coll]||0)===i)o.selected=true;sel.appendChild(o);}
     sel.addEventListener('change',function(){
       galleryByCollection[coll]=parseInt(this.value);
       try{localStorage.setItem('sn_gallery',JSON.stringify(galleryByCollection));}catch(e){}
@@ -1940,6 +2162,19 @@ try{
       if(_top.id!==_bot.id){var _tbFs=fS(_top,'arena')+fS(_bot,'arena');var _tbSyn=_synPow(_top)+_synPow(_bot);
         var _tbGain=(_tbFs-_dressFs)+(_tbSyn-_dressSyn);
         if(_tbGain>0||_tbGain>=-Math.max(1,Math.abs(_dressFs)*0.001)){_used[_dress.id]=0;r.allItems[_dressIdx]=_top;r.allItems.push(_bot);_used[_top.id]=1;_used[_bot.id]=1;}}}}
+  // Top+bottom→dress path swap: 推荐服装为上下装时，卡牌重构对应为连衣裙也要考虑
+  var _tIdx=-1,_bIdx=-1,_hasDress=false;
+  for(var _i2=0;_i2<r.allItems.length;_i2++){var _it2=r.allItems[_i2];if(_it2.cat==='连衣裙')_hasDress=true;if(_it2.cat==='上衣'&&_tIdx<0)_tIdx=_i2;if(_it2.cat==='下装'&&_bIdx<0)_bIdx=_i2;}
+  if(!_hasDress&&_tIdx>=0&&_bIdx>=0){
+    var _top2=r.allItems[_tIdx],_bot2=r.allItems[_bIdx];
+    var _tbFs2=fS(_top2,'arena')+fS(_bot2,'arena'),_tbSyn2=_synPow(_top2)+_synPow(_bot2);
+    var _synDress=pool.filter(function(i){return i.cat==='连衣裙'&&i.attr===attr&&!_used[i.id]&&i.shadowSynergy===_cn&&i.shadowSynergyLevel;});
+    var _bestD=null,_bestDGain=-1e15;
+    for(var _di=0;_di<_synDress.length;_di++){var _dr=_synDress[_di];var _g=(fS(_dr,'arena')-_tbFs2)+(_synPow(_dr)-_tbSyn2);if(_g>_bestDGain){_bestDGain=_g;_bestD=_dr;}}
+    if(_bestD&&(_bestDGain>0||_bestDGain>=-Math.max(1,Math.abs(_tbFs2)*0.001))){
+      _used[_top2.id]=0;_used[_bot2.id]=0;r.allItems[_tIdx]=_bestD;r.allItems.splice(_bIdx,1);_used[_bestD.id]=1;
+    }
+  }
   // Recalculate
   var _newRaw=0;r.allItems.forEach(function(i){_newRaw+=fS(i,'arena');});r.raw=_newRaw;var _atc=0;r.allItems.forEach(function(i){if(i.t1===tag||i.t2===tag)_atc+=tagW(i);});r.finalScore=cF(_newRaw,'arena',Math.min(_atc,4),0);
   })();
@@ -1988,7 +2223,8 @@ document.getElementById('hGenBtn').addEventListener('click',function(){
     }
     return true;
   }
-  OF.forEach(function(of,ofI){var _sc=document.getElementById(prefixes[ofI]+'CalcCard');var _sCard=_sc&&_sc.value?findCard(parseInt(_sc.value)):null;_cn=_sCard?_sCard.name:(calcCardData.card?calcCardData.card.name:'');var _used={};of.allItems.forEach(function(i){_used[i.id]=1;});
+  var _used={};OF.forEach(function(s){s.allItems.forEach(function(i){_used[i.id]=1;});}); /* 全局占用：三套互斥，换装不得取用他套已穿件 */
+  OF.forEach(function(of,ofI){var _sc=document.getElementById(prefixes[ofI]+'CalcCard');var _sCard=_sc&&_sc.value?findCard(parseInt(_sc.value)):null;_cn=_sCard?_sCard.name:(calcCardData.card?calcCardData.card.name:'');
   // Single-item swap
   for(var _ri=0;_ri<of.allItems.length;_ri++){var _old=of.allItems[_ri];var _sk=gSK(_old);var _oldFs=fS(_old,'heart');var _oldSyn=_synPow(_old);var _bestCand=null,_bestGain=-1e15;for(var _ci=0;_ci<pool.length;_ci++){var _c2=pool[_ci];if(_used[_c2.id])continue;if(gSK(_c2)!==_sk)continue;if(!_c2.shadowSynergy||_c2.shadowSynergy!==_cn)continue;if(!_c2.shadowSynergyLevel)continue;if(!_synPairable(_c2))continue;var _newFs=fS(_c2,'heart');var _newSyn=_synPow(_c2);var _gain=(_newFs-_oldFs)+(_newSyn-_oldSyn);if(_gain>_bestGain){_bestGain=_gain;_bestCand=_c2;}}if(_bestCand&&(_bestGain>0||_bestGain>=-Math.max(1,Math.abs(_oldFs)*0.001))){_used[_old.id]=0;of.allItems[_ri]=_bestCand;_used[_bestCand.id]=1;}}
   // Dress→top+bottom path swap
@@ -1999,6 +2235,19 @@ document.getElementById('hGenBtn').addEventListener('click',function(){
     if(_synTops.length&&_synBots.length){var _top=_synTops[0],_bot=_synBots[0];
       if(_top.id!==_bot.id){var _tbFs=fS(_top,'heart')+fS(_bot,'heart');var _tbSyn=_synPow(_top)+_synPow(_bot);
         var _tbGain=(_tbFs-_dressFs)+(_tbSyn-_dressSyn);if(_tbGain>0||_tbGain>=-Math.max(1,Math.abs(_dressFs)*0.001)){_used[_dress.id]=0;of.allItems[_dressIdx]=_top;of.allItems.push(_bot);_used[_top.id]=1;_used[_bot.id]=1;}}}}
+  // Top+bottom→dress path swap: 推荐服装为上下装时，卡牌重构对应为连衣裙也要考虑
+  var _tIdx=-1,_bIdx=-1,_hasDress=false;
+  for(var _i2=0;_i2<of.allItems.length;_i2++){var _it2=of.allItems[_i2];if(_it2.cat==='连衣裙')_hasDress=true;if(_it2.cat==='上衣'&&_tIdx<0)_tIdx=_i2;if(_it2.cat==='下装'&&_bIdx<0)_bIdx=_i2;}
+  if(!_hasDress&&_tIdx>=0&&_bIdx>=0){
+    var _top2=of.allItems[_tIdx],_bot2=of.allItems[_bIdx];
+    var _tbFs2=fS(_top2,'heart')+fS(_bot2,'heart'),_tbSyn2=_synPow(_top2)+_synPow(_bot2);
+    var _synDress=pool.filter(function(i){return i.cat==='连衣裙'&&i.attr===attr&&!_used[i.id]&&i.shadowSynergy===_cn&&i.shadowSynergyLevel&&_synPairable(i);});
+    var _bestD=null,_bestDGain=-1e15;
+    for(var _di=0;_di<_synDress.length;_di++){var _dr=_synDress[_di];var _g=(fS(_dr,'heart')-_tbFs2)+(_synPow(_dr)-_tbSyn2);if(_g>_bestDGain){_bestDGain=_g;_bestD=_dr;}}
+    if(_bestD&&(_bestDGain>0||_bestDGain>=-Math.max(1,Math.abs(_tbFs2)*0.001))){
+      _used[_top2.id]=0;_used[_bot2.id]=0;of.allItems[_tIdx]=_bestD;of.allItems.splice(_bIdx,1);_used[_bestD.id]=1;
+    }
+  }
   // Recalculate
   var _newRaw=0;of.allItems.forEach(function(i){_newRaw+=fS(i,'heart');});of.raw=_newRaw;var _tc1=0,_tc2=0;of.allItems.forEach(function(i){var w=tagW(i);if(t1&&(i.t1===t1||i.t2===t1))_tc1+=w;if(t2&&(i.t1===t2||i.t2===t2))_tc2+=w;});of.finalScore=cF(_newRaw,'heart',Math.min(_tc1,4),Math.min(_tc2,2));
   });
