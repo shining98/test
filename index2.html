@@ -67,9 +67,11 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 .code2-scope .c2-d-count{font-family:'DM Mono',monospace;font-size:.85rem;color:var(--c2-muted);margin-left:auto}.c2-d-count b{color:var(--c2-accent)}
 .code2-scope .d-filter-title{font-size:.75rem;color:var(--c2-muted);letter-spacing:.08em;margin:.6rem 0 .4rem}
 .code2-scope .d-btn-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start}
-.code2-scope .d-btn{flex:0 0 auto;min-width:64px;font-family:inherit;font-size:.8rem;padding:7px 14px;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;transition:all .15s}
+.code2-scope .d-btn-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.code2-scope .d-btn-grid .d-btn{flex:initial;width:100%;min-width:0;padding:7px 2px}
+.code2-scope .d-btn{position:relative;flex:0 0 auto;min-width:64px;font-family:inherit;font-size:.8rem;padding:7px 14px;border:1px solid #a5a5a5;background:#fff;color:#222;cursor:pointer;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;transition:all .15s}
 .code2-scope .d-btn:hover{filter:brightness(.93)}
-.code2-scope .d-btn.active{background:var(--ab)!important;color:#fff!important;border-color:var(--abc)!important;font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.code2-scope .d-btn.active::after{content:"✓";position:absolute;right:3px;bottom:0;font-size:10px;line-height:1.3;font-weight:700;color:currentColor;pointer-events:none}
 .code2-scope .c2-d-table-wrap{max-height:68vh;overflow-y:auto;border:1px solid var(--c2-border);border-radius:var(--c2-r);background:var(--c2-s1)}
 .code2-scope .c2-d-table{width:100%;border-collapse:collapse;font-size:.78rem}
 .code2-scope .c2-d-table thead{position:sticky;top:0;z-index:2;background:var(--c2-s1);box-shadow:0 2px 4px rgba(0,0,0,.06)}
@@ -181,6 +183,27 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
 .code2-scope .c2-imp-summary{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;margin-top:.4rem;padding:.4rem .6rem;background:var(--c2-s2);border-radius:5px}
 .code2-scope .c2-imp-summary span{color:var(--c2-muted)}
 .code2-scope .c2-imp-summary b{color:var(--c2-accent)}
+/* ===== 手机端自适应 ===== */
+@media(max-width:640px){
+  .code2-scope .c2-d-table-wrap{max-height:75vh}
+  .code2-scope .c2-d-table thead{display:none}
+  .code2-scope .c2-d-table,.code2-scope .c2-d-table tbody,.code2-scope .c2-d-table tr,.code2-scope .c2-d-table td{display:block;width:auto}
+  .code2-scope .c2-d-table tr{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;padding:.5rem .35rem;border-bottom:1px solid var(--c2-border)}
+  .code2-scope .c2-d-table td{border-bottom:none;padding:.05rem .1rem;text-align:left;white-space:nowrap;vertical-align:middle}
+  .code2-scope .c2-d-table td:nth-child(1){order:1;flex:0 0 auto;width:auto}
+  .code2-scope .c2-d-table td:nth-child(2){order:2;flex:0 1 auto;font-size:.85rem;font-weight:600;white-space:normal}
+  .code2-scope .c2-d-table td:nth-child(3){order:3;flex:0 1 40%;font-size:.68rem;text-align:left;overflow:hidden;text-overflow:ellipsis}
+  .code2-scope .c2-d-table td:nth-child(8){order:4;flex:0 0 auto;min-width:0;margin-left:auto;text-align:right;font-weight:700;color:var(--c2-accent)}
+  .code2-scope .c2-d-table td:nth-child(4){order:5}
+  .code2-scope .c2-d-table td:nth-child(5){order:6}
+  .code2-scope .c2-d-table td:nth-child(6){order:7}
+  .code2-scope .c2-d-table td:nth-child(7){order:8}
+  .code2-scope .c2-d-table td:nth-child(9){order:9;flex:0 1 auto;margin-left:auto}
+  /* 强制换行：第一行=名称·设计师+基础分+属性；第二行=稀有度/部位/类型/标签（右对齐于基础分与属性） */
+  .code2-scope .c2-d-table tr::after{content:"";order:5;flex:0 0 100%;height:0}
+  .code2-scope .c2-d-table .c2-tag-cell{justify-content:flex-start;min-width:0}
+  .code2-scope .c2-d-table .c2-cb-cell{width:auto}
+}
 </style>
 </head>
 <body>
@@ -219,19 +242,19 @@ body{font-family:'Noto Serif SC',serif;background:var(--bg);color:var(--text);mi
   <details class="c2-collapsible" id="dFilterBox">
     <summary>部位</summary>
     <div class="c2-collapsible-body">
-      <div class="d-btn-row" id="dCatRow"></div>
+      <div class="d-btn-grid" id="dCatRow"></div>
     </div>
   </details>
   <details class="c2-collapsible" id="dTypeBox">
     <summary>类型</summary>
     <div class="c2-collapsible-body">
-      <div class="d-btn-row" id="dTypeRow"></div>
+      <div class="d-btn-grid" id="dTypeRow"></div>
     </div>
   </details>
   <details class="c2-collapsible" id="dTagBox">
     <summary>标签</summary>
     <div class="c2-collapsible-body">
-      <div class="d-btn-row" id="dTagGrid"></div>
+      <div class="d-btn-grid" id="dTagGrid"></div>
     </div>
   </details>
   <div class="c2-d-table-wrap"><table class="c2-d-table"><thead><tr><th class="c2-cb-cell"><input type="checkbox" id="dMasterCb" checked></th><th>名称</th><th>设计师</th><th>属性</th><th>稀有度</th><th>部位</th><th>类型</th><th>基础分</th><th>标签</th></tr></thead><tbody id="dTbody"></tbody></table></div>
@@ -757,13 +780,80 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
   /* --- 跨套换装收尾：以三套总分为目标，同槽位互换 / 未用件替换，迭代到无提升 --- */
   (function(){
     function finOf(arr){var r=0;for(var i=0;i<arr.length;i++)r+=fS(arr[i],'heart');var c1=0,c2=0;for(var j=0;j<arr.length;j++){var w=tagW(arr[j]);if(t1&&(arr[j].t1===t1||arr[j].t2===t1))c1+=w;if(t2&&(arr[j].t1===t2||arr[j].t2===t2))c2+=w;}return cF(r,'heart',Math.min(c1,4),Math.min(c2,2));}
+    /* 精确（不取整）分值：换装对比用，避免取整误差把“同分择高分套穿强件”的换装误拒 */
+    function finOfX(arr){var r=0;for(var i=0;i<arr.length;i++)r+=fS(arr[i],'heart');var c1=0,c2=0;for(var j=0;j<arr.length;j++){var w=tagW(arr[j]);if(t1&&(arr[j].t1===t1||arr[j].t2===t1))c1+=w;if(t2&&(arr[j].t1===t2||arr[j].t2===t2))c2+=w;}return r*(1+tB(Math.min(c1,4),H1B)+tB(Math.min(c2,2),H2B));}
     function okIn(arr,idx,c){
       for(var j=0;j<arr.length;j++){if(j!==idx&&gSK(arr[j])===gSK(c))return false;}
       if(ALLACC.indexOf(c.cat)>=0&&!accHandOK(c,idx,arr))return false;
       return true;
     }
+    function exValid(nArr){
+      var seen={},accN=0;
+      for(var j=0;j<nArr.length;j++){var k2=gSK(nArr[j]);if(seen[k2])return false;seen[k2]=1;if(ALLACC.indexOf(nArr[j].cat)>=0)accN++;}
+      /* 饰品上限5件（与 runDP/recommendFixed 口径一致） */
+      if(accN>5)return false;
+      for(var j=0;j<nArr.length;j++){if(ALLACC.indexOf(nArr[j].cat)>=0&&!accHandOK(nArr[j],j,nArr))return false;}
+      /* 连衣裙 与 上衣+下装 互斥且必居其一 */
+      var hasD=false,hasT=false,hasB=false;
+      for(var j=0;j<nArr.length;j++){if(nArr[j].cat==='连衣裙')hasD=true;else if(nArr[j].cat==='上衣')hasT=true;else if(nArr[j].cat==='下装')hasB=true;}
+      if(hasD&&(hasT||hasB))return false;
+      if(!hasD&&!(hasT&&hasB))return false;
+      return true;
+    }
+    /* 池内换装候选：未使用件按槽位/标签取前几名，并预计算标签与分值（热循环免重复调用） */
+    function buildCands(){
+      var usedAll={};best.forEach(function(s){s.allItems.forEach(function(it){usedAll[it.id]=1;});});
+      var free=pool.filter(function(i){return !usedAll[i.id]&&!userFixedIds[i.id];});
+      var bySK={};free.forEach(function(i){(bySK[gSK(i)]=bySK[gSK(i)]||[]).push(i);});
+      var out=[];
+      for(var k in bySK){if(!bySK.hasOwnProperty(k))continue;
+        var arr=bySK[k].slice().sort(function(x,y){return fS(y,'heart')-fS(x,'heart');});
+        var sn={};
+        arr.slice(0,2).concat(arr.filter(function(i){return (tBi(i,t1,t2)&1)!==0;}).slice(0,2)).concat(arr.filter(function(i){return (tBi(i,t1,t2)&2)!==0;}).slice(0,2)).forEach(function(i){if(!sn[i.id]){sn[i.id]=1;out.push(i);}});
+      }
+      return out.map(function(it){var b=tBi(it,t1,t2);return {it:it,b1:(b&1)?tagW(it):0,b2:(b&2)?tagW(it):0,raw:fS(it,'heart')};});
+    }
+    /* 池内换装：单套内换入未使用件（1↔1跨槽位 / 2↔2成对，同时对比两个标签取整上限），返回换装后的数组或null */
+    function poolGain(A,cands){
+      var baseX=finOfX(A),i,u,i2,u2;
+      for(i=0;i<A.length;i++){
+        if(userFixedIds[A[i].id])continue;
+        for(u=0;u<cands.length;u++){
+          if(cands[u].it.id===A[i].id)continue;
+          var nA=A.slice();nA[i]=cands[u].it;
+          if(!exValid(nA))continue;
+          if(finOfX(nA)>baseX+0.5)return nA;
+        }
+      }
+      var c1f=0,c2f=0,raws=[];
+      for(var z=0;z<A.length;z++){var zb=tBi(A[z],t1,t2);if(zb&1)c1f+=tagW(A[z]);if(zb&2)c2f+=tagW(A[z]);raws.push(fS(A[z],'heart'));}
+      var m1f=Math.min(c1f,4),m2f=Math.min(c2f,2);
+      for(i=0;i<A.length;i++){
+        if(userFixedIds[A[i].id])continue;
+        var o1=tBi(A[i],t1,t2),w1=tagW(A[i]);
+        for(i2=i+1;i2<A.length;i2++){
+          if(userFixedIds[A[i2].id])continue;
+          var o2=tBi(A[i2],t1,t2),w2=tagW(A[i2]);
+          var needT1=((o1&1)?w1:0)+((o2&1)?w2:0),needT2=((o1&2)?w1:0)+((o2&2)?w2:0);
+          for(u=0;u<cands.length;u++){
+            var cu=cands[u];if(cu.it.id===A[i].id||cu.it.id===A[i2].id)continue;
+            for(u2=u+1;u2<cands.length;u2++){
+              var cu2=cands[u2];if(cu2.it.id===A[i].id||cu2.it.id===A[i2].id)continue;
+              var nC1=Math.min(c1f-needT1+cu.b1+cu2.b1,4),nC2=Math.min(c2f-needT2+cu.b2+cu2.b2,2);
+              /* 标签取整上限不倒退剪枝；上限不升时 raw 无收益直接跳过 */
+              if(nC1<m1f||nC2<m2f)continue;
+              if(nC1<=m1f&&nC2<=m2f&&cu.raw+cu2.raw-raws[i]-raws[i2]<=0.25)continue;
+              var nB=A.slice();nB[i]=cu.it;nB[i2]=cu2.it;
+              if(!exValid(nB))continue;
+              if(finOfX(nB)>baseX+0.5)return nB;
+            }
+          }
+        }
+      }
+      return null;
+    }
     var guard=0;
-    while(guard++<12){
+    while(guard++<60){
       var improved=false,a,b,i,j,A,B,x,d,c,old,u,sk;
       var used={};best.forEach(function(s){s.allItems.forEach(function(it){used[it.id]=1;});});
       for(a=0;a<best.length&&!improved;a++){
@@ -773,19 +863,19 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
             if(userFixedIds[A[i].id])continue;
             for(j=0;j<B.length;j++){
               if(userFixedIds[B[j].id]||gSK(A[i])!==gSK(B[j]))continue;
-              var fA0=finOf(A),fB0=finOf(B);
+              var fA0=finOfX(A),fB0=finOfX(B);
               x=A[i];A[i]=B[j];B[j]=x;
-              var fA1=finOf(A),fB1=finOf(B);
+              var fA1=finOfX(A),fB1=finOfX(B);
               d=fA1+fB1-fA0-fB0;
               var okSwap=false;
               if(d>0){okSwap=true;}
-              else if(d===0){
+              else if(d>-0.5){
                 /* 同分换装：择“高分套穿强件”的字典序方案（不影响标签与总分） */
                 var _b4=[fA0,fB0].sort(function(p,q){return q-p;});
                 var _af=[fA1,fB1].sort(function(p,q){return q-p;});
                 if(_af[0]>_b4[0]||(_af[0]===_b4[0]&&_af[1]>_b4[1]))okSwap=true;
               }
-              if(okSwap){best[a].finalScore=fA1;best[b].finalScore=fB1;improved=true;break;}
+              if(okSwap){best[a].finalScore=finOf(A);best[b].finalScore=finOf(B);improved=true;break;}
               x=A[i];A[i]=B[j];B[j]=x;
             }
             if(improved)break;
@@ -798,12 +888,12 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
           for(i=0;i<A.length;i++){
             if(userFixedIds[A[i].id])continue;
             sk=gSK(A[i]);
-            var fA0=finOf(A);old=A[i];
+            var fA0=finOfX(A);old=A[i];
             for(u=0;u<pool.length;u++){
               c=pool[u];
               if(used[c.id]||gSK(c)!==sk)continue;
               A[i]=c;
-              if(okIn(A,i,c)&&finOf(A)-fA0>0){used[old.id]=0;used[c.id]=1;best[a].finalScore=finOf(A);improved=true;break;}
+              if(okIn(A,i,c)&&finOfX(A)-fA0>0){used[old.id]=0;used[c.id]=1;best[a].finalScore=finOf(A);improved=true;break;}
               A[i]=old;
             }
             if(improved)break;
@@ -811,15 +901,74 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
         }
       }
       if(!improved){
-        /* 3) 跨套路径互换：连衣裙 ↔ 上衣+下装（同分时择“高分套穿强件”） */
-        for(a=0;a<best.length&&!improved;a++){
+        /* 2b) 跨套多件联合交换（1~3件）：单步不可行的互补换装联合评估；
+           每次评估同时对比两个标签的取整上限（如礼服4件/户外2件），避免只看单标签陷入局部最优；同分时择“高分套穿强件” */
+        (function(){
+          function exValid(nArr){
+            var seen={},accN=0;
+            for(var j=0;j<nArr.length;j++){var k2=gSK(nArr[j]);if(seen[k2])return false;seen[k2]=1;if(ALLACC.indexOf(nArr[j].cat)>=0)accN++;}
+            /* 饰品上限5件（与 runDP/recommendFixed 口径一致） */
+            if(accN>5)return false;
+            for(var j=0;j<nArr.length;j++){if(ALLACC.indexOf(nArr[j].cat)>=0&&!accHandOK(nArr[j],j,nArr))return false;}
+            /* 连衣裙 与 上衣+下装 互斥且必居其一 */
+            var hasD=false,hasT=false,hasB=false;
+            for(var j=0;j<nArr.length;j++){if(nArr[j].cat==='连衣裙')hasD=true;else if(nArr[j].cat==='上衣')hasT=true;else if(nArr[j].cat==='下装')hasB=true;}
+            if(hasD&&(hasT||hasB))return false;
+            if(!hasD&&!(hasT&&hasB))return false;
+            return true;
+          }
+          function pairKey(fA,fB){return [fA,fB].sort(function(p,q){return q-p;});}
+          for(var a=0;a<best.length&&!improved;a++){
+            for(var b=a+1;b<best.length&&!improved;b++){
+              var A=best[a].allItems,B=best[b].allItems;
+              var fA0=finOfX(A),fB0=finOfX(B);
+              var curD=0,curS=null;
+              var consider=function(S,T){
+                var q,i;
+                for(q=0;q<S.length;q++)if(userFixedIds[A[S[q]].id])return;
+                for(q=0;q<T.length;q++)if(userFixedIds[B[T[q]].id])return;
+                var nA=[],nB=[];
+                for(i=0;i<A.length;i++){if(S.indexOf(i)<0)nA.push(A[i]);}
+                for(q=0;q<T.length;q++)nA.push(B[T[q]]);
+                for(i=0;i<B.length;i++){if(T.indexOf(i)<0)nB.push(B[i]);}
+                for(q=0;q<S.length;q++)nB.push(A[S[q]]);
+                if(!exValid(nA)||!exValid(nB))return;
+                var fA1=finOfX(nA),fB1=finOfX(nB);
+                var d=fA1+fB1-fA0-fB0;
+                var ok=false;
+                if(curS===null){
+                  if(d>0)ok=true;
+                  else if(d>-0.5){var o=pairKey(fA0,fB0),n=pairKey(fA1,fB1);ok=(n[0]>o[0]||(n[0]===o[0]&&n[1]>o[1]));}
+                }else{
+                  if(d>curD+0.5)ok=true;
+                  else if(d>curD-0.5){var n1=pairKey(curS.fA1,curS.fB1),n2=pairKey(fA1,fB1);ok=(n2[0]>n1[0]||(n2[0]===n1[0]&&n2[1]>n1[1]));}
+                }
+                if(ok){curD=d;curS={nA:nA,nB:nB,fA1:fA1,fB1:fB1};}
+              };
+              var nA_=A.length,nB_=B.length,i1,i2,i3,j1,j2,j3;
+              for(i1=0;i1<nA_;i1++)for(j1=0;j1<nB_;j1++)consider([i1],[j1]);
+              if(!curS)for(i1=0;i1<nA_;i1++)for(i2=i1+1;i2<nA_;i2++)for(j1=0;j1<nB_;j1++)for(j2=j1+1;j2<nB_;j2++)consider([i1,i2],[j1,j2]);
+              if(!curS&&nA_<=14&&nB_<=14)for(i1=0;i1<nA_;i1++)for(i2=i1+1;i2<nA_;i2++)for(i3=i2+1;i3<nA_;i3++)for(j1=0;j1<nB_;j1++)for(j2=j1+1;j2<nB_;j2++)for(j3=j2+1;j3<nB_;j3++)consider([i1,i2,i3],[j1,j2,j3]);
+              if(curS){
+                best[a].allItems=curS.nA;best[b].allItems=curS.nB;
+                best[a].finalScore=finOf(curS.nA);best[b].finalScore=finOf(curS.nB);
+                improved=true;
+              }
+            }
+          }
+        })();
+      }
+      /* 3) 跨套路径互换：连衣裙 ↔ 上衣+下装（同分时择“高分套穿强件”）；每轮都评估，避免被前序阶段的改进挤掉 */
+      (function(){
+        var pImp=false;
+        for(a=0;a<best.length&&!pImp;a++){
           A=best[a].allItems;
           var dA=-1,aHasTB=false;
           for(i=0;i<A.length;i++){if(A[i].cat==='连衣裙'&&dA<0)dA=i;if(A[i].cat==='上衣'||A[i].cat==='下装')aHasTB=true;}
           if(dA<0||aHasTB)continue;
           var dr=A[dA];
           if(userFixedIds[dr.id])continue;
-          for(b=0;b<best.length&&!improved;b++){
+          for(b=0;b<best.length&&!pImp;b++){
             if(a===b)continue;
             B=best[b].allItems;
             var tB_=-1,bB_=-1,bHasD=false;
@@ -827,17 +976,59 @@ function heartOutfits(pool,t1,t2,f1,f2,f3){
             if(bHasD||tB_<0||bB_<0)continue;
             var tp=B[tB_],bt=B[bB_];
             if(userFixedIds[tp.id]||userFixedIds[bt.id])continue;
-            var pA0=finOf(A),pB0=finOf(B);
+            var pA0=finOfX(A),pB0=finOfX(B);
             var snapA=A.slice(),snapB=B.slice();
             A.splice(dA,1);A.push(tp);A.push(bt);
             B.splice(Math.max(tB_,bB_),1);B.splice(Math.min(tB_,bB_),1);B.push(dr);
-            var pA1=finOf(A),pB1=finOf(B);
+            var pA1=finOfX(A),pB1=finOfX(B);
             d=pA1+pB1-pA0-pB0;
             var okP=false;
             if(d>0)okP=true;
-            else if(d===0){var _p4=[pA0,pB0].sort(function(p,q){return q-p;});var _pf=[pA1,pB1].sort(function(p,q){return q-p;});if(_pf[0]>_p4[0]||(_pf[0]===_p4[0]&&_pf[1]>_p4[1]))okP=true;}
-            if(okP){best[a].finalScore=pA1;best[b].finalScore=pB1;improved=true;}
+            else if(d>-0.5){var _p4=[pA0,pB0].sort(function(p,q){return q-p;});var _pf=[pA1,pB1].sort(function(p,q){return q-p;});if(_pf[0]>_p4[0]||(_pf[0]===_p4[0]&&_pf[1]>_p4[1]))okP=true;}
+            if(okP){best[a].finalScore=finOf(A);best[b].finalScore=finOf(B);pImp=true;}
             else{best[a].allItems=snapA;best[b].allItems=snapB;A=snapA;B=snapB;}
+          }
+        }
+        if(pImp)improved=true;
+      })();
+      if(!improved){
+        /* 1c) 池内换装：单套内换入未使用件（1↔1跨槽位/2↔2成对），严格提升 */
+        var pc1=buildCands();
+        for(var q=0;q<best.length&&!improved;q++){
+          var gArr=poolGain(best[q].allItems,pc1);
+          if(gArr){best[q].allItems=gArr;best[q].finalScore=finOf(gArr);improved=true;}
+        }
+      }
+      if(!improved){
+        /* 4) 中性换装试探：跨套中性换装（总分不降）可能腾出槽位、开启池内换装；
+           换装后两套再做池内换装扫描，两步合计总分提升才采纳，否则换回 */
+        var pc2=buildCands();
+        for(var pa=0;pa<best.length&&!improved;pa++){
+          for(var pb=pa+1;pb<best.length&&!improved;pb++){
+            var origA=best[pa].allItems,origB=best[pb].allItems;
+            var oAX=finOfX(origA),oBX=finOfX(origB);
+            for(var pi=0;pi<origA.length&&!improved;pi++){
+              if(userFixedIds[origA[pi].id]||ALLACC.indexOf(origA[pi].cat)<0)continue;
+              for(var pj=0;pj<origB.length&&!improved;pj++){
+                if(userFixedIds[origB[pj].id]||ALLACC.indexOf(origB[pj].cat)<0)continue;
+                if(gSK(origA[pi])===gSK(origB[pj]))continue;
+                var A2=origA.slice(),B2=origB.slice();
+                var tvv=A2[pi];A2[pi]=B2[pj];B2[pj]=tvv;
+                if(!exValid(A2)||!exValid(B2))continue;
+                var d1=(finOfX(A2)+finOfX(B2))-(oAX+oBX);
+                if(Math.abs(d1)>0.5)continue;
+                var gA=poolGain(A2,pc2),gB=null;
+                if(!gA)gB=poolGain(B2,pc2);
+                if(gA||gB){
+                  var fA=gA||A2,fB=gB||B2;
+                  if(finOfX(fA)+finOfX(fB)>oAX+oBX+0.5){
+                    best[pa].allItems=fA;best[pb].allItems=fB;
+                    best[pa].finalScore=finOf(fA);best[pb].finalScore=finOf(fB);
+                    improved=true;
+                  }
+                }
+              }
+            }
           }
         }
       }
