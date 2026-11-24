@@ -1518,6 +1518,7 @@ const D=[
 {id:1365,name:"余月殊色",cat:"袜子",type:"散件",attr:"性感",rare:"闪耀",designer:"洛洛梨",t1:"清凉",t2:"礼服",bs:131},
 {id:1366,name:"意乱情迷",cat:"袜子",type:"散件",attr:"性感",rare:"闪耀",designer:"佐森",t1:"清凉",t2:"户外",bs:131},
 {id:1367,name:"机动旋绕",cat:"袜子",type:"复苏",attr:"性感",rare:"非凡",designer:"魔羊",t1:"制服",t2:"妮妮尔",bs:117},
+{id:3262,name:"焰光力场",cat:"袜子",type:"复苏",attr:"性感",rare:"非凡",designer:"赫斯提亚",t1:"废墟",t2:"时尚",bs:112},
 {id:1368,name:"机巧独舞",cat:"袜子",type:"原型",attr:"性感",rare:"非凡",designer:"魔羊",t1:"制服",t2:"妮妮尔",bs:106},
 // --- 鞋子 ---
 {id:1369,name:"悲鸣",cat:"鞋子",type:"复苏",attr:"性感",rare:"闪耀",designer:"李尔里德",t1:"幻想",t2:"礼服",bs:285},
@@ -2198,6 +2199,12 @@ const D=[
 {id:1991,name:"星域圣典",cat:"袜子",type:"原型",attr:"清新",rare:"闪耀",designer:"赫斯提亚",t1:"废墟",t2:"礼服",bs:130},
 {id:1992,name:"水晶珠缀",cat:"袜子",type:"服饰",attr:"清新",rare:"闪耀",designer:"大道寺知世",t1:"浪漫",t2:"幻想",bs:129},
 {id:1993,name:"颂诗歌者",cat:"袜子",type:"服饰",attr:"清新",rare:"闪耀",designer:"奥菲莉亚",t1:"户外",t2:"幻想",bs:117},
+{id:3253,name:"平行否定",cat:"袜子",type:"服饰",attr:"清新",rare:"非凡",designer:"琪琪尔",t1:"休闲",t2:"制服",bs:103},
+{id:3254,name:"淑女法则",cat:"袜子",type:"复苏",attr:"清新",rare:"非凡",designer:"洛洛梨",t1:"制服",t2:"妮妮尔",bs:103},
+{id:3255,name:"幻影光轨",cat:"袜子",type:"服饰",attr:"清新",rare:"非凡",designer:"魔羊",t1:"制服",t2:"幻想",bs:102},
+{id:3256,name:"线性否定",cat:"袜子",type:"服饰",attr:"清新",rare:"非凡",designer:"琪琪尔",t1:"休闲",t2:"制服",bs:94},
+{id:3257,name:"淑女守则",cat:"袜子",type:"原型",attr:"清新",rare:"非凡",designer:"洛洛梨",t1:"制服",t2:"妮妮尔",bs:94},
+{id:3258,name:"零号光轨",cat:"袜子",type:"服饰",attr:"清新",rare:"非凡",designer:"魔羊",t1:"制服",t2:"幻想",bs:93},
 // --- 鞋子 ---
 {id:1994,name:"向曦明途",cat:"鞋子",type:"复苏",attr:"清新",rare:"闪耀",designer:"路德伊",t1:"幻想",t2:"浪漫",bs:271},
 {id:1995,name:"回旋星迹",cat:"鞋子",type:"复苏",attr:"清新",rare:"闪耀",designer:"莫笛",t1:"礼服",t2:"幻想",bs:264},
@@ -2247,6 +2254,7 @@ const D=[
 {id:2039,name:"精灵枷锁",cat:"鞋子",type:"原型",attr:"清新",rare:"闪耀",designer:"墨丘利",t1:"礼服",t2:"浪漫",bs:215},
 {id:2040,name:"永无远乡",cat:"鞋子",type:"服饰",attr:"清新",rare:"闪耀",designer:"阿洛伊",t1:"知性",t2:"清凉",bs:206},
 {id:2041,name:"即兴创作",cat:"鞋子",type:"服饰",attr:"清新",rare:"闪耀",designer:"奥菲莉亚",t1:"户外",t2:"幻想",bs:204},
+{id:3261,name:"魅力步伐",cat:"鞋子",type:"复苏",attr:"清新",rare:"非凡",designer:"洛洛梨",t1:"制服",t2:"妮妮尔",bs:179},
 // --- 发饰 ---
 {id:2042,name:"蝶之倾",cat:"发饰",type:"重构",attr:"清新",rare:"闪耀",designer:"赫菲斯",t1:"幻想",t2:"浪漫",bs:168},
 {id:2043,name:"泠蕊",cat:"发饰",type:"重构",attr:"清新",rare:"闪耀",designer:"夜宵",t1:"云端",t2:"浪漫",bs:166},
@@ -2328,6 +2336,7 @@ const D=[
 {id:2118,name:"风露盈枝",cat:"帽子",type:"服饰",attr:"清新",rare:"闪耀",designer:"阿洛伊",t1:"知性",t2:"清凉",bs:126},
 {id:2119,name:"晨之纱",cat:"帽子",type:"复苏",attr:"清新",rare:"非凡",designer:"墨丘利",t1:"浪漫",t2:"知性",bs:123},
 {id:2120,name:"诗章格律",cat:"帽子",type:"服饰",attr:"清新",rare:"闪耀",designer:"奥菲莉亚",t1:"户外",t2:"幻想",bs:122},
+{id:3259,name:"晚安小律",cat:"帽子",type:"重构",attr:"清新",rare:"非凡",designer:"洛洛梨",t1:"制服",t2:"妮妮尔",bs:110},
 // --- 耳饰 ---
 {id:2121,name:"冷昼星坠",cat:"耳饰",type:"复苏",attr:"清新",rare:"闪耀",designer:"墨丘利",t1:"幻想",t2:"知性",bs:152},
 {id:2122,name:"钢铁信念",cat:"耳饰",type:"复苏",attr:"清新",rare:"闪耀",designer:"左一（少女）",t1:"户外",t2:"保暖",bs:152},
@@ -2470,6 +2479,7 @@ const D=[
 {id:2255,name:"林间演奏",cat:"手套",type:"服饰",attr:"清新",rare:"闪耀",designer:"奥菲莉亚",t1:"户外",t2:"幻想",bs:123},
 {id:2256,name:"晨曦珍珠",cat:"手套",type:"复苏",attr:"清新",rare:"非凡",designer:"墨丘利",t1:"浪漫",t2:"知性",bs:122},
 {id:2257,name:"万古繁木",cat:"手套",type:"服饰",attr:"清新",rare:"闪耀",designer:"阿洛伊",t1:"知性",t2:"清凉",bs:118},
+{id:3260,name:"还原试剂",cat:"手套",type:"服饰",attr:"清新",rare:"非凡",designer:"琪琪尔",t1:"休闲",t2:"制服",bs:108},
 // --- 手持物 ---
 {id:2258,name:"恋之心曲",cat:"手持物",type:"重构",attr:"清新",rare:"闪耀",designer:"墨丘利",t1:"礼服",t2:"浪漫",bs:169,sc:"双手"},
 {id:2259,name:"琤琤古韵",cat:"手持物",type:"重构",attr:"清新",rare:"闪耀",designer:"秦衣",t1:"云端",t2:"浪漫",bs:166,sc:"双手"},
